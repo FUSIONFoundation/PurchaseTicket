@@ -13,7 +13,7 @@ import {
 class App extends Component {
   render() {
     if ( false ) {
-      return (<Home/>)
+      return (<BuyTicket/>)
     }
     return (
       <Router history={history}>

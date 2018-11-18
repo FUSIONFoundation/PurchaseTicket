@@ -15,24 +15,11 @@ class UserInfo extends Component {
   // this is what i use for production
   state = {
     data: {
-      firstName: "",
-      lastName: "",
-      dob: null,
-      country: null,
-      idNumber: null,
-      streetAddress: "",
-      city: "",
-      stateProvince: "",
-      resCountry: "",
-      phone: "",
-      email: "",
-      q1: null,
-      q2: null,
-      q3: null,
-      q4: null,
-      certify: false,
-      frontImage: null,
-      backImage: null
+        walletAddress: "0x",
+        balanceOfFSN: 0,
+        numberOfTickets: 1,
+        autoBuy: false,
+        autoReinvest : true,
     }
   };
 
@@ -43,7 +30,8 @@ class UserInfo extends Component {
       walletAddress: "0x",
       balanceOfFSN: 0,
       numberOfTickets: 1,
-      autoBuy: false
+      autoBuy: false,
+      autoReinvest : true,
     }
   };
 
@@ -102,11 +90,10 @@ class UserInfo extends Component {
           <Text>&nbsp;</Text>
           <Text>FSN</Text>
         </View>
-        <Text style={styles.label}>Number To Buy</Text>
         <InputField
           type="number"
           cbkey="numberOfTickets"
-          text=""
+          text="Number To Buy"
           value={data.numberOfTickets}
           onChange={this.editCallBack}
           required={true}
@@ -117,6 +104,13 @@ class UserInfo extends Component {
           on={data.autoBuy}
           onPress={on => {
             this.editCallBackFunc("autobuy", on);
+          }}
+        />
+            <CheckBox
+          text="Auto Reinvest Reward"
+          on={data.autoReinvest}
+          onPress={on => {
+            this.editCallBackFunc("autoReinvest", on);
           }}
         />
         <InputField
@@ -222,8 +216,8 @@ styles = StyleSheet.create({
     marginBottom: 5
   },
   balanceBox : {
-    marginBottom  : 5,
     width : 160,
+    marginBottom : 5,
     flex: 1,
     flexDirection: "row",
     justifyContent: "flex-start",
