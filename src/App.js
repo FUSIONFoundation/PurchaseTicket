@@ -4,6 +4,7 @@ import logo from './logo.svg';
 import './App.css';
 import history from './history.js'
 import BuyTicket from './Components/BuyTicket.js'
+import Status from './Components/Status.js'
 
 import {
   Route,
@@ -19,9 +20,8 @@ class App extends Component {
       <Router history={history}>
         <div>
           <Route exact path="/" component={BuyTicket}/>
-          {/* <Route path="/userinfo" component={Home}/>
-          <Route path="/questions" component={Questions}/>
-          <Route path="/kycinfo" component={KycInfo}/> */}
+          <Route path="/Status" component={Status}/>
+          <Route path="/BuyTicket" component={BuyTicket}/>
         </div>
       </Router>
     );
