@@ -7,6 +7,11 @@
   height: 40vmin;
 }
 
+.TextHi {
+  font-size:  24px;
+  color : red;
+}
+
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
