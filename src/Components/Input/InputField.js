@@ -245,7 +245,9 @@ styles = StyleSheet.create({
 
     },
     label: {
-        fontSize: 14,
+        fontFamily : "'Roboto', sans-serif !important",
+        fontWeight : 500,
+        fontSize: 20,
         color: 'rgba(22,22,22,.5)',
         width: 160,
         marginBottom: 5,

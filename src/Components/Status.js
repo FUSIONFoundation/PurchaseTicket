@@ -8,6 +8,9 @@ import InputField from "./Input/InputField.js";
 import Border from "./Input/Border.js";
 import ImageUpload from "./Input/ImageUpload.js";
 import CheckBox from "./Input/CheckBox.js";
+import colors from "./colors.js"
+import { connectableObservableDescriptor } from "rxjs/internal/observable/ConnectableObservable";
+import { constants } from "zlib";
 
 var styles;
 
@@ -70,7 +73,7 @@ class UserInfo extends Component {
 
     return (
       <View style={styles.container}>
-        <Text style={styles.sectionTitle}>Status of Ticket Purchase</Text>
+        <Text style={styles.sectionTitle}>Auto Buy Stake Monitor</Text>
         <Border />
         <Text style={styles.sectionNumberTitle}>Please enter:</Text>
         <InputField
@@ -155,12 +158,15 @@ styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "flex-start",
     backgroundColor: "transparent",
-    marginLeft: 35,
-    marginTop: 15
+    marginTop: 15,
+    backgroundColor : colors.backgroundGrey
   },
   sectionTitle: {
-    fontSize: 28,
-    color: "rgba(22,22,22, .5)"
+    fontSize: 24,
+    lineHeight : 32,
+    fontFamily : 'Roboto, san-serif',
+    fontWeight : 700,
+    color: colors.textBlue
   },
   sectionNumberTitle: {
     fontSize: 18,

@@ -68,6 +68,7 @@ styles = StyleSheet.create({
         fontSize: 14,
         color: 'rgba(22,22,22,.5)',
         width: 400,
+        fontFamily : "'Roboto', sans-serif"
     },
     labelHint: {
         fontSize: 12,
