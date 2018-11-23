@@ -28,18 +28,22 @@ class Status extends Component {
   // this is what i use for production
   state = {
     data: {
-      autoBuyOn: false,
+      autoBuyOn: true,
       walletAddress: "0x",
       balanceOfFSN: 0,
       numberOfTickets: 10,
       autoBuy: false,
-      autoReinvest: true,
+      autoReinvestReward: false,
       probablity: 0.23,
       totalTickets: 124444450,
       rewardsToDate: 9000,
       lastUpdateTime : new Date(),
       walletAddress : "0x3f99Fa1d008a658A0F51D94570bCEa2fd8dBDd3B",
       totalAwards : 0,
+      ticketPrice  : 21,
+      walletBalance : 140122.4333,
+      autoBuyStopTime : moment( "20190214", "YYYYMMDD"),
+      lastTicketExpires : moment(  "20190101", "YYYYMMDD")
     }
   };
 
@@ -68,6 +72,10 @@ class Status extends Component {
     newData[key] = value;
 
     this.setState({ data: newData });
+  }
+
+  totalStake(data) {
+    return data.numberOfTickets * data.ticketPrice;
   }
 
   render() {
@@ -203,6 +211,51 @@ class Status extends Component {
                     </View>
                 </View>
                 <View style={styles.orderBorder}/>
+                <View style={styles.stakeDetailRow}>
+                    <Text style={styles.labelLineText}>FSN Staked</Text>
+                    <View>
+                      <Text style={styles.stakeTextVal}>{this.totalStake(data)}<Text  style={styles.stakeTextFSN}>FSN</Text></Text>
+                    </View>
+                </View>
+                <View style={styles.orderBorder}/>
+                <View style={styles.stakeDetailRow}>
+                    <Text style={styles.labelLineText}>FSN Available</Text>
+                    <View>
+                      <Text style={styles.stakeTextVal}>{data.walletBalance}<Text  style={styles.stakeTextFSN}>FSN</Text></Text>
+                    </View>
+                </View>
+                <View style={styles.orderBorder}/>
+                <View style={styles.stakeDetailRow}>
+                    <Text style={styles.labelLineText}>Total FSN</Text>
+                    <View>
+                      <Text style={styles.stakeTextVal}>{data.walletBalance+this.totalStake(data)}<Text  style={styles.stakeTextFSN}>FSN</Text></Text>
+                    </View>
+                </View>
+                <View style={styles.orderBorder}/>
+                {data.autoBuyOn && (
+                  <View key="aaa">
+                      <View style={styles.stakeDetailRow}>
+                        <Text style={styles.labelLineText}>Auto Buy Tickets</Text>
+                        <Text  key="ab1" style={styles.activeButton}>On</Text>
+                    </View>
+                      <View style={styles.orderBorder}/>
+                      <View style={styles.stakeDetailRow}>
+                        <Text style={styles.labelLineText}>Auto Reinvest Reward</Text>
+                        <Text  key="ab1" style={data.autoReinvestReward?styles.activeButton:styles.inActiveButton}>{data.autoReinvestReward?"On":"Off"}</Text>
+                    </View>
+                      <View style={styles.orderBorder}/>
+                      <View style={styles.stakeDetailRow}>
+                        <Text style={styles.labelLineText}>Auto Buy Stop Time</Text>
+                        <Text style={styles.dateValue}>{data.autoBuyStopTime?data.autoBuyStopTime.format('lll'):"Never"}</Text>
+                    </View>
+                    <View style={styles.orderBorder}/>
+                    <View style={styles.stakeDetailRow}>
+                        <Text style={styles.labelLineText}>Last Ticket Expires</Text>
+                        <Text style={styles.dateValue}>{data.lastTicketExpires?data.lastTicketExpires.format('lll'):"----"}</Text>
+                    </View>
+                    <View style={styles.orderBorder}/>
+                  </View>
+                )}
           </View>
         </View>
       </View>
@@ -399,6 +452,13 @@ styles = StyleSheet.create({
     fontSize : 18,
     fontFamily : constants.fontFamily,
     fontWeight : constants.boldFont,
+    alignSelf : 'flex-end'
+  },
+  dateValue : {
+    fontSize : 14,
+    fontFamily : constants.fontFamily,
+    fontWeight : constants.regularFont,
+    color : colors.textBlue,
     alignSelf : 'flex-end'
   },
   orderBorder : {
