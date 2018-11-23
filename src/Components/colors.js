@@ -43,4 +43,8 @@ export default class Colors
     static get labelGrey() {
         return '#6a6f75'
     }
+
+    static get tagGrey() {
+        return '#e4e9f0'
+    }
 }

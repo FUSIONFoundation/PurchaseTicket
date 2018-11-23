@@ -6,6 +6,7 @@ import history from "./history.js";
 import BuyTicket from "./Components/BuyTicket.js";
 import Status from "./Components/Status.js";
 import Header from "./Components/Header.js";
+import 'font-awesome/css/font-awesome.min.css';
 
 import { Route, Router } from "react-router-dom";
 

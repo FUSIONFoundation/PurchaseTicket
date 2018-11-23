@@ -3,13 +3,13 @@ import { View, Text, Image, StyleSheet } from "react-native";
 import colors from "./colors";
 import constants from "./constants";
 import utils from "../utils";
+var fusionLogo = require("../images/explorer-logo.svg")
 
 export default class Header extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text>FUSION</Text>
-        <View style={styles.borderTitle}/>
+        <Image source={fusionLogo} resizeMode="contain" style={{marginLeft:80,width:129,height:29}}/>
         <Text style={styles.titleAutoBuy}>Auto Buy Stake</Text>
         <Text style={styles.programVersion}>1.00.00</Text>
       </View>
@@ -42,7 +42,8 @@ var styles = StyleSheet.create({
   titleAutoBuy: {
     fontFamily: constants.fontFamily,
     fontSize: 22,
-    fontWeight: constants.boldFont
+    fontWeight: constants.boldFont,
+    marginLeft : 15
   },
   programVersion: {
     fontFamily: constants.fontFamily,

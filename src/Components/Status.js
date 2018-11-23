@@ -1,5 +1,11 @@
 import React, { Component } from "react";
-import { View, Text, Image, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  TouchableHighlight
+} from "react-native";
 import ActionButton from "./Input/ActionButton.js";
 import "../App.css";
 import history from "../history.js";
@@ -11,9 +17,10 @@ import CheckBox from "./Input/CheckBox.js";
 import colors from "./colors";
 import constants from "./constants";
 import utils from "../utils";
+import moment from 'moment'
 import { connectableObservableDescriptor } from "rxjs/internal/observable/ConnectableObservable";
 
-var lineGraph = require("../images/lineGraph.svg");
+var lineGraph = require("../images/lineGraph.svg")
 
 var styles;
 
@@ -28,7 +35,9 @@ class Status extends Component {
       autoReinvest: true,
       probablity: 0.23,
       totalTickets: 124444450,
-      rewardsToDate: 9000
+      rewardsToDate: 9000,
+      lastUpdateTime : new Date(),
+      walletAddress : "0x3f99Fa1d008a658A0F51D94570bCEa2fd8dBDd3B"
     }
   };
 
@@ -100,13 +109,25 @@ class Status extends Component {
       displayPercent = "< 0.01";
     }
 
+    let dt = new moment( data.lastUpdateTime );
+
+    let dtDisplay = dt.format( "LLLL z" );
+
     return (
-      <View style={{marginLeft:30, backgroundColor:colors.backgroundGrey}}>
+      <View style={{ marginLeft: 30, backgroundColor: colors.backgroundGrey }}>
         <View style={styles.container}>
           <Text style={styles.Auto_Buy_Stake_Monit}>
             Auto Buy Stake Monitor
           </Text>
-          <Text style={styles.lastUpdated}>{`Last Updated:${new Date()}`}</Text>
+          <TouchableHighlight>
+            <Text style={styles.lastUpdated}>
+              <Text>↻</Text> {`Last Updated: ${dtDisplay}`}
+            </Text>
+          </TouchableHighlight>
+          <View style={styles.walletBox}> 
+            <Text style={styles.walletLabel}>Wallet Address</Text>
+            <Text style={styles.walletLabelAddress}>{data.walletAddress}</Text>
+          </View>
           <View style={styles.largeMetricBox}>
             <View style={styles.rewardHolderView}>
               <Image
@@ -121,12 +142,10 @@ class Status extends Component {
                     Current Reward Probablity
                   </Text>
                   <View>
-                  <Text style={styles.stakingMonitorActive}>
-                    {displayPercent}
-                    <Text style={styles.stakingMonitorActivePercent}>
-                    %
-                  </Text>
-                  </Text>
+                    <Text style={styles.stakingMonitorActive}>
+                      {displayPercent}
+                      <Text style={styles.stakingMonitorActivePercent}>%</Text>
+                    </Text>
                   </View>
                   <Text style={styles.simpleLineText}>{`${
                     data.numberOfTickets
@@ -343,7 +362,7 @@ styles = StyleSheet.create({
     fontWeight: constants.boldFont,
     marginTop: 4,
     marginBottom: 4,
-    marginLeft : 1
+    marginLeft: 1
   },
   largeMetricBox: {
     flex: 1,
@@ -442,6 +461,32 @@ styles = StyleSheet.create({
     position: "absolute",
     left: 170,
     overflow: "visible"
+  },
+  walletBox : {
+    backgroundColor : colors.tagGrey,
+    borderRadius: 3,
+    width : 620,
+    height : 48,
+    marginTop : 16,
+    flex : 1,
+    flexBasis : '100%',
+    flexDirection : 'row',
+    alignItems : 'center',
+    justifyContent : 'space-between'
+  },
+  walletLabel : {
+    fontSize : 12,
+    fontFamily : constants.fontFamily,
+    fontWeight : constants.regularFont,
+    marginLeft : 32,
+    color : colors.labelGrey
+  },
+  walletLabelAddress : {
+    fontSize : 14,
+    fontFamily : constants.fontFamily,
+    fontWeight : constants.regularFont,
+    marginRight : 32,
+    color : colors.textBlue
   }
 });
 
