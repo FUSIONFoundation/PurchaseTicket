@@ -36,6 +36,10 @@ export default class Colors
         return '#7ed321'
     }
 
+    static get lightSuccessGreen() {
+        return '#e5f6d3'
+    }
+
     static get errorRed() {
         return '#d0021b'
     }

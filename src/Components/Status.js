@@ -28,17 +28,18 @@ class Status extends Component {
   // this is what i use for production
   state = {
     data: {
-      active : false,
+      autoBuyOn: false,
       walletAddress: "0x",
       balanceOfFSN: 0,
-      numberOfTickets: 22,
+      numberOfTickets: 10,
       autoBuy: false,
       autoReinvest: true,
       probablity: 0.23,
       totalTickets: 124444450,
       rewardsToDate: 9000,
       lastUpdateTime : new Date(),
-      walletAddress : "0x3f99Fa1d008a658A0F51D94570bCEa2fd8dBDd3B"
+      walletAddress : "0x3f99Fa1d008a658A0F51D94570bCEa2fd8dBDd3B",
+      totalAwards : 0,
     }
   };
 
@@ -173,20 +174,51 @@ class Status extends Component {
                 <View style={styles.stakeDetailRow}>
                     <Text style={styles.stakeDetailText}>Stake Details</Text>
                     <TouchableHighlight onPress={()=>{alert("do something")}}>
-                        {data.active ? (
-                        <Text style={styles.stakesPurchaseTicketButtton}>Purchase Staking Tickets</Text>
-                        ) :
-                        (
-                          <View style={styles.stakesStopAutoBuy}>
-                          <Text style={styles.stakesStopAutoBuyText}>Stop Auto Buy</Text>
-                          </View>
-                          )}
+                       {this.handleStakeButtons(data)}
                     </TouchableHighlight>
                 </View>
+                <View style={{height:20}}/>
+                <View style={styles.stakeDetailRow}>
+                    <Text style={styles.labelLineText}>Staking Status</Text>
+                    { data.autoBuyOn || data.numberOfTickets ?
+                         ( <Text  key="ab1" style={styles.activeButton}>Active</Text>) : 
+                        ( <Text  key="ab1"  style={styles.inActiveButton}>Inactive</Text> ) 
+                        }
+                </View>
+                <View style={styles.orderBorder}/>
+                <View style={styles.stakeDetailRow}>
+                    <Text style={styles.labelLineText}>Active Tickets</Text>
+                    { data.autoBuyOn || data.numberOfTickets ?
+                         ( <Text  key="ab1" style={styles.activeButton}>Active</Text>) : 
+                        ( <Text  key="ab1"  style={styles.inActiveButton}>Inactive</Text> ) 
+                        }
+                </View>
+                <View style={styles.orderBorder}/>
+                <View style={styles.stakeDetailRow}>
+                    <Text style={styles.labelLineText}>Rewards to Date</Text>
+                    <View>
+                      <Text style={styles.stakeTextVal}>{data.rewardsToDate.toFixed(2)}<Text  style={styles.stakeTextFSN}>FSN</Text></Text>
+                    </View>
+                </View>
+                <View style={styles.orderBorder}/>
           </View>
         </View>
       </View>
     );
+  }
+
+  handleStakeButtons(data) {
+    if ( !data.autoBuyOn &&  data.numberOfTickets === 0 ) {
+      return ( <Text key="ab1" style={styles.stakesPurchaseTicketButtton}>Purchase Staking Tickets</Text>
+      ) ;
+
+    }
+    if (  data.autoBuyOn  ) {
+      return (  <View style={{borderRadius:3,borderWidth:1,borderColor:colors.orderGrey}}>
+      <Text  key="ab1" style={styles.stopAutoBuyButton}>Stop Auto Buy</Text></View>) ;
+    } else {
+      return ( <View style={{borderRadius:3,borderWidth:1,borderColor:colors.orderGrey}}><Text  key="ab1" style={styles.startAutoBuyButton}>Start Auto Buy</Text></View>) ;
+    }
   }
 }
 
@@ -296,6 +328,34 @@ styles = StyleSheet.create({
     fontWeight: constants.regularFont,
     color: colors.textBlue
   },
+  activeButton : {
+    color : colors.textGreen,
+    fontSize : 14,
+    backgroundColor : colors.lightSuccessGreen,
+    fontFamily : constants.fontFamily,
+    padding : 8,
+    fontWeight : constants.regularFont
+  },
+  stopAutoBuyButton : {
+     padding : 8,
+     fontSize : 14,
+     color : colors.errorRed,
+     fontWeight : constants.regularFont,
+  },
+  startAutoBuyButton : {
+    color : colors.textBlue,
+    padding : 8,
+    fontSize : 14,
+    fontWeight : constants.regularFont,
+ },
+  inActiveButton : {
+    color : colors.textBlue,
+    fontSize : 14,
+    backgroundColor : colors.backgroundGrey,
+    fontFamily : constants.fontFamily,
+    padding : 8,
+    fontWeight : constants.regularFont
+  },
   stakingMonitorActive: {
     fontSize: 32,
     fontFamily: constants.fontFamily,
@@ -321,6 +381,24 @@ styles = StyleSheet.create({
     marginTop: 20,
     width: 620
   },
+  stakeTextFSN : {
+    fontFamily : constants.fontFamily,
+    fontSize : 12,
+    fontWeight : constants.regularFont,
+    marginLeft : 4
+  },
+  stakeTextVal : {
+    fontSize : 18,
+    fontFamily : constants.fontFamily,
+    fontWeight : constants.boldFont
+  },
+  orderBorder : {
+      marginTop : 14,
+      backgroundColor : colors.orderGrey,
+      height : 1,
+      width : 556,
+      marginBottom : 14
+  },
   rewardsGivenBox: {
     borderColor: colors.orderGrey,
     borderRadius: 3,
@@ -338,10 +416,10 @@ styles = StyleSheet.create({
     borderRadius: 3,
     backgroundColor: "white",
     borderWidth: 1,
-    flexDirection: "row",
-    alignItems: "center",
     width: 620,
     padding : 32,
+    flex : 1,
+    flexBasis : '100%',
     marginTop : 24,
     overflow: "visible",
     boxShadow: "0 2px 0 0 rgba(189, 196, 206, 0.2)"
