@@ -28,6 +28,7 @@ class Status extends Component {
   // this is what i use for production
   state = {
     data: {
+      active : false,
       walletAddress: "0x",
       balanceOfFSN: 0,
       numberOfTickets: 22,
@@ -168,74 +169,21 @@ class Status extends Component {
               </View>
             </View>
           </View>
-          <Text style={styles.sectionNumberTitle}>Please enter:</Text>
-          <InputField
-            type="text"
-            cbkey="walletAddress"
-            text="Wallet Address:"
-            value={data.walletAddress}
-            min={42}
-            onChange={this.editCallBack}
-            required={true}
-          />
-          <Text style={styles.label}>Balance of FSN</Text>
-          <View style={styles.balanceBox}>
-            <Text>0</Text>
-            <Text>&nbsp;</Text>
-            <Text>FSN</Text>
+          <View style={styles.stakeDetailBox}>
+                <View style={styles.stakeDetailRow}>
+                    <Text style={styles.stakeDetailText}>Stake Details</Text>
+                    <TouchableHighlight onPress={()=>{alert("do something")}}>
+                        {data.active ? (
+                        <Text style={styles.stakesPurchaseTicketButtton}>Purchase Staking Tickets</Text>
+                        ) :
+                        (
+                          <View style={styles.stakesStopAutoBuy}>
+                          <Text style={styles.stakesStopAutoBuyText}>Stop Auto Buy</Text>
+                          </View>
+                          )}
+                    </TouchableHighlight>
+                </View>
           </View>
-          <InputField
-            type="number"
-            cbkey="numberOfTickets"
-            text="Number To Buy"
-            value={data.numberOfTickets}
-            onChange={this.editCallBack}
-            required={true}
-          />
-          <Text style={styles.label}>Tickets @ x FSN Per Ticket, Y gas </Text>
-          <CheckBox
-            text="Auto Buy"
-            on={data.autoBuy}
-            onPress={on => {
-              this.editCallBackFunc("autobuy", on);
-            }}
-          />
-          <CheckBox
-            text="Auto Reinvest Reward"
-            on={data.autoReinvest}
-            onPress={on => {
-              this.editCallBackFunc("autoReinvest", on);
-            }}
-          />
-          <InputField
-            type="date"
-            cbkey="dos"
-            text="Stop Date"
-            value={data.dos}
-            onChange={this.editCallBack}
-            required={false}
-          />
-
-          <View style={{ height: 30, width: 1 }} />
-          <ActionButton
-            disabled={disabled}
-            text="BUY TICKET"
-            buttonStyle={
-              disabled ? styles.actionButtonDisabled : styles.actionButton
-            }
-            buttonTextStyle={
-              disabled
-                ? styles.actionButtonTextDisabled
-                : styles.actionButtonText
-            }
-            onPress={() => {
-              alert("send data to an application/data is in the console");
-              console.log(data);
-              // remember you can use history.push
-              // to move around
-              //
-            }}
-          />
         </View>
       </View>
     );
@@ -327,7 +275,8 @@ styles = StyleSheet.create({
     lineHeight: 32,
     fontFamily: constants.fontFamily,
     fontWeight: constants.boldFont,
-    color: colors.textBlue
+    color: colors.textBlue,
+    marginBottom : 4
   },
   lastUpdated: {
     fontSize: 12,
@@ -381,6 +330,19 @@ styles = StyleSheet.create({
     alignItems: "center",
     width: 200,
     height: 132,
+    overflow: "visible",
+    boxShadow: "0 2px 0 0 rgba(189, 196, 206, 0.2)"
+  },
+  stakeDetailBox : {
+    borderColor: colors.orderGrey,
+    borderRadius: 3,
+    backgroundColor: "white",
+    borderWidth: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    width: 620,
+    padding : 32,
+    marginTop : 24,
     overflow: "visible",
     boxShadow: "0 2px 0 0 rgba(189, 196, 206, 0.2)"
   },
@@ -467,7 +429,7 @@ styles = StyleSheet.create({
     borderRadius: 3,
     width : 620,
     height : 48,
-    marginTop : 16,
+    marginTop : 20,
     flex : 1,
     flexBasis : '100%',
     flexDirection : 'row',
@@ -487,6 +449,42 @@ styles = StyleSheet.create({
     fontWeight : constants.regularFont,
     marginRight : 32,
     color : colors.textBlue
+  },
+  stakeDetailText : {
+    color : colors.textBlue,
+    fontSize : 18,
+    fontFamily : constants.fontFamily,
+    fontWeight : constants.boldFont
+  },
+  stakesPurchaseTicketButtton : {
+    borderRadius : 3,
+    padding : 8,
+    backgroundColor : colors.primaryBlue,
+    color : colors.white,
+    fontSize : 14,
+    fontFamily : constants.fontFamily,
+    fontWeight : constants.mediumFont
+  },
+  stakesStopAutoBuy : {
+      borderColor : colors.backgroundGrey,
+      borderWidth : 1,
+      borderRadius : 3,
+      padding : 8,
+      backgroundColor : colors.white,
+  },
+  stakesStopAutoBuyText : {
+    backgroundColor : colors.white,
+    color : colors.errorRed,
+    fontSize : 14,
+    fontFamily : constants.fontFamily,
+    fontWeight : constants.mediumFont
+},
+  stakeDetailRow : {
+    flex : 1,
+    flexBasis : '100%',
+    flexDirection : 'row',
+    alignItems : 'center',
+    justifyContent : 'space-between'
   }
 });
 
