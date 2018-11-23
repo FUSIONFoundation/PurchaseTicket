@@ -188,10 +188,12 @@ class Status extends Component {
                 <View style={styles.orderBorder}/>
                 <View style={styles.stakeDetailRow}>
                     <Text style={styles.labelLineText}>Active Tickets</Text>
-                    { data.autoBuyOn || data.numberOfTickets ?
-                         ( <Text  key="ab1" style={styles.activeButton}>Active</Text>) : 
-                        ( <Text  key="ab1"  style={styles.inActiveButton}>Inactive</Text> ) 
-                        }
+                    <View>
+                      <Text style={styles.stakeTextVal}>{data.numberOfTickets}<Text  style={styles.stakeTextFSN}>FSN</Text></Text>
+                      {data.numberOfTickets && (
+                        <Text style={styles.viewTicketDetails}>View Ticket Details</Text>
+                      )}
+                    </View>
                 </View>
                 <View style={styles.orderBorder}/>
                 <View style={styles.stakeDetailRow}>
@@ -387,10 +389,17 @@ styles = StyleSheet.create({
     fontWeight : constants.regularFont,
     marginLeft : 4
   },
+  viewTicketDetails : {
+    fontFamily : constants.fontFamily,
+    fontSize : 12,
+    fontWeight : constants.regularFont,
+    color : colors.linkBlue
+  },
   stakeTextVal : {
     fontSize : 18,
     fontFamily : constants.fontFamily,
-    fontWeight : constants.boldFont
+    fontWeight : constants.boldFont,
+    alignSelf : 'flex-end'
   },
   orderBorder : {
       marginTop : 14,
