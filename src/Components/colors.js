@@ -4,6 +4,10 @@ export default class Colors
         return '#062144'
     }
 
+    static get primaryBlue() {
+        return '#2a65b0'
+    }
+
     static get backgroundGrey() {
         return '#f5f7fa'
     }
@@ -12,7 +16,31 @@ export default class Colors
         return '#ffffff'
     }
 
+    static get grey() {
+        return '#e4e9f0'
+    }
+
     static get orderGrey() {
         return '#bec5cf'
+    }
+
+    static get linkBlue() {
+        return '#2b99ff'
+    }
+
+    static get textGreen() {
+        return '#5fa11a'
+    }
+
+    static get successGreen() {
+        return '#7ed321'
+    }
+
+    static get errorRed() {
+        return '#d0021b'
+    }
+
+    static get labelGrey() {
+        return '#6a6f75'
     }
 }

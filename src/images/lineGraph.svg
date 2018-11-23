@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="216" height="126" viewBox="0 0 216 126">
+    <defs>
+        <path id="a" d="M0 0h216v124a2 2 0 0 1-2 2H0V0z"/>
+        <linearGradient id="c" x1="55.573%" x2="54.134%" y1="100%" y2="-35.571%">
+            <stop offset="0%" stop-color="#549ED8" stop-opacity="0"/>
+            <stop offset="100%" stop-color="#2A65B0"/>
+        </linearGradient>
+        <path id="e" d="M.025 88.797l14.41-17.248 14.41-10.925 14.41-26.532 14.411 17.34 14.41-7.976 14.41 12.62 14.41 18.594 14.411-13.225 14.41-10.012h14.41l14.411-11.098 14.41-17.168 14.41 20.29 14.411-14.68L216.18 6h14.41L245 .335"/>
+        <filter id="d" width="106.3%" height="117.4%" x="-3.1%" y="-6.4%" filterUnits="objectBoundingBox">
+            <feMorphology in="SourceAlpha" operator="dilate" radius=".5" result="shadowSpreadOuter1"/>
+            <feOffset dy="2" in="shadowSpreadOuter1" result="shadowOffsetOuter1"/>
+            <feMorphology in="SourceAlpha" radius="1" result="shadowInner"/>
+            <feOffset dy="2" in="shadowInner" result="shadowInner"/>
+            <feComposite in="shadowOffsetOuter1" in2="shadowInner" operator="out" result="shadowOffsetOuter1"/>
+            <feGaussianBlur in="shadowOffsetOuter1" result="shadowBlurOuter1" stdDeviation="2"/>
+            <feColorMatrix in="shadowBlurOuter1" values="0 0 0 0 0.164705882 0 0 0 0 0.396078431 0 0 0 0 0.690196078 0 0 0 0.2 0"/>
+        </filter>
+    </defs>
+    <g fill="none" fill-rule="evenodd">
+        <mask id="b" fill="#fff">
+            <use xlink:href="#a"/>
+        </mask>
+        <use fill="#FFF" fill-rule="nonzero" xlink:href="#a"/>
+        <g fill-rule="nonzero" mask="url(#b)">
+            <path fill="url(#c)" d="M.025 88.797l14.41-17.248 14.41-10.925 14.41-26.532 14.411 17.34 14.41-7.976 14.41 12.62 14.41 18.594 14.411-13.225 14.41-10.012h14.41l14.411-11.098 14.41-17.168 14.41 20.29 14.411-14.68L216.18 6h14.41L245 .335v88.462z" opacity=".4" transform="translate(-28 39)"/>
+            <g stroke-linecap="round" stroke-linejoin="round" transform="translate(-28 39)">
+                <use fill="#000" filter="url(#d)" xlink:href="#e"/>
+                <use stroke="#2A65B0" xlink:href="#e"/>
+            </g>
+        </g>
+    </g>
+</svg>

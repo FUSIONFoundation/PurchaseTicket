@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, Image, StyleSheet } from "react-native";
 import ActionButton from "./Input/ActionButton.js";
 import "../App.css";
 import history from "../history.js";
@@ -8,21 +8,27 @@ import InputField from "./Input/InputField.js";
 import Border from "./Input/Border.js";
 import ImageUpload from "./Input/ImageUpload.js";
 import CheckBox from "./Input/CheckBox.js";
-import colors from "./colors.js"
+import colors from "./colors";
+import constants from "./constants";
+import utils from "../utils";
 import { connectableObservableDescriptor } from "rxjs/internal/observable/ConnectableObservable";
-import { constants } from "zlib";
+
+var lineGraph = require("../images/lineGraph.svg");
 
 var styles;
 
-class UserInfo extends Component {
+class Status extends Component {
   // this is what i use for production
   state = {
     data: {
-        walletAddress: "0x",
-        balanceOfFSN: 0,
-        numberOfTickets: 1,
-        autoBuy: false,
-        autoReinvest : true,
+      walletAddress: "0x",
+      balanceOfFSN: 0,
+      numberOfTickets: 22,
+      autoBuy: false,
+      autoReinvest: true,
+      probablity: 0.23,
+      totalTickets: 124444450,
+      rewardsToDate: 9000
     }
   };
 
@@ -34,7 +40,9 @@ class UserInfo extends Component {
       balanceOfFSN: 0,
       numberOfTickets: 1,
       autoBuy: false,
-      autoReinvest : true,
+      autoReinvest: true,
+      totalTickets: 1250,
+      rewardsToDate: 52
     }
   };
 
@@ -71,79 +79,145 @@ class UserInfo extends Component {
       disabled = !re.test(data.email);
     }
 
-    return (
-      <View style={styles.container}>
-        <Text style={styles.sectionTitle}>Auto Buy Stake Monitor</Text>
-        <Border />
-        <Text style={styles.sectionNumberTitle}>Please enter:</Text>
-        <InputField
-          type="text"
-          cbkey="walletAddress"
-          text="Wallet Address:"
-          value={data.walletAddress}
-          min={42}
-          onChange={this.editCallBack}
-          required={true}
-        />
-        <Text style={styles.label}>Balance of FSN</Text>
-        <View
-          style={styles.balanceBox}
-        >
-          <Text>0</Text>
-          <Text>&nbsp;</Text>
-          <Text>FSN</Text>
-        </View>
-        <InputField
-          type="number"
-          cbkey="numberOfTickets"
-          text="Number To Buy"
-          value={data.numberOfTickets}
-          onChange={this.editCallBack}
-          required={true}
-        />
-        <Text style={styles.label}>Tickets @ x FSN Per Ticket, Y gas </Text>
-        <CheckBox
-          text="Auto Buy"
-          on={data.autoBuy}
-          onPress={on => {
-            this.editCallBackFunc("autobuy", on);
-          }}
-        />
-            <CheckBox
-          text="Auto Reinvest Reward"
-          on={data.autoReinvest}
-          onPress={on => {
-            this.editCallBackFunc("autoReinvest", on);
-          }}
-        />
-        <InputField
-          type="date"
-          cbkey="dos"
-          text="Stop Date"
-          value={data.dos}
-          onChange={this.editCallBack}
-          required={false}
-        />
+    let rewardNumber = utils.displayNumber(data.rewardsToDate, 1, true);
+    let ticketText = data.totalTickets === 1 ? "Ticket" : "Tickets";
+    let rewardStyle;
+    let textNumberOfRewardsGivenType;
+    if (rewardNumber.length < 4) {
+      rewardStyle = styles.textNumberOfRewardsGiven;
+      textNumberOfRewardsGivenType = styles.textNumberOfRewardsGivenType;
+    } else {
+      textNumberOfRewardsGivenType = styles.textNumberOfRewardsGivenTypeSmaller;
+      rewardStyle = styles.textNumberOfRewardsGivenSmaller;
+    }
 
-        
-        <View style={{ height: 30, width: 1 }} />
-        <ActionButton
-          disabled={disabled}
-          text="BUY TICKET"
-          buttonStyle={
-            disabled ? styles.actionButtonDisabled : styles.actionButton
-          }
-          buttonTextStyle={
-            disabled ? styles.actionButtonTextDisabled : styles.actionButtonText
-          }
-          onPress={() => {
-            alert("send data to an application/data is in the console");
-            console.log(data);
-            // remember you can use history.push
-            // to move around
-            //
-          }}
-        />
+    let displayPercent =
+      data.totalTickets > 0
+        ? utils.displayPercent(data.numberOfTickets / data.totalTickets)
+        : "0.00";
+
+    if (displayPercent === "0.00" && data.numberOfTickets > 0) {
+      displayPercent = "< 0.01";
+    }
+
+    return (
+      <View style={{marginLeft:30, backgroundColor:colors.backgroundGrey}}>
+        <View style={styles.container}>
+          <Text style={styles.Auto_Buy_Stake_Monit}>
+            Auto Buy Stake Monitor
+          </Text>
+          <Text style={styles.lastUpdated}>{`Last Updated:${new Date()}`}</Text>
+          <View style={styles.largeMetricBox}>
+            <View style={styles.rewardHolderView}>
+              <Image
+                resizeMode="contain"
+                source={lineGraph}
+                style={styles.lineGraph}
+              />
+              <View style={styles.rewardHolderViewGradient} />
+              <View style={styles.rewardHolderViewText}>
+                <View style={styles.rwcTextViewbox}>
+                  <Text style={styles.labelLineText}>
+                    Current Reward Probablity
+                  </Text>
+                  <View>
+                  <Text style={styles.stakingMonitorActive}>
+                    {displayPercent}
+                    <Text style={styles.stakingMonitorActivePercent}>
+                    %
+                  </Text>
+                  </Text>
+                  </View>
+                  <Text style={styles.simpleLineText}>{`${
+                    data.numberOfTickets
+                  } of ${utils.displayNumber(
+                    data.totalTickets,
+                    data.totalTickets < 1000 ? 0 : 2
+                  )} ${ticketText}`}</Text>
+                </View>
+              </View>
+            </View>
+            <View style={styles.rewardsGivenBox}>
+              <View style={styles.rwcTextViewbox}>
+                <View style={styles.rewardGivenBoxTextHolder}>
+                  <Text style={styles.labelLineText}>Rewards to Date</Text>
+                  <View style={styles.rewardsGivenBoxRewardCount}>
+                    <Text style={rewardStyle}>{rewardNumber}</Text>
+                    <Text style={textNumberOfRewardsGivenType}>FSN</Text>
+                  </View>
+                </View>
+              </View>
+            </View>
+          </View>
+          <Text style={styles.sectionNumberTitle}>Please enter:</Text>
+          <InputField
+            type="text"
+            cbkey="walletAddress"
+            text="Wallet Address:"
+            value={data.walletAddress}
+            min={42}
+            onChange={this.editCallBack}
+            required={true}
+          />
+          <Text style={styles.label}>Balance of FSN</Text>
+          <View style={styles.balanceBox}>
+            <Text>0</Text>
+            <Text>&nbsp;</Text>
+            <Text>FSN</Text>
+          </View>
+          <InputField
+            type="number"
+            cbkey="numberOfTickets"
+            text="Number To Buy"
+            value={data.numberOfTickets}
+            onChange={this.editCallBack}
+            required={true}
+          />
+          <Text style={styles.label}>Tickets @ x FSN Per Ticket, Y gas </Text>
+          <CheckBox
+            text="Auto Buy"
+            on={data.autoBuy}
+            onPress={on => {
+              this.editCallBackFunc("autobuy", on);
+            }}
+          />
+          <CheckBox
+            text="Auto Reinvest Reward"
+            on={data.autoReinvest}
+            onPress={on => {
+              this.editCallBackFunc("autoReinvest", on);
+            }}
+          />
+          <InputField
+            type="date"
+            cbkey="dos"
+            text="Stop Date"
+            value={data.dos}
+            onChange={this.editCallBack}
+            required={false}
+          />
+
+          <View style={{ height: 30, width: 1 }} />
+          <ActionButton
+            disabled={disabled}
+            text="BUY TICKET"
+            buttonStyle={
+              disabled ? styles.actionButtonDisabled : styles.actionButton
+            }
+            buttonTextStyle={
+              disabled
+                ? styles.actionButtonTextDisabled
+                : styles.actionButtonText
+            }
+            onPress={() => {
+              alert("send data to an application/data is in the console");
+              console.log(data);
+              // remember you can use history.push
+              // to move around
+              //
+            }}
+          />
+        </View>
       </View>
     );
   }
@@ -156,16 +230,16 @@ styles = StyleSheet.create({
     flexShrink: 0,
     flexBasis: "auto",
     justifyContent: "flex-start",
-    alignItems: "flex-start",
-    backgroundColor: "transparent",
+    alignItems: "flex-center",
     marginTop: 15,
-    backgroundColor : colors.backgroundGrey
+    marginLeft: 15,
+    backgroundColor: colors.backgroundGrey
   },
   sectionTitle: {
     fontSize: 24,
-    lineHeight : 32,
-    fontFamily : 'Roboto, san-serif',
-    fontWeight : 700,
+    lineHeight: 32,
+    fontFamily: "Roboto, san-serif",
+    fontWeight: 700,
     color: colors.textBlue
   },
   sectionNumberTitle: {
@@ -221,14 +295,154 @@ styles = StyleSheet.create({
     width: 160,
     marginBottom: 5
   },
-  balanceBox : {
-    width : 160,
-    marginBottom : 5,
+  balanceBox: {
+    width: 160,
+    marginBottom: 5,
     flex: 1,
     flexDirection: "row",
     justifyContent: "flex-start",
     flexBasis: "100%"
+  },
+  Auto_Buy_Stake_Monit: {
+    fontSize: 24,
+    lineHeight: 32,
+    fontFamily: constants.fontFamily,
+    fontWeight: constants.boldFont,
+    color: colors.textBlue
+  },
+  lastUpdated: {
+    fontSize: 12,
+    fontFamily: constants.fontFamily,
+    fontWeight: constants.regularFont,
+    color: colors.labelGrey
+  },
+  labelLineText: {
+    fontSize: 12,
+    fontFamily: constants.fontFamily,
+    fontWeight: constants.regularFont,
+    color: colors.labelGrey
+  },
+  simpleLineText: {
+    fontSize: 12,
+    fontFamily: constants.fontFamily,
+    fontWeight: constants.regularFont,
+    color: colors.textBlue
+  },
+  stakingMonitorActive: {
+    fontSize: 32,
+    fontFamily: constants.fontFamily,
+    color: colors.textBlue,
+    fontWeight: constants.boldFont,
+    marginTop: 8,
+    marginBottom: 4
+  },
+  stakingMonitorActivePercent: {
+    fontSize: 32,
+    fontFamily: constants.fontFamily,
+    color: colors.textBlue,
+    fontWeight: constants.boldFont,
+    marginTop: 4,
+    marginBottom: 4,
+    marginLeft : 1
+  },
+  largeMetricBox: {
+    flex: 1,
+    flexBasis: "100%",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 20,
+    width: 620
+  },
+  rewardsGivenBox: {
+    borderColor: colors.orderGrey,
+    borderRadius: 3,
+    backgroundColor: "white",
+    borderWidth: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    width: 200,
+    height: 132,
+    overflow: "visible",
+    boxShadow: "0 2px 0 0 rgba(189, 196, 206, 0.2)"
+  },
+  rewardHolderView: {
+    borderColor: colors.orderGrey,
+    borderRadius: 3,
+    backgroundColor: "white",
+    borderWidth: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    width: 388,
+    height: 132,
+    overflow: "visible",
+    boxShadow: "0 2px 0 0 rgba(189, 196, 206, 0.2)"
+  },
+  rwcTextViewbox: {
+    marginBottom: 16
+  },
+  rewardHolderViewText: {
+    width: 227,
+    marginLeft: 32,
+    flex: 1,
+    flexBasis: "100%",
+    justifyContent: "center"
+  },
+  rewardHolderViewGradient: {
+    backgroundImage:
+      "linear-gradient(to right, #ffffff, rgba(255, 255, 255, 0))",
+    width: 40,
+    marginLeft: 32,
+    position: "absolute",
+    height: 130,
+    left: 138
+  },
+  rewardGivenBoxTextHolder: {
+    marginLeft: 32,
+    paddingTop: 8
+  },
+  textNumberOfRewardsGivenType: {
+    fontSize: 12,
+    fontFamily: constants.fontFamily,
+    color: colors.textBlue,
+    fontWeight: constants.regularFont,
+    marginBottom: 10,
+    marginLeft: 4
+  },
+  textNumberOfRewardsGivenTypeSmaller: {
+    fontSize: 12,
+    fontFamily: constants.fontFamily,
+    color: colors.textBlue,
+    fontWeight: constants.regularFont,
+    marginBottom: 6,
+    marginLeft: 4
+  },
+  textNumberOfRewardsGiven: {
+    fontSize: 48,
+    fontFamily: constants.fontFamily,
+    color: colors.textBlue,
+    fontWeight: constants.boldFont,
+    marginTop: 8
+  },
+  textNumberOfRewardsGivenSmaller: {
+    fontSize: 36,
+    fontFamily: constants.fontFamily,
+    color: colors.textBlue,
+    fontWeight: constants.boldFont,
+    marginTop: 8
+  },
+  rewardsGivenBoxRewardCount: {
+    flexDirection: "row",
+    alignItems: "flex-end",
+    justifyContent: "flex-start",
+    marginTop: -2
+  },
+  lineGraph: {
+    width: 216,
+    height: 126,
+    position: "absolute",
+    left: 170,
+    overflow: "visible"
   }
 });
 
-export default UserInfo;
+export default Status;
