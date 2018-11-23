@@ -459,14 +459,11 @@ styles = StyleSheet.create({
     fontFamily : constants.fontFamily,
     fontWeight : constants.regularFont,
     color : colors.textBlue,
-    alignSelf : 'flex-end'
   },
   orderBorder : {
-      marginTop : 14,
       backgroundColor : colors.orderGrey,
       height : 1,
       width : 556,
-      marginBottom : 14
   },
   rewardsGivenBox: {
     borderColor: colors.orderGrey,
@@ -631,7 +628,8 @@ styles = StyleSheet.create({
     flexBasis : '100%',
     flexDirection : 'row',
     alignItems : 'center',
-    justifyContent : 'space-between'
+    justifyContent : 'space-between',
+    height : 56
   }
 });
 
