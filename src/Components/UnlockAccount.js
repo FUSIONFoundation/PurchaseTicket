@@ -45,11 +45,23 @@ const SelectKeyStoreFile = withSelectFiles("selectFiles")(function({
 export default class UnlockAccount extends Component {
   state = {
     accessViaPrivateKey: false,
-    secureEntry: true
+    secureEntry: true,
+    password : ''
   };
 
   render() {
     let accessViaPrivateKey = this.state.accessViaPrivateKey;
+
+    let btnStyle = styles.unlockWalletButtonDisabled;
+    let enabled = false;
+
+    if ( accessViaPrivateKey && this.state.privateKeyOK ) {
+      btnStyle = styles.unlockWalletButton;
+      enabled = true;
+    } else if ( !accessViaPrivateKey && this.state.keyData && this.state.privateKeyOK ) {
+      btnStyle = styles.unlockWalletButton;
+      enabled = true;
+    }
 
     return (
       <View style={styles.container}>
@@ -63,7 +75,7 @@ export default class UnlockAccount extends Component {
           <View style={{ flexDirection: "row" }}>
             <TouchableOpacity
               onPress={() => {
-                this.setState({ accessViaPrivateKey: !accessViaPrivateKey });
+                this.setState({ keyData : null, privateKeyOK: false, password : null,  accessViaPrivateKey: !accessViaPrivateKey });
               }}
             >
               <View style={{ flexDirection: "row" }}>
@@ -79,7 +91,7 @@ export default class UnlockAccount extends Component {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
-                this.setState({ accessViaPrivateKey: !accessViaPrivateKey });
+                this.setState({ keyData : null, privateKeyOK: false, password : null,  accessViaPrivateKey: !accessViaPrivateKey });
               }}
             >
               <View style={{ flexDirection: "row" }}>
@@ -97,21 +109,24 @@ export default class UnlockAccount extends Component {
               ? this.privateKeyRender()
               : this.keyStoreRender()}
           </View>
-          <TouchableHighlight
+          <TouchableOpacity
+            disabled = {!enabled}
             onPress={() => {
               alert("unlock");
             }}
           >
             <View>
-              <Text style={styles.unlockWalletButton}>Unlock Wallet</Text>
+              <Text style={btnStyle}>Unlock Wallet</Text>
             </View>
-          </TouchableHighlight>
+          </TouchableOpacity>
         </View>
       </View>
     );
   }
 
   keyStoreRender() {
+    let fileSelectColor  = this.state.keyData ? colors.successGreen : colors.white;
+
     return (
       <View key="accek">
         <Text style={styles.textHowToAccess}>
@@ -128,31 +143,31 @@ export default class UnlockAccount extends Component {
                 reader.onload = (event) => {
                   let data = event.target.result;
                   if ( !data ) {
-                    this.setState( {error:'Unable to read file'})
+                    this.setState( {error:'Unable to read file', keyData : null})
                   }
                   try {
                     let obj = JSON.parse( data );
                     console.log(obj);
                     if ( !obj.address ) {
-                      this.setState( {error:'Invalid key store file '})
+                      this.setState( {error:'Invalid key store file ', keyData : null})
                     } else {
                       this.setState( {error: null , keyData : obj } );
                       // console.log( web3.eth.accounts.decrypt( {crypto:obj.Crypto, version:obj.version}, "password") )
                     }
                   } catch (e) {
-                    this.setState( {error:'Unable to read file'})
+                    this.setState( {error:'Unable to read file', keyData : null })
                   }
                   console.log(event.target.result);
                 };
                 reader.onerror = (event) => {
-                  this.setState( {error:'Unable to read file'})
+                  this.setState( {error:'Unable to read file', keyData : null})
                 }
                 reader.readAsText(files[0]);
               }
             })
           }}
         >
-          <View style={styles.selectWalletBox}>
+          <View style={[styles.selectWalletBox, {backgroundColor:fileSelectColor}]}>
             <SelectKeyStoreFile />
           </View>
         </TouchableOpacity>
@@ -168,8 +183,12 @@ export default class UnlockAccount extends Component {
             autoComplete="current-password"
             secureTextEntry={this.state.secureEntry}
             placeholderTextColor={colors.orderGrey}
-            maxLength={66}
+            maxLength={128}
             autoCorrect={false}
+            value = {this.state.password}
+            onChangeText={ (val)=> {
+                this.setState( { password : val, privateKeyOK : val && val.length })
+            }}
           />
           <View
             style={{ width: 1, height: 36, backgroundColor: colors.orderGrey }}
@@ -372,6 +391,18 @@ var styles = StyleSheet.create({
     fontFamily: constants.fontFamily,
     fontWeight: constants.regularFont,
     marginBottom : 8
+  },
+  unlockWalletButtonDisabled : {
+    fontSize: 16,
+    width: 556,
+    borderRadius: 3,
+    fontFamily: constants.fontFamily,
+    fontWeight: constants.regularFont,
+    color: colors.white,
+    backgroundColor: colors.disabledBlue,
+    textAlign: "center",
+    padding: 12,
+    marginTop: 20
   },
   unlockWalletButton: {
     fontSize: 16,
