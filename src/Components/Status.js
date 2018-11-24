@@ -17,61 +17,20 @@ import CheckBox from "./Input/CheckBox.js";
 import colors from "./colors";
 import constants from "./constants";
 import utils from "../utils";
-import moment from 'moment'
+import moment from "moment";
 import { connectableObservableDescriptor } from "rxjs/internal/observable/ConnectableObservable";
+import currentDataState from "../api/currentDataState";
 
-var lineGraph = require("../images/lineGraph.svg")
+var lineGraph = require("../images/lineGraph.svg");
 
 var styles;
 
 class Status extends Component {
   // this is what i use for production
-  state = {
-    data: {
-      autoBuyOn: true,
-      walletAddress: "0x",
-      balanceOfFSN: 0,
-      numberOfTickets: 10,
-      autoBuy: false,
-      autoReinvestReward: false,
-      probablity: 0.23,
-      totalTickets: 124444450,
-      rewardsToDate: 9000,
-      lastUpdateTime : new Date(),
-      walletAddress : "0x3f99Fa1d008a658A0F51D94570bCEa2fd8dBDd3B",
-      totalAwards : 0,
-      ticketPrice  : 21,
-      walletBalance : 140122.4333,
-      autoBuyStopTime : moment( "20190214", "YYYYMMDD"),
-      lastTicketExpires : moment(  "20190101", "YYYYMMDD")
-    }
-  };
-
-  // this is my test state
-  // name state above old state, and name this state
-  oldstate = {
-    data: {
-      walletAddress: "0x",
-      balanceOfFSN: 0,
-      numberOfTickets: 1,
-      autoBuy: false,
-      autoReinvest: true,
-      totalTickets: 1250,
-      rewardsToDate: 52
-    }
-  };
+  state = {};
 
   constructor(props) {
     super();
-    this.editCallBack = this.editCallBackFunc.bind(this);
-  }
-
-  editCallBackFunc(key, value) {
-    let newData = Object.assign(this.state.data, {});
-
-    newData[key] = value;
-
-    this.setState({ data: newData });
   }
 
   totalStake(data) {
@@ -80,7 +39,7 @@ class Status extends Component {
 
   render() {
     let disabled = false;
-    let data = this.state.data;
+    let data = currentDataState.data;
 
     //lets run through all the data and see if we are ready
     for (let key in data) {
@@ -119,9 +78,26 @@ class Status extends Component {
       displayPercent = "< 0.01";
     }
 
-    let dt = new moment( data.lastUpdateTime );
+    let dt = new moment(data.lastUpdateTime);
 
-    let dtDisplay = dt.format( "LLLL z" );
+    let dtDisplay = dt.format("LLLL z");
+
+    if (!data.accountUnlocked) {
+      return (
+        <View style={{padding:15}}>
+          <Text style={styles.Auto_Buy_Stake_Monit}>
+            You Account Must be unlocked to use this screen.
+          </Text>
+          <TouchableHighlight style={{width:100}}
+                onPress={() => {
+                  history.push('/UnlockAccount')
+                }}
+              >
+              <Text style={styles.activeButton}>Select An Account</Text>
+              </TouchableHighlight>
+        </View>
+      );
+    }
 
     return (
       <View style={{ marginLeft: 30, backgroundColor: colors.backgroundGrey }}>
@@ -134,7 +110,7 @@ class Status extends Component {
               <Text>↻</Text> {`Last Updated: ${dtDisplay}`}
             </Text>
           </TouchableHighlight>
-          <View style={styles.walletBox}> 
+          <View style={styles.walletBox}>
             <Text style={styles.walletLabel}>Wallet Address</Text>
             <Text style={styles.walletLabelAddress}>{data.walletAddress}</Text>
           </View>
@@ -179,83 +155,128 @@ class Status extends Component {
             </View>
           </View>
           <View style={styles.stakeDetailBox}>
-                <View style={styles.stakeDetailRow}>
-                    <Text style={styles.stakeDetailText}>Stake Details</Text>
-                    <TouchableHighlight onPress={()=>{alert("do something")}}>
-                       {this.handleStakeButtons(data)}
-                    </TouchableHighlight>
-                </View>
-                <View style={{height:20}}/>
-                <View style={styles.stakeDetailRow}>
-                    <Text style={styles.labelLineText}>Staking Status</Text>
-                    { data.autoBuyOn || data.numberOfTickets ?
-                         ( <Text  key="ab1" style={styles.activeButton}>Active</Text>) : 
-                        ( <Text  key="ab1"  style={styles.inActiveButton}>Inactive</Text> ) 
-                        }
-                </View>
-                <View style={styles.orderBorder}/>
-                <View style={styles.stakeDetailRow}>
-                    <Text style={styles.labelLineText}>Active Tickets</Text>
-                    <View>
-                      <Text style={styles.stakeTextVal}>{data.numberOfTickets}<Text  style={styles.stakeTextFSN}>FSN</Text></Text>
-                      {data.numberOfTickets && (
-                        <Text style={styles.viewTicketDetails}>View Ticket Details</Text>
-                      )}
-                    </View>
-                </View>
-                <View style={styles.orderBorder}/>
-                <View style={styles.stakeDetailRow}>
-                    <Text style={styles.labelLineText}>Rewards to Date</Text>
-                    <View>
-                      <Text style={styles.stakeTextVal}>{data.rewardsToDate.toFixed(2)}<Text  style={styles.stakeTextFSN}>FSN</Text></Text>
-                    </View>
-                </View>
-                <View style={styles.orderBorder}/>
-                <View style={styles.stakeDetailRow}>
-                    <Text style={styles.labelLineText}>FSN Staked</Text>
-                    <View>
-                      <Text style={styles.stakeTextVal}>{this.totalStake(data)}<Text  style={styles.stakeTextFSN}>FSN</Text></Text>
-                    </View>
-                </View>
-                <View style={styles.orderBorder}/>
-                <View style={styles.stakeDetailRow}>
-                    <Text style={styles.labelLineText}>FSN Available</Text>
-                    <View>
-                      <Text style={styles.stakeTextVal}>{data.walletBalance}<Text  style={styles.stakeTextFSN}>FSN</Text></Text>
-                    </View>
-                </View>
-                <View style={styles.orderBorder}/>
-                <View style={styles.stakeDetailRow}>
-                    <Text style={styles.labelLineText}>Total FSN</Text>
-                    <View>
-                      <Text style={styles.stakeTextVal}>{data.walletBalance+this.totalStake(data)}<Text  style={styles.stakeTextFSN}>FSN</Text></Text>
-                    </View>
-                </View>
-                <View style={styles.orderBorder}/>
-                {data.autoBuyOn && (
-                  <View key="aaa">
-                      <View style={styles.stakeDetailRow}>
-                        <Text style={styles.labelLineText}>Auto Buy Tickets</Text>
-                        <Text  key="ab1" style={styles.activeButton}>On</Text>
-                    </View>
-                      <View style={styles.orderBorder}/>
-                      <View style={styles.stakeDetailRow}>
-                        <Text style={styles.labelLineText}>Auto Reinvest Reward</Text>
-                        <Text  key="ab1" style={data.autoReinvestReward?styles.activeButton:styles.inActiveButton}>{data.autoReinvestReward?"On":"Off"}</Text>
-                    </View>
-                      <View style={styles.orderBorder}/>
-                      <View style={styles.stakeDetailRow}>
-                        <Text style={styles.labelLineText}>Auto Buy Stop Time</Text>
-                        <Text style={styles.dateValue}>{data.autoBuyStopTime?data.autoBuyStopTime.format('lll'):"Never"}</Text>
-                    </View>
-                    <View style={styles.orderBorder}/>
-                    <View style={styles.stakeDetailRow}>
-                        <Text style={styles.labelLineText}>Last Ticket Expires</Text>
-                        <Text style={styles.dateValue}>{data.lastTicketExpires?data.lastTicketExpires.format('lll'):"----"}</Text>
-                    </View>
-                    <View style={styles.orderBorder}/>
-                  </View>
+            <View style={styles.stakeDetailRow}>
+              <Text style={styles.stakeDetailText}>Stake Details</Text>
+              <TouchableHighlight
+                onPress={() => {
+                  alert("do something");
+                }}
+              >
+                {this.handleStakeButtons(data)}
+              </TouchableHighlight>
+            </View>
+            <View style={{ height: 20 }} />
+            <View style={styles.stakeDetailRow}>
+              <Text style={styles.labelLineText}>Staking Status</Text>
+              {data.autoBuyOn || data.numberOfTickets ? (
+                <Text key="ab1" style={styles.activeButton}>
+                  Active
+                </Text>
+              ) : (
+                <Text key="ab1" style={styles.inActiveButton}>
+                  Inactive
+                </Text>
+              )}
+            </View>
+            <View style={styles.orderBorder} />
+            <View style={styles.stakeDetailRow}>
+              <Text style={styles.labelLineText}>Active Tickets</Text>
+              <View>
+                <Text style={styles.stakeTextVal}>
+                  {data.numberOfTickets}
+                  <Text style={styles.stakeTextFSN}>FSN</Text>
+                </Text>
+                {data.numberOfTickets > 0 && (
+                  <Text style={styles.viewTicketDetails}>
+                    View Ticket Details
+                  </Text>
                 )}
+              </View>
+            </View>
+            <View style={styles.orderBorder} />
+            <View style={styles.stakeDetailRow}>
+              <Text style={styles.labelLineText}>Rewards to Date</Text>
+              <View>
+                <Text style={styles.stakeTextVal}>
+                  {data.rewardsToDate.toFixed(2)}
+                  <Text style={styles.stakeTextFSN}>FSN</Text>
+                </Text>
+              </View>
+            </View>
+            <View style={styles.orderBorder} />
+            <View style={styles.stakeDetailRow}>
+              <Text style={styles.labelLineText}>FSN Staked</Text>
+              <View>
+                <Text style={styles.stakeTextVal}>
+                  {this.totalStake(data)}
+                  <Text style={styles.stakeTextFSN}>FSN</Text>
+                </Text>
+              </View>
+            </View>
+            <View style={styles.orderBorder} />
+            <View style={styles.stakeDetailRow}>
+              <Text style={styles.labelLineText}>FSN Available</Text>
+              <View>
+                <Text style={styles.stakeTextVal}>
+                  {data.walletBalance}
+                  <Text style={styles.stakeTextFSN}>FSN</Text>
+                </Text>
+              </View>
+            </View>
+            <View style={styles.orderBorder} />
+            <View style={styles.stakeDetailRow}>
+              <Text style={styles.labelLineText}>Total FSN</Text>
+              <View>
+                <Text style={styles.stakeTextVal}>
+                  {data.walletBalance + this.totalStake(data)}
+                  <Text style={styles.stakeTextFSN}>FSN</Text>
+                </Text>
+              </View>
+            </View>
+            <View style={styles.orderBorder} />
+            {data.autoBuyOn && (
+              <View key="aaa">
+                <View style={styles.stakeDetailRow}>
+                  <Text style={styles.labelLineText}>Auto Buy Tickets</Text>
+                  <Text key="ab1" style={styles.activeButton}>
+                    On
+                  </Text>
+                </View>
+                <View style={styles.orderBorder} />
+                <View style={styles.stakeDetailRow}>
+                  <Text style={styles.labelLineText}>Auto Reinvest Reward</Text>
+                  <Text
+                    key="ab1"
+                    style={
+                      data.autoReinvestReward
+                        ? styles.activeButton
+                        : styles.inActiveButton
+                    }
+                  >
+                    {data.autoReinvestReward ? "On" : "Off"}
+                  </Text>
+                </View>
+                <View style={styles.orderBorder} />
+                <View style={styles.stakeDetailRow}>
+                  <Text style={styles.labelLineText}>Auto Buy Stop Time</Text>
+                  <Text style={styles.dateValue}>
+                    {data.autoBuyStopTime
+                      ? data.autoBuyStopTime.format("lll")
+                      : "Never"}
+                  </Text>
+                </View>
+                <View style={styles.orderBorder} />
+                <View style={styles.stakeDetailRow}>
+                  <Text style={styles.labelLineText}>Last Ticket Expires</Text>
+                  <Text style={styles.dateValue}>
+                    {data.lastTicketExpires
+                      ? data.lastTicketExpires.format("lll")
+                      : "----"}
+                  </Text>
+                </View>
+                <View style={styles.orderBorder} />
+              </View>
+            )}
           </View>
         </View>
       </View>
@@ -263,16 +284,41 @@ class Status extends Component {
   }
 
   handleStakeButtons(data) {
-    if ( !data.autoBuyOn &&  data.numberOfTickets === 0 ) {
-      return ( <Text key="ab1" style={styles.stakesPurchaseTicketButtton}>Purchase Staking Tickets</Text>
-      ) ;
-
+    if (!data.autoBuyOn && data.numberOfTickets === 0) {
+      return (
+        <Text key="ab1" style={styles.stakesPurchaseTicketButtton}>
+          Purchase Staking Tickets
+        </Text>
+      );
     }
-    if (  data.autoBuyOn  ) {
-      return (  <View style={{borderRadius:3,borderWidth:1,borderColor:colors.orderGrey}}>
-      <Text  key="ab1" style={styles.stopAutoBuyButton}>Stop Auto Buy</Text></View>) ;
+    if (data.autoBuyOn) {
+      return (
+        <View
+          style={{
+            borderRadius: 3,
+            borderWidth: 1,
+            borderColor: colors.orderGrey
+          }}
+        >
+          <Text key="ab1" style={styles.stopAutoBuyButton}>
+            Stop Auto Buy
+          </Text>
+        </View>
+      );
     } else {
-      return ( <View style={{borderRadius:3,borderWidth:1,borderColor:colors.orderGrey}}><Text  key="ab1" style={styles.startAutoBuyButton}>Start Auto Buy</Text></View>) ;
+      return (
+        <View
+          style={{
+            borderRadius: 3,
+            borderWidth: 1,
+            borderColor: colors.orderGrey
+          }}
+        >
+          <Text key="ab1" style={styles.startAutoBuyButton}>
+            Start Auto Buy
+          </Text>
+        </View>
+      );
     }
   }
 }
@@ -363,7 +409,7 @@ styles = StyleSheet.create({
     fontFamily: constants.fontFamily,
     fontWeight: constants.boldFont,
     color: colors.textBlue,
-    marginBottom : 4
+    marginBottom: 4
   },
   lastUpdated: {
     fontSize: 12,
@@ -383,33 +429,33 @@ styles = StyleSheet.create({
     fontWeight: constants.regularFont,
     color: colors.textBlue
   },
-  activeButton : {
-    color : colors.textGreen,
-    fontSize : 14,
-    backgroundColor : colors.lightSuccessGreen,
-    fontFamily : constants.fontFamily,
-    padding : 8,
-    fontWeight : constants.regularFont
+  activeButton: {
+    color: colors.textGreen,
+    fontSize: 14,
+    backgroundColor: colors.lightSuccessGreen,
+    fontFamily: constants.fontFamily,
+    padding: 8,
+    fontWeight: constants.regularFont
   },
-  stopAutoBuyButton : {
-     padding : 8,
-     fontSize : 14,
-     color : colors.errorRed,
-     fontWeight : constants.regularFont,
+  stopAutoBuyButton: {
+    padding: 8,
+    fontSize: 14,
+    color: colors.errorRed,
+    fontWeight: constants.regularFont
   },
-  startAutoBuyButton : {
-    color : colors.textBlue,
-    padding : 8,
-    fontSize : 14,
-    fontWeight : constants.regularFont,
- },
-  inActiveButton : {
-    color : colors.textBlue,
-    fontSize : 14,
-    backgroundColor : colors.backgroundGrey,
-    fontFamily : constants.fontFamily,
-    padding : 8,
-    fontWeight : constants.regularFont
+  startAutoBuyButton: {
+    color: colors.textBlue,
+    padding: 8,
+    fontSize: 14,
+    fontWeight: constants.regularFont
+  },
+  inActiveButton: {
+    color: colors.textBlue,
+    fontSize: 14,
+    backgroundColor: colors.backgroundGrey,
+    fontFamily: constants.fontFamily,
+    padding: 8,
+    fontWeight: constants.regularFont
   },
   stakingMonitorActive: {
     fontSize: 32,
@@ -436,34 +482,34 @@ styles = StyleSheet.create({
     marginTop: 20,
     width: 620
   },
-  stakeTextFSN : {
-    fontFamily : constants.fontFamily,
-    fontSize : 12,
-    fontWeight : constants.regularFont,
-    marginLeft : 4
+  stakeTextFSN: {
+    fontFamily: constants.fontFamily,
+    fontSize: 12,
+    fontWeight: constants.regularFont,
+    marginLeft: 4
   },
-  viewTicketDetails : {
-    fontFamily : constants.fontFamily,
-    fontSize : 12,
-    fontWeight : constants.regularFont,
-    color : colors.linkBlue
+  viewTicketDetails: {
+    fontFamily: constants.fontFamily,
+    fontSize: 12,
+    fontWeight: constants.regularFont,
+    color: colors.linkBlue
   },
-  stakeTextVal : {
-    fontSize : 18,
-    fontFamily : constants.fontFamily,
-    fontWeight : constants.boldFont,
-    alignSelf : 'flex-end'
+  stakeTextVal: {
+    fontSize: 18,
+    fontFamily: constants.fontFamily,
+    fontWeight: constants.boldFont,
+    alignSelf: "flex-end"
   },
-  dateValue : {
-    fontSize : 14,
-    fontFamily : constants.fontFamily,
-    fontWeight : constants.regularFont,
-    color : colors.textBlue,
+  dateValue: {
+    fontSize: 14,
+    fontFamily: constants.fontFamily,
+    fontWeight: constants.regularFont,
+    color: colors.textBlue
   },
-  orderBorder : {
-      backgroundColor : colors.orderGrey,
-      height : 1,
-      width : 556,
+  orderBorder: {
+    backgroundColor: colors.orderGrey,
+    height: 1,
+    width: 556
   },
   rewardsGivenBox: {
     borderColor: colors.orderGrey,
@@ -477,16 +523,16 @@ styles = StyleSheet.create({
     overflow: "visible",
     boxShadow: "0 2px 0 0 rgba(189, 196, 206, 0.2)"
   },
-  stakeDetailBox : {
+  stakeDetailBox: {
     borderColor: colors.orderGrey,
     borderRadius: 3,
     backgroundColor: "white",
     borderWidth: 1,
     width: 620,
-    padding : 32,
-    flex : 1,
-    flexBasis : '100%',
-    marginTop : 24,
+    padding: 32,
+    flex: 1,
+    flexBasis: "100%",
+    marginTop: 24,
     overflow: "visible",
     boxShadow: "0 2px 0 0 rgba(189, 196, 206, 0.2)"
   },
@@ -568,68 +614,68 @@ styles = StyleSheet.create({
     left: 170,
     overflow: "visible"
   },
-  walletBox : {
-    backgroundColor : colors.tagGrey,
+  walletBox: {
+    backgroundColor: colors.tagGrey,
     borderRadius: 3,
-    width : 620,
-    height : 48,
-    marginTop : 20,
-    flex : 1,
-    flexBasis : '100%',
-    flexDirection : 'row',
-    alignItems : 'center',
-    justifyContent : 'space-between'
+    width: 620,
+    height: 48,
+    marginTop: 20,
+    flex: 1,
+    flexBasis: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between"
   },
-  walletLabel : {
-    fontSize : 12,
-    fontFamily : constants.fontFamily,
-    fontWeight : constants.regularFont,
-    marginLeft : 32,
-    color : colors.labelGrey
+  walletLabel: {
+    fontSize: 12,
+    fontFamily: constants.fontFamily,
+    fontWeight: constants.regularFont,
+    marginLeft: 32,
+    color: colors.labelGrey
   },
-  walletLabelAddress : {
-    fontSize : 14,
-    fontFamily : constants.fontFamily,
-    fontWeight : constants.regularFont,
-    marginRight : 32,
-    color : colors.textBlue
+  walletLabelAddress: {
+    fontSize: 14,
+    fontFamily: constants.fontFamily,
+    fontWeight: constants.regularFont,
+    marginRight: 32,
+    color: colors.textBlue
   },
-  stakeDetailText : {
-    color : colors.textBlue,
-    fontSize : 18,
-    fontFamily : constants.fontFamily,
-    fontWeight : constants.boldFont
+  stakeDetailText: {
+    color: colors.textBlue,
+    fontSize: 18,
+    fontFamily: constants.fontFamily,
+    fontWeight: constants.boldFont
   },
-  stakesPurchaseTicketButtton : {
-    borderRadius : 3,
-    padding : 8,
-    backgroundColor : colors.primaryBlue,
-    color : colors.white,
-    fontSize : 14,
-    fontFamily : constants.fontFamily,
-    fontWeight : constants.mediumFont
+  stakesPurchaseTicketButtton: {
+    borderRadius: 3,
+    padding: 8,
+    backgroundColor: colors.primaryBlue,
+    color: colors.white,
+    fontSize: 14,
+    fontFamily: constants.fontFamily,
+    fontWeight: constants.mediumFont
   },
-  stakesStopAutoBuy : {
-      borderColor : colors.backgroundGrey,
-      borderWidth : 1,
-      borderRadius : 3,
-      padding : 8,
-      backgroundColor : colors.white,
+  stakesStopAutoBuy: {
+    borderColor: colors.backgroundGrey,
+    borderWidth: 1,
+    borderRadius: 3,
+    padding: 8,
+    backgroundColor: colors.white
   },
-  stakesStopAutoBuyText : {
-    backgroundColor : colors.white,
-    color : colors.errorRed,
-    fontSize : 14,
-    fontFamily : constants.fontFamily,
-    fontWeight : constants.mediumFont
-},
-  stakeDetailRow : {
-    flex : 1,
-    flexBasis : '100%',
-    flexDirection : 'row',
-    alignItems : 'center',
-    justifyContent : 'space-between',
-    height : 56
+  stakesStopAutoBuyText: {
+    backgroundColor: colors.white,
+    color: colors.errorRed,
+    fontSize: 14,
+    fontFamily: constants.fontFamily,
+    fontWeight: constants.mediumFont
+  },
+  stakeDetailRow: {
+    flex: 1,
+    flexBasis: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    height: 56
   }
 });
 
