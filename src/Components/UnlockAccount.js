@@ -4,7 +4,8 @@ import {
   Text,
   Image,
   StyleSheet,
-  TouchableHighlight
+  TouchableHighlight,
+  TouchableOpacity
 } from "react-native";
 import ActionButton from "./Input/ActionButton.js";
 import "../App.css";
@@ -20,11 +21,23 @@ import utils from "../utils";
 import moment from "moment";
 import { connectableObservableDescriptor } from "rxjs/internal/observable/ConnectableObservable";
 import currentDataState from "../api/currentDataState";
+import withSelectFiles from 'react-select-files'
+
 
 var styles;
 
 let radioOn = require("../images/radio_on.svg");
 let radioOff = require("../images/radio_off.svg");
+
+var glb_selectFiles;
+
+const MyComponent1 = withSelectFiles('selectFiles')(
+  function ({selectFiles}) {
+    glb_selectFiles = selectFiles;
+    return <Text>Select a Wallet File</Text>
+  }
+)
+
 
 export default class UnlockAccount extends Component {
   state = {
@@ -44,7 +57,7 @@ export default class UnlockAccount extends Component {
             How would you like to access your wallet?
           </Text>
           <View style={{ flexDirection: "row" }}>
-            <TouchableHighlight
+            <TouchableOpacity
               onPress={() => {
                 this.setState({ accessViaPrivateKey: !accessViaPrivateKey });
               }}
@@ -59,8 +72,8 @@ export default class UnlockAccount extends Component {
                   Keystore / JSON File
                 </Text>
               </View>
-            </TouchableHighlight>
-            <TouchableHighlight
+            </TouchableOpacity>
+            <TouchableOpacity
               onPress={() => {
                 this.setState({ accessViaPrivateKey: !accessViaPrivateKey });
               }}
@@ -73,20 +86,47 @@ export default class UnlockAccount extends Component {
                 />
                 <Text style={styles.radioSelectionText}>Private Key</Text>
               </View>
-            </TouchableHighlight>
+            </TouchableOpacity>
           </View>
-          <View style={styles.selectionBox} >
+          <View style={styles.selectionBox}>
+            {accessViaPrivateKey
+              ? this.privateKeyRender()
+              : this.keyStoreRender()}
           </View>
           <TouchableHighlight
-            onPress=
-            {() => {
-              alert("unlock")
-            }}>
+            onPress={() => {
+              alert("unlock");
+            }}
+          >
             <View>
-            <Text style={styles.unlockWalletButton}>Unlock Wallet</Text>
+              <Text style={styles.unlockWalletButton}>Unlock Wallet</Text>
             </View>
           </TouchableHighlight>
         </View>
+      </View>
+    );
+  }
+
+
+  keyStoreRender() {
+    return (
+      <View key="accek">
+        <Text style={styles.textHowToAccess}>Select your wallet file and enter your password. Please ensure that the above URL is correct before loading wallets or entering passwords.</Text>
+        <TouchableOpacity onPress={()=>{
+          glb_selectFiles().then(files => console.log(files))
+        }}>
+            <MyComponent1/>
+        </TouchableOpacity>
+        <Text style={styles.labelText}>Enter Your Password</Text>
+      </View>
+    );
+  }
+
+  privateKeyRender() {
+    return (
+      <View key="prik">
+        <Text style={styles.textHowToAccess}>Enter your private keys. Please ensure that the above URL is correct before loading wallets or entering passwords.</Text>
+        <Text style={styles.labelText}>Enter Your Private Key</Text>
       </View>
     );
   }
@@ -161,6 +201,12 @@ var styles = StyleSheet.create({
     paddingLeft: 20,
     paddingRight: 20,
     marginTop: 20
+  },
+  labelText : {
+    fontSize : 12,
+    color : colors.labelGrey,
+    fontFamily : constants.fontFamily,
+    fontWeight : constants.regularFont
   },
   unlockWalletButton: {
     fontSize: 16,
