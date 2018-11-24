@@ -229,13 +229,23 @@ export default class UnlockAccount extends Component {
         <View style={styles.passwordInputBox}>
           <TextInput
             style={styles.passwordInput}
-            placeholder="Private Key"
+            placeholder="Private Key - starts with 0x"
             autoCorrect={false}
             autoComplete="current-password"
             secureTextEntry={this.state.secureEntry}
             placeholderTextColor={colors.orderGrey}
             maxLength={66}
             autoCorrect={false}
+            value={this.state.password}
+            onChangeText={(text)=>{
+              if ( text.length < 66 ) {
+                this.setState( { privateKeyOK : false , password : text })
+              } else {
+                this.setState( { privateKeyOK : 
+                  web3.utils.isHexStrict( text )
+                  , password : text })
+              }
+            }}
           />
           <View
             style={{ width: 1, height: 36, backgroundColor: colors.orderGrey }}
