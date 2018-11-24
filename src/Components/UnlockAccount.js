@@ -30,6 +30,7 @@ var styles;
 
 let radioOn = require("../images/radioOn.svg");
 let radioOff = require("../images/radioOff.svg");
+let selectFileTitle;
 
 var glb_selectFiles;
 
@@ -37,8 +38,14 @@ const SelectKeyStoreFile = withSelectFiles("selectFiles")(function({
   selectFiles
 }) {
   glb_selectFiles = selectFiles;
+  let check;
+  if ( selectFileTitle === "Wallet File Valid") {
+    check = <i key ="c11" class="fa fa-check-circle" style={{color:colors.successGreen,marginRight:4}}/>
+  }
   return (
-    <Text style={styles.selectWalletFileText}>Select a Wallet File...</Text>
+    <Text key={selectFileTitle} style={styles.selectWalletFileText}>
+    {check}
+    {selectFileTitle}</Text>
   );
 });
 
@@ -125,7 +132,9 @@ export default class UnlockAccount extends Component {
   }
 
   keyStoreRender() {
-    let fileSelectColor  = this.state.keyData ? colors.successGreen : colors.white;
+    let fileSelectColor = colors.white;
+
+    selectFileTitle = this.state.keyData ?  "Wallet File Valid"  : "Select a Wallet File..."
 
     return (
       <View key="accek">
@@ -361,12 +370,12 @@ var styles = StyleSheet.create({
     marginTop: 4
   },
   passwordInput: {
-    fontSize: 14,
+    fontSize: 13,
     color: colors.textBlue,
     fontFamily: constants.fontFamily,
     fontWeight: constants.regularFont,
     width: 482,
-    paddingLeft: 8
+    paddingLeft: 6
   },
   selectionBox: {
     paddng: 4,
