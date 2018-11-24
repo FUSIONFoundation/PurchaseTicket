@@ -23,7 +23,7 @@ import moment from "moment";
 import { connectableObservableDescriptor } from "rxjs/internal/observable/ConnectableObservable";
 import currentDataState from "../api/currentDataState";
 import withSelectFiles from "react-select-files";
-import 'font-awesome/css/font-awesome.min.css';
+import "font-awesome/css/font-awesome.min.css";
 
 var styles;
 
@@ -32,15 +32,19 @@ let radioOff = require("../images/radioOff.svg");
 
 var glb_selectFiles;
 
-const SelectKeyStoreFile = withSelectFiles("selectFiles")(function({ selectFiles }) {
+const SelectKeyStoreFile = withSelectFiles("selectFiles")(function({
+  selectFiles
+}) {
   glb_selectFiles = selectFiles;
-  return <Text style={styles.selectWalletFileText}>Select a Wallet File...</Text>;
+  return (
+    <Text style={styles.selectWalletFileText}>Select a Wallet File...</Text>
+  );
 });
 
 export default class UnlockAccount extends Component {
   state = {
     accessViaPrivateKey: false,
-    secureEntry : true
+    secureEntry: true
   };
 
   render() {
@@ -124,15 +128,38 @@ export default class UnlockAccount extends Component {
         </TouchableOpacity>
         <Text style={styles.labelText}>Enter Your Password</Text>
         <View style={styles.passwordInputBox}>
-            <TextInput style={styles.passwordInput} 
+          <TextInput
+            style={styles.passwordInput}
             placeholder="Password"
             autoCorrect={false}
             autoComplete="current-password"
             secureTextEntry={this.state.secureEntry}
             placeholderTextColor={colors.orderGrey}
-            maxLength={64} autoCorrect={false}/>
-            <i class="fa fa-eye"></i>
-            <i class="fa fa-eye-slash"></i>
+            maxLength={64}
+            autoCorrect={false}
+          />
+          <View
+            style={{ width: 1, height: 36, backgroundColor: colors.orderGrey }}
+          />
+          <TouchableOpacity onPress={() => {
+            this.setState( { secureEntry : !this.state.secureEntry })
+          }}>
+            <View
+              style={{
+                backgroundColor: colors.backgroundGrey,
+                width: 32,
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center"
+              }}
+            >
+              {this.state.secureEntry ? (
+                <i class="fa fa-eye" />
+              ) : (
+                <i class="fa fa-eye-slash" />
+              )}
+            </View>
+          </TouchableOpacity>
         </View>
       </View>
     );
@@ -208,40 +235,40 @@ var styles = StyleSheet.create({
     paddingLeft: 32,
     paddingRight: 32
   },
-  selectWalletBox :{
+  selectWalletBox: {
     borderColor: colors.orderGrey,
     borderRadius: 4,
     backgroundColor: "white",
     borderWidth: 1,
     alignItems: "flex-start",
     width: 516,
-    height : 48,
+    height: 48,
     overflow: "visible",
     //boxShadow: "0 2px 0 0 rgba(189, 196, 206, 0.2)",
-    flex : 1,
-    flexBasis : '100%',
-    justifyContent : 'center',
-    alignItems : 'center',
-    marginBottom : 16
+    flex: 1,
+    flexBasis: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 16
   },
-  passwordInputBox : {
+  passwordInputBox: {
     borderColor: colors.orderGrey,
     borderRadius: 3,
     backgroundColor: "white",
     borderWidth: 1,
-    flexDirection : 'row',
-    justifyContent : 'flex-end',
-    height : 36,
-    width : 512,
-    marginTop : 4
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    height: 36,
+    width: 512,
+    marginTop: 4
   },
-  passwordInput : {
+  passwordInput: {
     fontSize: 14,
     color: colors.textBlue,
     fontFamily: constants.fontFamily,
     fontWeight: constants.regularFont,
-    width : 482,
-    paddingLeft : 8
+    width: 482,
+    paddingLeft: 8
   },
   selectionBox: {
     paddng: 4,
