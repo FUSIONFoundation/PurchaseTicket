@@ -82,7 +82,7 @@ export default class UnlockAccount extends Component {
           <View style={{ flexDirection: "row" }}>
             <TouchableOpacity
               onPress={() => {
-                this.setState({ keyData : null, privateKeyOK: false, password : null,  accessViaPrivateKey: !accessViaPrivateKey });
+                this.setState({ unlockError : false, keyData : null, privateKeyOK: false, password : null,  accessViaPrivateKey: !accessViaPrivateKey });
               }}
             >
               <View style={{ flexDirection: "row" }}>
@@ -98,7 +98,7 @@ export default class UnlockAccount extends Component {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
-                this.setState({ keyData : null, privateKeyOK: false, password : null,  accessViaPrivateKey: !accessViaPrivateKey });
+                this.setState({ unlockError : false,  keyData : null, privateKeyOK: false, password : null,  accessViaPrivateKey: !accessViaPrivateKey });
               }}
             >
               <View style={{ flexDirection: "row" }}>
@@ -119,7 +119,19 @@ export default class UnlockAccount extends Component {
           <TouchableOpacity
             disabled = {!enabled}
             onPress={() => {
-              alert("unlock");
+              if ( !this.state.accessViaPrivateKey ) {
+                    try {
+                      let obj = this.state.keyData
+                      currentDataState.data.accountUnlocked = true
+                      currentDataState.data.signInfo = web3.eth.accounts.decrypt( {crypto:obj.Crypto, version:obj.version}, this.state.password )
+                    } catch (e) {
+                      this.setState( { unlockError : true } );
+                    }
+              } else {
+                currentDataState.data.accountUnlocked = true
+                currentDataState.data.signInfo = web3.eth.accounts.privateKeyToAccount(this.state.password);
+              }
+              history.push('/Status')
             }}
           >
             <View>
@@ -133,6 +145,8 @@ export default class UnlockAccount extends Component {
 
   keyStoreRender() {
     let fileSelectColor = colors.white;
+
+    let borderColor = this.state.unlockError ? colors.errorRed : colors.orderGrey;
 
     selectFileTitle = this.state.keyData ?  "Wallet File Valid"  : "Select a Wallet File..."
 
@@ -184,7 +198,7 @@ export default class UnlockAccount extends Component {
           <Text style={styles.errorText}>{this.state.error}</Text>
         )}
         <Text style={styles.labelText}>Enter Your Password</Text>
-        <View style={styles.passwordInputBox}>
+        <View style={[styles.passwordInputBox,{borderColor}]}>
           <TextInput
             style={styles.passwordInput}
             placeholder="Password"
@@ -196,7 +210,7 @@ export default class UnlockAccount extends Component {
             autoCorrect={false}
             value = {this.state.password}
             onChangeText={ (val)=> {
-                this.setState( { password : val, privateKeyOK : val && val.length })
+                this.setState( { unlockError : false, password : val, privateKeyOK : val && val.length })
             }}
           />
           <View
@@ -222,6 +236,12 @@ export default class UnlockAccount extends Component {
             </View>
           </TouchableOpacity>
         </View>
+        {this.state.unlockError && (
+          <View>
+            <View style={{height:4,width:3}}/>
+            <Text style={styles.errorText}>The password provided is invalid.</Text>
+          </View>
+        )}
       </View>
     );
   }

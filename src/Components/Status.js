@@ -112,7 +112,7 @@ class Status extends Component {
           </TouchableHighlight>
           <View style={styles.walletBox}>
             <Text style={styles.walletLabel}>Wallet Address</Text>
-            <Text style={styles.walletLabelAddress}>{data.walletAddress}</Text>
+            <Text style={styles.walletLabelAddress}>{data.signInfo.address}</Text>
           </View>
           <View style={styles.largeMetricBox}>
             <View style={styles.rewardHolderView}>
@@ -284,7 +284,7 @@ class Status extends Component {
   }
 
   handleStakeButtons(data) {
-    if (!data.autoBuyOn && data.numberOfTickets === 0) {
+    if (!data.autoBuyOn && data.numberOfTicketsToPurchase === 0) {
       return (
         <Text key="ab1" style={styles.stakesPurchaseTicketButtton}>
           Purchase Staking Tickets
