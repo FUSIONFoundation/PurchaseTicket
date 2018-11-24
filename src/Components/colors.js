@@ -20,6 +20,10 @@ export default class Colors
         return '#e4e9f0'
     }
 
+    static get coolGrey() {
+        return ''
+    }
+
     static get orderGrey() {
         return '#bec5cf'
     }

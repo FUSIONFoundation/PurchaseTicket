@@ -4,6 +4,7 @@ import {
   Text,
   Image,
   StyleSheet,
+  TextInput,
   TouchableHighlight,
   TouchableOpacity
 } from "react-native";
@@ -21,27 +22,25 @@ import utils from "../utils";
 import moment from "moment";
 import { connectableObservableDescriptor } from "rxjs/internal/observable/ConnectableObservable";
 import currentDataState from "../api/currentDataState";
-import withSelectFiles from 'react-select-files'
-
+import withSelectFiles from "react-select-files";
+import 'font-awesome/css/font-awesome.min.css';
 
 var styles;
 
-let radioOn = require("../images/radio_on.svg");
-let radioOff = require("../images/radio_off.svg");
+let radioOn = require("../images/radioOn.svg");
+let radioOff = require("../images/radioOff.svg");
 
 var glb_selectFiles;
 
-const MyComponent1 = withSelectFiles('selectFiles')(
-  function ({selectFiles}) {
-    glb_selectFiles = selectFiles;
-    return <Text>Select a Wallet File</Text>
-  }
-)
-
+const SelectKeyStoreFile = withSelectFiles("selectFiles")(function({ selectFiles }) {
+  glb_selectFiles = selectFiles;
+  return <Text style={styles.selectWalletFileText}>Select a Wallet File...</Text>;
+});
 
 export default class UnlockAccount extends Component {
   state = {
-    accessViaPrivateKey: false
+    accessViaPrivateKey: false,
+    secureEntry : true
   };
 
   render() {
@@ -107,17 +106,34 @@ export default class UnlockAccount extends Component {
     );
   }
 
-
   keyStoreRender() {
     return (
       <View key="accek">
-        <Text style={styles.textHowToAccess}>Select your wallet file and enter your password. Please ensure that the above URL is correct before loading wallets or entering passwords.</Text>
-        <TouchableOpacity onPress={()=>{
-          glb_selectFiles().then(files => console.log(files))
-        }}>
-            <MyComponent1/>
+        <Text style={styles.textHowToAccess}>
+          Select your wallet file and enter your password. Please ensure that
+          the above URL is correct before loading wallets or entering passwords.
+        </Text>
+        <TouchableOpacity
+          onPress={() => {
+            glb_selectFiles().then(files => console.log(files));
+          }}
+        >
+          <View style={styles.selectWalletBox}>
+            <SelectKeyStoreFile />
+          </View>
         </TouchableOpacity>
         <Text style={styles.labelText}>Enter Your Password</Text>
+        <View style={styles.passwordInputBox}>
+            <TextInput style={styles.passwordInput} 
+            placeholder="Password"
+            autoCorrect={false}
+            autoComplete="current-password"
+            secureTextEntry={this.state.secureEntry}
+            placeholderTextColor={colors.orderGrey}
+            maxLength={64} autoCorrect={false}/>
+            <i class="fa fa-eye"></i>
+            <i class="fa fa-eye-slash"></i>
+        </View>
       </View>
     );
   }
@@ -125,7 +141,10 @@ export default class UnlockAccount extends Component {
   privateKeyRender() {
     return (
       <View key="prik">
-        <Text style={styles.textHowToAccess}>Enter your private keys. Please ensure that the above URL is correct before loading wallets or entering passwords.</Text>
+        <Text style={styles.textHowToAccess}>
+          Enter your private keys. Please ensure that the above URL is correct
+          before loading wallets or entering passwords.
+        </Text>
         <Text style={styles.labelText}>Enter Your Private Key</Text>
       </View>
     );
@@ -189,7 +208,43 @@ var styles = StyleSheet.create({
     paddingLeft: 32,
     paddingRight: 32
   },
+  selectWalletBox :{
+    borderColor: colors.orderGrey,
+    borderRadius: 4,
+    backgroundColor: "white",
+    borderWidth: 1,
+    alignItems: "flex-start",
+    width: 516,
+    height : 48,
+    overflow: "visible",
+    //boxShadow: "0 2px 0 0 rgba(189, 196, 206, 0.2)",
+    flex : 1,
+    flexBasis : '100%',
+    justifyContent : 'center',
+    alignItems : 'center',
+    marginBottom : 16
+  },
+  passwordInputBox : {
+    borderColor: colors.orderGrey,
+    borderRadius: 3,
+    backgroundColor: "white",
+    borderWidth: 1,
+    flexDirection : 'row',
+    justifyContent : 'flex-end',
+    height : 36,
+    width : 512,
+    marginTop : 4
+  },
+  passwordInput : {
+    fontSize: 14,
+    color: colors.textBlue,
+    fontFamily: constants.fontFamily,
+    fontWeight: constants.regularFont,
+    width : 482,
+    paddingLeft : 8
+  },
   selectionBox: {
+    paddng: 4,
     borderColor: colors.orderGrey,
     borderRadius: 3,
     backgroundColor: colors.backgroundGrey,
@@ -202,11 +257,18 @@ var styles = StyleSheet.create({
     paddingRight: 20,
     marginTop: 20
   },
-  labelText : {
-    fontSize : 12,
-    color : colors.labelGrey,
-    fontFamily : constants.fontFamily,
-    fontWeight : constants.regularFont
+  labelText: {
+    fontSize: 12,
+    color: colors.labelGrey,
+    fontFamily: constants.fontFamily,
+    fontWeight: constants.regularFont
+  },
+  selectWalletFileText: {
+    fontSize: 16,
+    color: colors.textBlue,
+    fontFamily: constants.fontFamily,
+    fontWeight: constants.mediumFont,
+    textAlign: "center"
   },
   unlockWalletButton: {
     fontSize: 16,
