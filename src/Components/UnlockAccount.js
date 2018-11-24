@@ -24,6 +24,7 @@ import { connectableObservableDescriptor } from "rxjs/internal/observable/Connec
 import currentDataState from "../api/currentDataState";
 import withSelectFiles from "react-select-files";
 import "font-awesome/css/font-awesome.min.css";
+import web3 from '../api'
 
 var styles;
 
@@ -119,13 +120,45 @@ export default class UnlockAccount extends Component {
         </Text>
         <TouchableOpacity
           onPress={() => {
-            glb_selectFiles().then(files => console.log(files));
+            glb_selectFiles({multiple: false}).then( (files) => {
+              console.log(files)
+              if ( files.length === 1 ) {
+                // read the 
+                let reader = new FileReader();
+                reader.onload = (event) => {
+                  let data = event.target.result;
+                  if ( !data ) {
+                    this.setState( {error:'Unable to read file'})
+                  }
+                  try {
+                    let obj = JSON.parse( data );
+                    console.log(obj);
+                    if ( !obj.address ) {
+                      this.setState( {error:'Invalid key store file '})
+                    } else {
+                      this.setState( {error: null , keyData : obj } );
+                      // console.log( web3.eth.accounts.decrypt( {crypto:obj.Crypto, version:obj.version}, "password") )
+                    }
+                  } catch (e) {
+                    this.setState( {error:'Unable to read file'})
+                  }
+                  console.log(event.target.result);
+                };
+                reader.onerror = (event) => {
+                  this.setState( {error:'Unable to read file'})
+                }
+                reader.readAsText(files[0]);
+              }
+            })
           }}
         >
           <View style={styles.selectWalletBox}>
             <SelectKeyStoreFile />
           </View>
         </TouchableOpacity>
+        {this.state.error && (
+          <Text style={styles.errorText}>{this.state.error}</Text>
+        )}
         <Text style={styles.labelText}>Enter Your Password</Text>
         <View style={styles.passwordInputBox}>
           <TextInput
@@ -135,7 +168,7 @@ export default class UnlockAccount extends Component {
             autoComplete="current-password"
             secureTextEntry={this.state.secureEntry}
             placeholderTextColor={colors.orderGrey}
-            maxLength={64}
+            maxLength={66}
             autoCorrect={false}
           />
           <View
@@ -172,7 +205,43 @@ export default class UnlockAccount extends Component {
           Enter your private keys. Please ensure that the above URL is correct
           before loading wallets or entering passwords.
         </Text>
+        <View style={{height:8,width : 1}}/>
         <Text style={styles.labelText}>Enter Your Private Key</Text>
+        <View style={styles.passwordInputBox}>
+          <TextInput
+            style={styles.passwordInput}
+            placeholder="Private Key"
+            autoCorrect={false}
+            autoComplete="current-password"
+            secureTextEntry={this.state.secureEntry}
+            placeholderTextColor={colors.orderGrey}
+            maxLength={66}
+            autoCorrect={false}
+          />
+          <View
+            style={{ width: 1, height: 36, backgroundColor: colors.orderGrey }}
+          />
+          <TouchableOpacity onPress={() => {
+            this.setState( { secureEntry : !this.state.secureEntry })
+          }}>
+            <View
+              style={{
+                backgroundColor: colors.backgroundGrey,
+                width: 32,
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center"
+              }}
+            >
+              {this.state.secureEntry ? (
+                <i class="fa fa-eye" />
+              ) : (
+                <i class="fa fa-eye-slash" />
+              )}
+            </View>
+          </TouchableOpacity>
+        </View>
+        <View style={{height:32,width : 1}}/>
       </View>
     );
   }
@@ -296,6 +365,13 @@ var styles = StyleSheet.create({
     fontFamily: constants.fontFamily,
     fontWeight: constants.mediumFont,
     textAlign: "center"
+  },
+  errorText : {
+    fontSize: 12,
+    color: colors.errorRed,
+    fontFamily: constants.fontFamily,
+    fontWeight: constants.regularFont,
+    marginBottom : 8
   },
   unlockWalletButton: {
     fontSize: 16,

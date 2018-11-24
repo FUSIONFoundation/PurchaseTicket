@@ -20,8 +20,8 @@ export default class Colors
         return '#e4e9f0'
     }
 
-    static get coolGrey() {
-        return ''
+    static get disabledBlue() {
+        return "#94b2d7"
     }
 
     static get orderGrey() {
