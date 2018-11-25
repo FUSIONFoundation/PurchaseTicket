@@ -24,6 +24,14 @@ export default class Colors
         return "#94b2d7"
     }
 
+    static get disabledGrey() {
+        return '#a6a9ad'
+    }
+
+    static get coolGrey() {
+        return '#a6a9ad'
+    }
+
     static get orderGrey() {
         return '#bec5cf'
     }

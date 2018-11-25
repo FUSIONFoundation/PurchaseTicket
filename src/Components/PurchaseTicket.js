@@ -218,8 +218,10 @@ class Status extends Component {
               <Text style={btnStyle}>{purchaseText}</Text>
             </View>
           </TouchableOpacity>
+          <View style={{height:16,width:1}}/>
+          <Text style={styles.footerText}>Funds used to purchase tickets will be sent back after tickets have expired. Tickets expire 30 days after date of purchase. Your browser window must remain open to continue autobuy.</Text>
           </View>
-        </View>
+         </View>
       </View>
     );
   }
@@ -668,6 +670,12 @@ class Status extends Component {
     textAlign: "center",
     padding: 12,
     marginTop: 20
+  },
+  footerText : {
+    fontSize : 14,
+    fontFamily : constants.fontFamily,
+    fontWeight : constants.mediumFont,
+    color : colors.disabledGrey
   }
 });
 
