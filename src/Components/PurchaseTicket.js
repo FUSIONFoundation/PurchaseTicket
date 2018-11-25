@@ -222,14 +222,14 @@ class Status extends Component {
               <Text style={styles.labelLineText}>Total Cost</Text>
               <View>
                 <Text style={styles.costCalcLineText}>
-                  Ticket Cost {this.state.ticketQuantity} x{" "}
-                  {data.ticketPriceString} FSN
+                  Ticket Cost {this.state.ticketQuantity||"0"} x{" "}
+                  {utils.formatWei(data.ticketPrice)} FSN
                 </Text>
               </View>
             </View>
             <View>
               <Text style={styles.costCalcLineText}>
-                Gas Cost {this.state.ticketQuantity} x{" "}
+                Gas Cost {this.state.ticketQuantity||"0"} x{" "}
                 {utils.formatWei(data.gasPrice)} FSN
               </Text>
               <View style={{ height: 16, width: 1 }} />
