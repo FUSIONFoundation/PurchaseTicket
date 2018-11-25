@@ -31,7 +31,8 @@ class Status extends Component {
       autoBuyTickets : false,
       reinvestReward : false,
       autoBuyStopDate : false,
-      totalPrice : new BN(0)
+      totalPrice : new BN(0),
+      error : false
   };
 
   constructor(props) {
@@ -57,6 +58,11 @@ class Status extends Component {
       } else {
         purchaseText = `Purchase ${this.state.ticketQuantity} Tickets`;
       }
+    }
+
+    if ( this.state.error ) {
+      enabled = false;
+      btnStyle = styles.purchaseTicketButtonDisabled;
     }
 
     let displayPercent =
@@ -156,7 +162,9 @@ class Status extends Component {
                       valTik = valTik.mul( data.ticketPrice )
                       valGas = valGas.add( valTik )
                       let totalCostString = utils.formatWei(valGas.toString());
-                      this.setState( { ticketQuantity : x, totalPrice : valGas, totalCostString  })
+                      this.setState( { ticketQuantity : x, 
+                            totalPrice : valGas, totalCostString ,
+                           error : valGas.gt(data.walletBalance) })
                   }}
           />
                 <TouchableOpacity onPress={()=>{
