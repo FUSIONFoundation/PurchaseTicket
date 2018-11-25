@@ -40,7 +40,7 @@ const SelectKeyStoreFile = withSelectFiles("selectFiles")(function({
   glb_selectFiles = selectFiles;
   let check;
   if ( selectFileTitle === "Wallet File Valid") {
-    check = <i key ="c11" class="fa fa-check-circle" style={{color:colors.successGreen,marginRight:4}}/>
+    check = <i key ="c11" className="fa fa-check-circle" style={{color:colors.successGreen,marginRight:4}}/>
   }
   return (
     <Text key={selectFileTitle} style={styles.selectWalletFileText}>
@@ -230,9 +230,9 @@ export default class UnlockAccount extends Component {
               }}
             >
               {this.state.secureEntry ? (
-                <i class="fa fa-eye" />
+                <i className="fa fa-eye" />
               ) : (
-                <i class="fa fa-eye-slash" />
+                <i className="fa fa-eye-slash" />
               )}
             </View>
           </TouchableOpacity>
@@ -320,7 +320,7 @@ var styles = StyleSheet.create({
     width: 620,
     flexGrow: 1,
     flex: 1,
-    flexShrink: "auto",
+    flexShrink: 0,
     justifyContent: "center",
     alignItems: "flex-start"
   },
@@ -399,7 +399,6 @@ var styles = StyleSheet.create({
     paddingLeft: 6
   },
   selectionBox: {
-    paddng: 4,
     borderColor: colors.orderGrey,
     borderRadius: 3,
     backgroundColor: colors.backgroundGrey,

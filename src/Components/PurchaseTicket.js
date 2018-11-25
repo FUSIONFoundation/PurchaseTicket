@@ -120,7 +120,7 @@ class Status extends Component {
             <TouchableOpacity onPress={() => {Clipboard.setString(data.signInfo.address)}}>
               <Text style={styles.walletLabelAddress}>
                 {data.signInfo.address}
-                <i style={{ marginLeft: 4 }} class="fa fa-copy" />
+                <i style={{ marginLeft: 4 }} className="fa fa-copy" />
               </Text>
             </TouchableOpacity>
           </View>
@@ -168,7 +168,7 @@ class Status extends Component {
                   placeholderTextColor={colors.orderGrey}
                   maxLength={10}
                   autoCorrect={false}
-                  value = {this.state.ticketQuantity}
+                  value = {""+this.state.ticketQuantity}
                   onChangeText={ (val)=> {
                       let x = parseInt(val);
                       if ( !x && x !== 0 || x < 0 ) {
@@ -235,7 +235,7 @@ class Status extends Component {
     flexShrink: 0,
     flexBasis: "auto",
     justifyContent: "flex-start",
-    alignItems: "flex-center",
+    alignItems: "flex-start",
     marginTop: 15,
     marginLeft: 15,
     backgroundColor: colors.backgroundGrey

@@ -1,5 +1,8 @@
 import moment from 'moment'
 
+import web3 from './index.js'
+var BN = web3.utils.BN;
+
 var datablock = {
     accountUnlocked : true,
     autoBuyOn: false,
@@ -19,11 +22,13 @@ var datablock = {
     gasPrice : 0.00053588,
     ticketPrice  : 200,
     ticketPriceString : "200",
-    walletBalance : 140122.4333,
+    walletBalance : new BN("140122433300000000000000"),
     walletBalanceText : "140122.4333",
     autoBuyStopTime : moment( "20190214", "YYYYMMDD"),
     lastTicketExpires : moment(  "20190101", "YYYYMMDD")
 };
+
+console.log("WE" , datablock.walletBalance.toString() )
 
 export default class currentDataState
 {

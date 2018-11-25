@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, Picker, TextInput, StyleSheet } from 'react-native'
 import CountryList from './CountryList.js'
+import constants from '../constants'
 
 var styles;
 
@@ -245,8 +246,8 @@ styles = StyleSheet.create({
 
     },
     label: {
-        fontFamily : "'Roboto', sans-serif !important",
-        fontWeight : 500,
+        fontFamily : "'Roboto', sans-serif",
+        fontWeight : '500',
         fontSize: 20,
         color: 'rgba(22,22,22,.5)',
         width: 160,

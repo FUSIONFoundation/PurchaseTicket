@@ -323,7 +323,7 @@ styles = StyleSheet.create({
     flexShrink: 0,
     flexBasis: "auto",
     justifyContent: "flex-start",
-    alignItems: "flex-center",
+    alignItems: "flex-start",
     marginTop: 15,
     marginLeft: 15,
     backgroundColor: colors.backgroundGrey
