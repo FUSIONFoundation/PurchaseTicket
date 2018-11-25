@@ -100,70 +100,9 @@ class Status extends Component {
               </Text>
             </TouchableOpacity>
           </View>
-          <View style={styles.largeMetricBox}>
-            <View style={styles.rewardHolderView}>
-              <Image
-                resizeMode="contain"
-                source={lineGraph}
-                style={styles.lineGraph}
-              />
-              <View style={styles.rewardHolderViewGradient} />
-              <View style={styles.rewardHolderViewText}>
-                <View style={styles.rwcTextViewbox}>
-                  <Text style={styles.labelLineText}>
-                    Current Reward Probablity
-                  </Text>
-                  <View>
-                    <Text style={styles.stakingMonitorActive}>
-                      {displayPercent}
-                      <Text style={styles.stakingMonitorActivePercent}>%</Text>
-                    </Text>
-                  </View>
-                  <Text style={styles.simpleLineText}>{`${
-                    data.numberOfTickets
-                  } of ${utils.displayNumber(
-                    data.totalTickets,
-                    data.totalTickets < 1000 ? 0 : 2
-                  )} ${ticketText}`}</Text>
-                </View>
-              </View>
-            </View>
-            <View style={styles.rewardsGivenBox}>
-              <View style={styles.rwcTextViewbox}>
-                <View style={styles.rewardGivenBoxTextHolder}>
-                  <Text style={styles.labelLineText}>Rewards to Date</Text>
-                  <View style={styles.rewardsGivenBoxRewardCount}>
-                    <Text style={rewardStyle}>{rewardNumber}</Text>
-                    <Text style={textNumberOfRewardsGivenType}>FSN</Text>
-                  </View>
-                </View>
-              </View>
-            </View>
-          </View>
           <View style={styles.stakeDetailBox}>
-            <View style={styles.stakeDetailRow}>
-              <Text style={styles.stakeDetailText}>Stake Details</Text>
-              <TouchableOpacity
-                onPress={() => {
-                  alert("do something");
-                }}
-              >
-                {this.handleStakeButtons(data)}
-              </TouchableOpacity>
-            </View>
+            <Text style={styles.infoText}>Earn rewards by purchasing staking tickets. You will earn a reward of 2.5 FSN per selected ticket. If your ticket is not selected, your FSN will be returned when the ticket expires (30 days after purchase).<Text style={[styles.infoTextLink,{marginLeft:4}]}>Learn More</Text></Text>
             <View style={{ height: 20 }} />
-            <View style={styles.stakeDetailRow}>
-              <Text style={styles.labelLineText}>Staking Status</Text>
-              {data.autoBuyOn || data.numberOfTickets ? (
-                <Text key="ab1" style={styles.activeButton}>
-                  Active
-                </Text>
-              ) : (
-                <Text key="ab1" style={styles.inActiveButton}>
-                  Inactive
-                </Text>
-              )}
-            </View>
             <View style={styles.orderBorder} />
             <View style={styles.stakeDetailRow}>
               <Text style={styles.labelLineText}>Active Tickets</Text>
@@ -491,6 +430,19 @@ styles = StyleSheet.create({
     fontFamily: constants.fontFamily,
     fontWeight: constants.regularFont,
     color: colors.textBlue
+  },
+  infoText: {
+    fontSize: 14,
+    fontFamily: constants.fontFamily,
+    fontWeight: constants.regularFont,
+    color: colors.textGrey,
+    lineHeight : "1.71"
+  },
+  infoTextLink: {
+    fontSize: 14,
+    fontFamily: constants.fontFamily,
+    fontWeight: constants.regularFont,
+    color: colors.linkBlue
   },
   orderBorder: {
     backgroundColor: colors.orderGrey,

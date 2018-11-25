@@ -55,4 +55,8 @@ export default class Colors
     static get tagGrey() {
         return '#e4e9f0'
     }
+
+    static get textGrey() {
+        return '#4a4a4a'
+    }
 }
