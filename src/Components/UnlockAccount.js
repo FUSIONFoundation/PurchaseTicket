@@ -19,7 +19,7 @@ import CheckBox from "./Input/CheckBox.js";
 import colors from "./colors";
 import constants from "./constants";
 import utils from "../utils";
-import moment from "moment";
+import moment, { relativeTimeRounding } from "moment";
 import { connectableObservableDescriptor } from "rxjs/internal/observable/ConnectableObservable";
 import currentDataState from "../api/currentDataState";
 import withSelectFiles from "react-select-files";
@@ -126,6 +126,7 @@ export default class UnlockAccount extends Component {
                       currentDataState.data.signInfo = web3.eth.accounts.decrypt( {crypto:obj.Crypto, version:obj.version}, this.state.password )
                     } catch (e) {
                       this.setState( { unlockError : true } );
+                      return;
                     }
               } else {
                 currentDataState.data.accountUnlocked = true
