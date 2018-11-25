@@ -30,7 +30,11 @@ var styles;
 class Status extends Component {
   // this is what i use for production
   state = {
-      ticketQuantity : 0
+      ticketQuantity : 0,
+      totalCost : 0 ,
+      totalCostString : "0",
+      gasCostString : "0",
+      ticketCostString : "0"
   };
 
   constructor(props) {
@@ -150,7 +154,7 @@ class Status extends Component {
                   value = {this.state.ticketQuantity}
                   onChangeText={ (val)=> {
                       let x = parseInt(val);
-                      if ( !x && x !== 0 ) {
+                      if ( !x && x !== 0 || x < 0 ) {
                           x = 0;
                       }
                       this.setState( { ticketQuantity : x })
@@ -166,104 +170,33 @@ class Status extends Component {
               </View>
             </View>
             <View style={styles.orderBorder} />
-            <View style={styles.stakeDetailRow}>
-              <Text style={styles.labelLineText}>Total FSN</Text>
+            <View style={{height:16, width:1}}/>
+            <View style={[styles.stakeDetailRow,{height:30}]}>
+              <Text style={styles.labelLineText}>Total Cost</Text>
               <View>
-                <Text style={styles.stakeTextVal}>
-                  {data.walletBalance + this.totalStake(data)}
-                  <Text style={styles.stakeTextFSN}>FSN</Text>
-                </Text>
+                <Text style={styles.costCalcLineText}>Ticket Cost  {this.state.ticketQuantity} x {data.ticketPriceString} FSN</Text>
               </View>
             </View>
+            <View> 
+            <Text style={styles.costCalcLineText}>Gas Cost  {this.state.ticketQuantity} x {data.gasPriceString} FSN</Text>
+            <View style={{height:16, width:1}}/>
+            <View>
+                      <Text style={styles.stakeTextVal}>
+                        {this.state.totalCostString}
+                        <Text style={styles.stakeTextFSN}>FSN</Text>
+                      </Text>
+                </View>
+            </View>
+            <View style={{height:20, width:1}}/>
             <View style={styles.orderBorder} />
-            {data.autoBuyOn && (
-              <View key="aaa">
-                <View style={styles.stakeDetailRow}>
-                  <Text style={styles.labelLineText}>Auto Buy Tickets</Text>
-                  <Text key="ab1" style={styles.activeButton}>
-                    On
-                  </Text>
-                </View>
-                <View style={styles.orderBorder} />
-                <View style={styles.stakeDetailRow}>
-                  <Text style={styles.labelLineText}>Auto Reinvest Reward</Text>
-                  <Text
-                    key="ab1"
-                    style={
-                      data.autoReinvestReward
-                        ? styles.activeButton
-                        : styles.inActiveButton
-                    }
-                  >
-                    {data.autoReinvestReward ? "On" : "Off"}
-                  </Text>
-                </View>
-                <View style={styles.orderBorder} />
-                <View style={styles.stakeDetailRow}>
-                  <Text style={styles.labelLineText}>Auto Buy Stop Time</Text>
-                  <Text style={styles.dateValue}>
-                    {data.autoBuyStopTime
-                      ? data.autoBuyStopTime.format("lll")
-                      : "Never"}
-                  </Text>
-                </View>
-                <View style={styles.orderBorder} />
-                <View style={styles.stakeDetailRow}>
-                  <Text style={styles.labelLineText}>Last Ticket Expires</Text>
-                  <Text style={styles.dateValue}>
-                    {data.lastTicketExpires
-                      ? data.lastTicketExpires.format("lll")
-                      : "----"}
-                  </Text>
-                </View>
-                <View style={styles.orderBorder} />
-              </View>
-            )}
           </View>
         </View>
       </View>
     );
   }
-
-  handleStakeButtons(data) {
-    if (!data.autoBuyOn && data.numberOfTicketsToPurchase === 0) {
-      return (
-        <Text key="ab1" style={styles.stakesPurchaseTicketButtton}>
-          Purchase Staking Tickets
-        </Text>
-      );
-    }
-    if (data.autoBuyOn) {
-      return (
-        <View
-          style={{
-            borderRadius: 3,
-            borderWidth: 1,
-            borderColor: colors.orderGrey
-          }}
-        >
-          <Text key="ab1" style={styles.stopAutoBuyButton}>
-            Stop Auto Buy
-          </Text>
-        </View>
-      );
-    } else {
-      return (
-        <View
-          style={{
-            borderRadius: 3,
-            borderWidth: 1,
-            borderColor: colors.orderGrey
-          }}
-        >
-          <Text key="ab1" style={styles.startAutoBuyButton}>
-            Start Auto Buy
-          </Text>
-        </View>
-      );
-    }
-  }
 }
+
+ 
 
 styles = StyleSheet.create({
   container: {
@@ -678,6 +611,13 @@ styles = StyleSheet.create({
     paddingRight : 4,
     paddingLeft : 4
   },
+  costCalcLineText : {
+    fontFamily : constants.fontFamily,
+    fontSize : 12,
+    fontWeight : constants.mediumFont,
+    color : colors.labelGrey ,
+    alignSelf : 'flex-end'
+  }
 });
 
 export default Status;
