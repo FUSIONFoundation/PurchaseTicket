@@ -4,7 +4,8 @@ import {
   Text,
   Image,
   StyleSheet,
-  TouchableHighlight
+  Clipboard,
+  TouchableOpacity
 } from "react-native";
 import ActionButton from "./Input/ActionButton.js";
 import "../App.css";
@@ -71,13 +72,13 @@ class Status extends Component {
           <Text style={styles.Auto_Buy_Stake_Monit}>
             You Account Must be unlocked to use this screen.
           </Text>
-          <TouchableHighlight style={{width:100}}
+          <TouchableOpacity style={{width:100}}
                 onPress={() => {
                   history.push('/UnlockAccount')
                 }}
               >
               <Text style={styles.activeButton}>Select An Account</Text>
-              </TouchableHighlight>
+              </TouchableOpacity>
         </View>
       );
     }
@@ -88,14 +89,19 @@ class Status extends Component {
           <Text style={styles.Auto_Buy_Stake_Monit}>
             Auto Buy Stake Monitor
           </Text>
-          <TouchableHighlight>
+          <TouchableOpacity>
             <Text style={styles.lastUpdated}>
               <Text>↻</Text> {`Last Updated: ${dtDisplay}`}
             </Text>
-          </TouchableHighlight>
+          </TouchableOpacity>
           <View style={styles.walletBox}>
             <Text style={styles.walletLabel}>Wallet Address</Text>
-            <Text style={styles.walletLabelAddress}>{data.signInfo.address}</Text>
+            <TouchableOpacity onPress={() => {Clipboard.setString(data.signInfo.address)}}>
+              <Text style={styles.walletLabelAddress}>
+                {data.signInfo.address}
+                <i style={{ marginLeft: 4 }} class="fa fa-copy" />
+              </Text>
+            </TouchableOpacity>
           </View>
           <View style={styles.largeMetricBox}>
             <View style={styles.rewardHolderView}>
@@ -140,7 +146,7 @@ class Status extends Component {
           <View style={styles.stakeDetailBox}>
             <View style={styles.stakeDetailRow}>
               <Text style={styles.stakeDetailText}>Stake Details</Text>
-              <TouchableHighlight
+              <TouchableOpacity
                 onPress={() => {
                   if ( !data.autoBuyOn && data.numberOfTicketsToPurchase === 0 ) {
                     history.push('/PurchaseTicket')
@@ -150,7 +156,7 @@ class Status extends Component {
                 }}
               >
                 {this.handleStakeButtons(data)}
-              </TouchableHighlight>
+              </TouchableOpacity>
             </View>
             <View style={{ height: 20 }} />
             <View style={styles.stakeDetailRow}>
