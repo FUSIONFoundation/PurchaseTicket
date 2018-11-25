@@ -189,6 +189,9 @@ class Status extends Component {
             </View>
             <View style={{height:20, width:1}}/>
             <View style={styles.orderBorder} />
+            <CheckBox on={true} text="Auto Buy Tickets" subText="Tickets will be repurchased when they expiree or when they win rewards"/>
+            <CheckBox on={true} text="Reinvest Reward" subText="Rewards that are won will be reinvested to purchase more tickets when enough rewards are collected."/>
+            <CheckBox on={true} text="Auto Buy Stop Date" subText="Auto Buy will stop on desired data"/>
           </View>
         </View>
       </View>
