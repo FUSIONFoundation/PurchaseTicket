@@ -206,6 +206,7 @@ class Status extends Component {
             </View>
             <View style={{height:20, width:1}}/>
             <View style={styles.orderBorder} />
+            <View style={{height:16, width:1}}/>
             <CheckBox textWidth={512} onPress={()=>{this.setState({autoBuyTickets:!this.state.autoBuyTickets})}} on={this.state.autoBuyTickets} text="Auto Buy Tickets" subText="Tickets will be repurchased when they expire or when they win rewards"/>
             <CheckBox textWidth={512} onPress={()=>{this.setState({reinvestReward:!this.state.reinvestReward})}} on={this.state.reinvestReward} text="Reinvest Reward" subText="Rewards that are won will be reinvested to purchase more tickets when enough rewards are collected."/>
             <CheckBox textWidth={512} on={this.state.autoBuyStopDate} text="Auto Buy Stop Date" subText="Auto Buy will stop on desired data"/>
