@@ -268,6 +268,7 @@ class Status extends Component {
             { this.state.autoBuyStopDate && (
              <DatePicker onChange={this.onChange} 
             selected={this.state.date} 
+            minDate={new Date()}
             showTimeSelect
             dateFormat="Pp" 
             /> ) }
