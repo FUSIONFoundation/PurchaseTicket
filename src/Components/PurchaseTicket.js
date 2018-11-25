@@ -38,6 +38,7 @@ class Status extends Component {
   }
 
   render() {
+    let disabled = false;
     let data = currentDataState.data;
 
     let rewardNumber = utils.displayNumber(data.rewardsToDate, 1, true);
@@ -86,13 +87,8 @@ class Status extends Component {
       <View style={{ marginLeft: 30, backgroundColor: colors.backgroundGrey }}>
         <View style={styles.container}>
           <Text style={styles.Auto_Buy_Stake_Monit}>
-            Auto Buy Stake Monitor
+            Purchase Staking Tickets
           </Text>
-          <TouchableHighlight>
-            <Text style={styles.lastUpdated}>
-              <Text>↻</Text> {`Last Updated: ${dtDisplay}`}
-            </Text>
-          </TouchableHighlight>
           <View style={styles.walletBox}>
             <Text style={styles.walletLabel}>Wallet Address</Text>
             <Text style={styles.walletLabelAddress}>{data.signInfo.address}</Text>
@@ -142,11 +138,7 @@ class Status extends Component {
               <Text style={styles.stakeDetailText}>Stake Details</Text>
               <TouchableHighlight
                 onPress={() => {
-                  if ( !data.autoBuyOn && data.numberOfTicketsToPurchase === 0 ) {
-                    history.push('/PurchaseTicket')
-                  } else {
-                    alert("do something");
-                  }
+                  alert("do something");
                 }}
               >
                 {this.handleStakeButtons(data)}

@@ -1,7 +1,7 @@
 import moment from 'moment'
 
 var datablock = {
-    accountUnlocked : false,
+    accountUnlocked : true,
     autoBuyOn: false,
     balanceOfFSN: 0,
     numberOfTicketsToPurchase : 0,
@@ -13,8 +13,9 @@ var datablock = {
     rewardsToDate: 678,
     lastUpdateTime : new Date(),
     signInfo : {
-        walletAddress : "0x.....",
+        address : "0x4A5a7Aa4130e407d3708dE56db9000F059200C62",
     },
+    gasPrice : " 0.00053588",
     ticketPrice  : 200,
     walletBalance : 140122.4333,
     autoBuyStopTime : moment( "20190214", "YYYYMMDD"),
