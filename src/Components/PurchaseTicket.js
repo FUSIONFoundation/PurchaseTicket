@@ -15,6 +15,8 @@ import colors from "./colors";
 import constants from "./constants";
 import utils from "../utils";
 import currentDataState from "../api/currentDataState";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import web3 from "../api/index.js";
 var BN = web3.utils.BN;
 
@@ -32,7 +34,8 @@ class Status extends Component {
     reinvestReward: false,
     autoBuyStopDate: false,
     totalPrice: new BN(0),
-    error: false
+    error: false,
+    date : new Date()
   };
 
   constructor(props) {
@@ -168,13 +171,16 @@ class Status extends Component {
             <View style={[styles.stakeDetailRow, { height: 78 }]}>
               <Text style={styles.labelLineText}>Ticket Quantity</Text>
               <View>
-                <View style={{flex:1,flexDirection:'row'}}>
+                <View style={{ flex: 1, flexDirection: "row" }}>
                   {this.state.error && (
                     <View style={styles.errorForFundsBox}>
-                    <Text style={styles.errorForFunds}>
-                      You don't have enough FSN
-                    </Text>
-                    <i style={{position:'relative', left : -1 }} className="fa fa-caret-right"/>
+                      <Text style={styles.errorForFunds}>
+                        You don't have enough FSN
+                      </Text>
+                      <i
+                        style={{ position: "relative", left: -1 }}
+                        className="fa fa-caret-right"
+                      />
                     </View>
                   )}
                   <TextInput
@@ -188,7 +194,7 @@ class Status extends Component {
                     maxLength={10}
                     value={"" + (this.state.ticketQuantity || "")}
                     onChangeText={val => {
-                      this.calcDisplay(data,val)
+                      this.calcDisplay(data, val);
                     }}
                   />
                 </View>
@@ -197,9 +203,8 @@ class Status extends Component {
                     let valGas = new BN(data.gasPrice);
                     let valTik = new BN(data.ticketPrice);
                     valTik = valTik.add(valGas);
-                    let num = data.walletBalance.div( valTik );
-                    this.calcDisplay(data,num.toNumber() )
-
+                    let num = data.walletBalance.div(valTik);
+                    this.calcDisplay(data, num.toNumber());
                   }}
                 >
                   <Text style={styles.maxIt}>Max Quantity</Text>
@@ -212,14 +217,14 @@ class Status extends Component {
               <Text style={styles.labelLineText}>Total Cost</Text>
               <View>
                 <Text style={styles.costCalcLineText}>
-                  Ticket Cost {this.state.ticketQuantity||"0"} x{" "}
+                  Ticket Cost {this.state.ticketQuantity || "0"} x{" "}
                   {utils.formatWei(data.ticketPrice)} FSN
                 </Text>
               </View>
             </View>
             <View>
               <Text style={styles.costCalcLineText}>
-                Gas Cost {this.state.ticketQuantity||"0"} x{" "}
+                Gas Cost {this.state.ticketQuantity || "0"} x{" "}
                 {utils.formatWei(data.gasPrice)} FSN
               </Text>
               <View style={{ height: 16, width: 1 }} />
@@ -259,7 +264,14 @@ class Status extends Component {
               on={this.state.autoBuyStopDate}
               text="Auto Buy Stop Date"
               subText="Auto Buy will stop on desired data"
-            />
+            >
+            { this.state.autoBuyStopDate && (
+             <DatePicker onChange={this.onChange} 
+            selected={this.state.date} 
+            showTimeSelect
+            dateFormat="Pp" 
+            /> ) }
+           </CheckBox>
             <TouchableOpacity disabled={!enabled} onPress={() => {}}>
               <View>
                 <Text style={btnStyle}>{purchaseText}</Text>
@@ -277,7 +289,9 @@ class Status extends Component {
     );
   }
 
-  calcDisplay(data,val) {
+  onChange = date => this.setState({ date })
+
+  calcDisplay(data, val) {
     let x = parseInt(val);
     if (!x && (x !== 0 || x < 0)) {
       x = 0;
@@ -700,19 +714,19 @@ styles = StyleSheet.create({
     color: colors.white,
     backgroundColor: colors.errorRed,
     paddingTop: 6,
-    paddingBottom : 6,
-    paddingLeft : 8,
-    paddingRight : 8,
+    paddingBottom: 6,
+    paddingLeft: 8,
+    paddingRight: 8,
     borderRadius: 3,
-    height : 24,
-    alignSelf : 'center',
+    height: 24,
+    alignSelf: "center"
   },
-  errorForFundsBox : {
+  errorForFundsBox: {
     flex: 1,
-    flexDirection : 'row',
-    marginRight : 6,
-    color : colors.errorRed,
-    alignItems : 'center'
+    flexDirection: "row",
+    marginRight: 6,
+    color: colors.errorRed,
+    alignItems: "center"
   },
   ticketQuantityInput: {
     borderColor: colors.orderGrey,

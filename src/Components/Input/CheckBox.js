@@ -18,39 +18,34 @@ export default class CheckBox extends Component {
 
   render() {
     return (
-      <View
-        style={[
-          styles.container,
-          { width: this.state.textWidth}
-        ]}
-      >
-        <TouchableOpacity
-          onPress={() => {
-            this.props.onPress(!this.props.on);
-          }}
-        >
-          <View style={styles.containerInner}>
+      <View style={[styles.container, { width: this.state.textWidth }]}>
+        <View style={styles.containerInner}>
+          <TouchableOpacity
+            onPress={() => {
+              this.props.onPress(!this.props.on);
+            }}
+          >
             <Image
               source={this.props.on ? checkOn : checkOff}
               style={styles.checkOn}
             />
-            <View>
-              <Text style={styles.questionText}>{this.props.text}</Text>
+          </TouchableOpacity>
+          <View>
+            <Text style={styles.questionText}>{this.props.text}</Text>
 
-              {this.props.subText && (
-                <Text
-                  style={[
-                    styles.questionSubText
-                    ,
-                    { width: this.state.textWidth }
-                  ]}
-                >
-                  {this.props.subText}
-                </Text>
-              )}
-            </View>
+            {this.props.subText && (
+              <Text
+                style={[
+                  styles.questionSubText,
+                  { width: this.state.textWidth }
+                ]}
+              >
+                {this.props.subText}
+              </Text>
+            )}
+            {this.props.children}
           </View>
-        </TouchableOpacity>
+        </View>
       </View>
     );
   }
@@ -88,7 +83,7 @@ styles = StyleSheet.create({
     color: colors.textBlue,
     fontFamily: constants.fontFamily,
     fontWeight: constants.mediumFont,
-    marginBottom : 6
+    marginBottom: 6
   },
   questionSubText: {
     fontSize: 14,
