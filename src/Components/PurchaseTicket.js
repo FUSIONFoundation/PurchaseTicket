@@ -15,6 +15,8 @@ import colors from "./colors";
 import constants from "./constants";
 import utils from "../utils";
 import currentDataState from "../api/currentDataState";
+import web3 from '../api/index.js'
+var BN = web3.utils.BN;
 
 var styles;
 
@@ -29,6 +31,7 @@ class Status extends Component {
       autoBuyTickets : false,
       reinvestReward : false,
       autoBuyStopDate : false,
+      totalPrice : new BN(0)
   };
 
   constructor(props) {
@@ -147,7 +150,13 @@ class Status extends Component {
                       if ( !x && (x !== 0 || x < 0) ) {
                           x = 0;
                       }
-                      this.setState( { ticketQuantity : x })
+                      let valGas =  new BN(x);
+                      valGas = valGas.mul( data.gasPrice );
+                      let valTik = new BN( x );
+                      valTik = valTik.mul( data.ticketPrice )
+                      valGas = valGas.add( valTik )
+                      let totalCostString = utils.formatWei(valGas.toString());
+                      this.setState( { ticketQuantity : x, totalPrice : valGas, totalCostString  })
                   }}
           />
                 <TouchableOpacity onPress={()=>{

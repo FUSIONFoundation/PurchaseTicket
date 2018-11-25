@@ -27,6 +27,20 @@ export default class Utils {
     return newValue;
   }
 
+  static insert(str, index, value) {
+    return str.substr(0, index) + value + str.substr(index);
+  }
+
+  static formatWei( val ) {
+    let len = val.length;
+    if ( len < 19 ) {
+      val = "." + val
+    } else {
+      val = Utils.insert( val, val.length - 18, "." )
+    }
+    return Utils.removeZeros( val, true, true )
+  }
+
   static removeZeros(val, trailing = true, leading = false, decimal = true) {
     var regEx1 = /^[0]+/;
     var regEx2 = /[0]+$/;
