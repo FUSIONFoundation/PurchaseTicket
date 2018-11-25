@@ -5,7 +5,7 @@ import constants from "../constants.js";
 
 var styles;
 
-var checkOn = require("../../images/check_on.svg");
+var checkOn = require("../../images/checkboxOn.svg");
 var checkOff = require("../../images/check_off.svg");
 
 export default class CheckBox extends Component {
