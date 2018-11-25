@@ -332,7 +332,7 @@ styles = StyleSheet.create({
     fontSize: 24,
     lineHeight: 32,
     fontFamily: "Roboto, san-serif",
-    fontWeight: 700,
+    fontWeight: constants.boldFont,
     color: colors.textBlue
   },
   sectionNumberTitle: {

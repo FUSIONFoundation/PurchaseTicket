@@ -5,6 +5,7 @@ import {
   Image,
   StyleSheet,
   Clipboard,
+  TextInput,
   TouchableOpacity
 } from "react-native";
 import ActionButton from "./Input/ActionButton.js";
@@ -28,7 +29,9 @@ var styles;
 
 class Status extends Component {
   // this is what i use for production
-  state = {};
+  state = {
+      ticketQuantity : 0
+  };
 
   constructor(props) {
     super();
@@ -134,13 +137,32 @@ class Status extends Component {
               </View>
             </View>
             <View style={styles.orderBorder} />
-            <View style={styles.stakeDetailRow}>
-              <Text style={styles.labelLineText}>FSN Available</Text>
+            <View style={[styles.stakeDetailRow,{height:78}]}>
+              <Text style={styles.labelLineText}>Ticket Quantity</Text>
               <View>
-                <Text style={styles.stakeTextVal}>
-                  {data.walletBalance}
-                  <Text style={styles.stakeTextFSN}>FSN</Text>
-                </Text>
+                <TextInput
+                  style={styles.ticketQuantityInput}
+                  placeholder="0"
+                  autoCorrect={false}
+                  placeholderTextColor={colors.orderGrey}
+                  maxLength={10}
+                  autoCorrect={false}
+                  value = {this.state.ticketQuantity}
+                  onChangeText={ (val)=> {
+                      let x = parseInt(val);
+                      if ( !x && x !== 0 ) {
+                          x = 0;
+                      }
+                      this.setState( { ticketQuantity : x })
+                  }}
+          />
+                <TouchableOpacity onPress={()=>{
+                  alert("max it!")
+                }}>
+                    <Text style={styles.maxIt}>
+                        Max Quantity
+                    </Text>
+                </TouchableOpacity>
               </View>
             </View>
             <View style={styles.orderBorder} />
@@ -259,7 +281,7 @@ styles = StyleSheet.create({
     fontSize: 24,
     lineHeight: 32,
     fontFamily: "Roboto, san-serif",
-    fontWeight: 700,
+    fontWeight: constants.boldFont,
     color: colors.textBlue
   },
   sectionNumberTitle: {
@@ -414,6 +436,13 @@ styles = StyleSheet.create({
     fontWeight: constants.regularFont,
     color: colors.linkBlue
   },
+  maxIt: {
+    fontFamily: constants.fontFamily,
+    fontSize: 12,
+    fontWeight: constants.mediumFont,
+    color: colors.linkBlue,
+    alignSelf : 'flex-end'
+  },
   stakeTextVal: {
     fontSize: 18,
     fontFamily: constants.fontFamily,
@@ -445,6 +474,7 @@ styles = StyleSheet.create({
     fontFamily: constants.fontFamily,
     fontWeight: constants.mediumFont,
     color: colors.textGrey,
+    lineHeight : '1.71'
   },
   infoTextLink: {
     fontSize: 14,
@@ -630,7 +660,24 @@ styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     height: 44
-  }
+  },
+  ticketQuantityInput: {
+    borderColor: colors.orderGrey,
+    borderRadius: 3,
+    backgroundColor: "white",
+    borderWidth: 1,
+    fontSize : 14,
+    fontFamily : constants.mediumFont,
+    color : colors.labelGrey,
+    height: 36,
+    width: 110,
+    marginTop: 6,
+    marginBottom : 6,
+    alignSelf : 'flex-end',
+    textAlign : 'right',
+    paddingRight : 4,
+    paddingLeft : 4
+  },
 });
 
 export default Status;
