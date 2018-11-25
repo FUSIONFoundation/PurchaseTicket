@@ -17,7 +17,9 @@ var datablock = {
     },
     gasPrice : " 0.00053588",
     ticketPrice  : 200,
+    ticketPriceString : "200",
     walletBalance : 140122.4333,
+    walletBalanceText : "140122.4333",
     autoBuyStopTime : moment( "20190214", "YYYYMMDD"),
     lastTicketExpires : moment(  "20190101", "YYYYMMDD")
 };

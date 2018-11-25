@@ -108,17 +108,17 @@ class Status extends Component {
               <Text style={styles.labelLineText}>Funds Available</Text>
               <View>
                 <Text style={styles.statText}>
-                  {data.numberOfTickets}
+                  {data.walletBalanceText}
                   <Text style={styles.stakeTextFSN}>FSN</Text>
                 </Text>
               </View>
             </View>
             <View style={styles.orderBorder} />
             <View style={styles.stakeDetailRow}>
-              <Text style={styles.labelLineText}>Rewards to Date</Text>
+              <Text style={styles.labelLineText}>Ticket Price</Text>
               <View>
                 <Text style={styles.stakeTextVal}>
-                  {data.rewardsToDate.toFixed(2)}
+                  {data.ticketPriceString}
                   <Text style={styles.stakeTextFSN}>FSN</Text>
                 </Text>
               </View>
