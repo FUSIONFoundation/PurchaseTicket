@@ -52,6 +52,20 @@ class Status extends Component {
     let disabled = false;
     let data = currentDataState.data;
 
+    let btnStyle = styles.purchaseTicketButtonDisabled;
+    let enabled = false;
+    let purchaseText = "Purchase Tickets"
+
+    if ( this.state.ticketQuantity > 0 ) {
+      btnStyle = styles.purchaseTicketButton;
+      enabled = true;
+      if ( this.state.ticketQuantity === 1) {
+         purchaseText = "Purchase 1 Ticket";
+      } else {
+        purchaseText = `Purchase ${this.state.ticketQuantity} Tickets`;
+      }
+    }
+
     let rewardNumber = utils.displayNumber(data.rewardsToDate, 1, true);
     let ticketText = data.totalTickets === 1 ? "Ticket" : "Tickets";
     let rewardStyle;
@@ -195,6 +209,15 @@ class Status extends Component {
             <CheckBox textWidth={512} onPress={()=>{this.setState({autoBuyTickets:!this.state.autoBuyTickets})}} on={this.state.autoBuyTickets} text="Auto Buy Tickets" subText="Tickets will be repurchased when they expire or when they win rewards"/>
             <CheckBox textWidth={512} onPress={()=>{this.setState({reinvestReward:!this.state.reinvestReward})}} on={this.state.reinvestReward} text="Reinvest Reward" subText="Rewards that are won will be reinvested to purchase more tickets when enough rewards are collected."/>
             <CheckBox textWidth={512} on={this.state.autoBuyStopDate} text="Auto Buy Stop Date" subText="Auto Buy will stop on desired data"/>
+            <TouchableOpacity
+            disabled = {!enabled}
+            onPress={() => {
+            }}
+          >
+            <View>
+              <Text style={btnStyle}>{purchaseText}</Text>
+            </View>
+          </TouchableOpacity>
           </View>
         </View>
       </View>
@@ -621,6 +644,30 @@ class Status extends Component {
     fontWeight : constants.mediumFont,
     color : colors.labelGrey ,
     alignSelf : 'flex-end'
+  },
+  purchaseTicketButtonDisabled : {
+    fontSize: 16,
+    width: 556,
+    borderRadius: 3,
+    fontFamily: constants.fontFamily,
+    fontWeight: constants.regularFont,
+    color: colors.white,
+    backgroundColor: colors.disabledBlue,
+    textAlign: "center",
+    padding: 12,
+    marginTop: 20
+  },
+  purchaseTicketButton: {
+    fontSize: 16,
+    width: 556,
+    borderRadius: 3,
+    fontFamily: constants.fontFamily,
+    fontWeight: constants.regularFont,
+    color: colors.white,
+    backgroundColor: colors.linkBlue,
+    textAlign: "center",
+    padding: 12,
+    marginTop: 20
   }
 });
 
