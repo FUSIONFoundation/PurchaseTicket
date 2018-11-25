@@ -253,6 +253,9 @@ class Status extends Component {
             />
             <CheckBox
               textWidth={512}
+              onPress={() => {
+                this.setState({ autoBuyStopDate: !this.state.autoBuyStopDate });
+              }}
               on={this.state.autoBuyStopDate}
               text="Auto Buy Stop Date"
               subText="Auto Buy will stop on desired data"
