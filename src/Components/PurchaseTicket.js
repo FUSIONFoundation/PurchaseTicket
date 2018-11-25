@@ -128,9 +128,14 @@ class Status extends Component {
               of 2.5 FSN per selected ticket. If your ticket is not selected,
               your FSN will be returned when the ticket expires (30 days after
               purchase).  NOTE: Only one ticket at a time can be purchased per block for an address.
-              <Text style={[styles.infoTextLink, { marginLeft: 4 }]}>
-                Learn More
-              </Text>
+              <TouchableOpacity onPress={()=>{
+                //TODO: once article is up point to it
+                window.open("https://fusion.org")
+              }}>
+                  <Text style={[styles.infoTextLink, { marginLeft: 4 }]}>
+                    Learn More
+                  </Text>
+              </TouchableOpacity>
             </Text>
             <View style={{ height: 20 }} />
             <View style={styles.orderBorder} />
