@@ -2,17 +2,25 @@ import React, { Component } from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
 import colors from "./colors";
 import constants from "./constants";
+import NodeSelect from "./NodeSelect"
+
 var fusionLogo = require("../images/explorer-logo.svg")
+
 
 export default class Header extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Image source={fusionLogo} resizeMode="contain" style={{marginLeft:80,width:129,height:29}}/>
-        <Text style={styles.titleAutoBuy}>Auto Buy Stake</Text>
-        <Text style={styles.programVersion}>1.00.00</Text>
+        <View style={{flex:1,flexDirection:'row',justifyContent:'flex-start', alignItems:'center'}}>
+          <Image source={fusionLogo} resizeMode="contain" style={{marginLeft:80,width:129,height:29}}/>
+          <Text style={styles.titleAutoBuy}>Auto Buy Stake</Text>
+          <Text style={styles.programVersion}>1.00.00</Text>
+        </View>
+        <View style={styles.nodeSelectBox}>
+            <NodeSelect/>
+        </View>
       </View>
-    );
+    )
   }
 }
 
@@ -52,5 +60,10 @@ var styles = StyleSheet.create({
     padding : 1 ,
     marginLeft : 8,
     backgroundColor : colors.grey
+  },
+  nodeSelectBox : {
+    alignSelf : 'center',
+    marginRight : 32,
+    marginLeft : 32
   }
 });
