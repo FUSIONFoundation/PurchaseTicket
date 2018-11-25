@@ -205,7 +205,7 @@ class Status extends Component {
               <Text style={styles.labelLineText}>FSN Available</Text>
               <View>
                 <Text style={styles.stakeTextVal}>
-                  {data.walletBalanceText}
+                  {utils.formatWei(data.walletBalance)}
                   <Text style={styles.stakeTextFSN}>FSN</Text>
                 </Text>
               </View>

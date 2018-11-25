@@ -32,13 +32,21 @@ export default class Utils {
   }
 
   static formatWei( val ) {
+    if ( typeof val === 'object') {
+      val = val.toString()
+    }
     let len = val.length;
-    if ( len < 19 ) {
+    if ( len < 18 ) {
+      val = "0".repeat(18-len) + val
+      len = 18
+    }
+    if ( len === 18 ) {
       val = "." + val
     } else {
       val = Utils.insert( val, val.length - 18, "." )
     }
-    return Utils.removeZeros( val, true, true )
+
+    return Utils.removeZeros( val, true, true , true )
   }
 
   static removeZeros(val, trailing = true, leading = false, decimal = true) {

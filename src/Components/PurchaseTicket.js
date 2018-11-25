@@ -109,7 +109,7 @@ class Status extends Component {
               <Text style={styles.labelLineText}>Funds Available</Text>
               <View>
                 <Text style={styles.statText}>
-                  {data.walletBalanceText}
+                  {utils.formatWei(data.walletBalance)}
                   <Text style={styles.stakeTextFSN}>FSN</Text>
                 </Text>
               </View>
@@ -119,7 +119,7 @@ class Status extends Component {
               <Text style={styles.labelLineText}>Ticket Price</Text>
               <View>
                 <Text style={styles.valText}>
-                  {data.ticketPriceString}
+                  {utils.formatWei(data.ticketPrice)}
                   <Text style={styles.stakeTextFSN}>FSN</Text>
                 </Text>
               </View>
@@ -129,7 +129,7 @@ class Status extends Component {
               <Text style={styles.labelLineText}>Gas Price</Text>
               <View>
                 <Text style={styles.valText}>
-                  {data.gasPriceString}
+                  {utils.formatWei(data.gasPrice)}
                   <Text style={styles.stakeTextFSN}>FSN</Text>
                 </Text>
               </View>
@@ -177,7 +177,7 @@ class Status extends Component {
               </View>
             </View>
             <View> 
-            <Text style={styles.costCalcLineText}>Gas Cost  {this.state.ticketQuantity} x {data.gasPriceString} FSN</Text>
+            <Text style={styles.costCalcLineText}>Gas Cost  {this.state.ticketQuantity} x {utils.formatWei(data.gasPrice)} FSN</Text>
             <View style={{height:16, width:1}}/>
             <View>
                       <Text style={styles.stakeTextVal}>
