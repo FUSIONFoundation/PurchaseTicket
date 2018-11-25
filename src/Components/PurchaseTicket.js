@@ -23,7 +23,7 @@ var styles;
 class Status extends Component {
   // this is what i use for production
   state = {
-      ticketQuantity : 0,
+      ticketQuantity : undefined,
       totalCost : 0 ,
       totalCostString : "0",
       gasCostString : "0",
@@ -60,9 +60,14 @@ class Status extends Component {
       }
     }
 
+    let stakeTextColor;
+
     if ( this.state.error ) {
       enabled = false;
       btnStyle = styles.purchaseTicketButtonDisabled;
+      stakeTextColor = colors.errorRed
+    } else {
+      stakeTextColor = colors.textBlue
     }
 
     let displayPercent =
@@ -150,7 +155,7 @@ class Status extends Component {
                   autoCorrect={false}
                   placeholderTextColor={colors.orderGrey}
                   maxLength={10}
-                  value = {""+this.state.ticketQuantity}
+                  value = {""+(this.state.ticketQuantity||"")}
                   onChangeText={ (val)=> {
                       let x = parseInt(val);
                       if ( !x && (x !== 0 || x < 0) ) {
@@ -188,7 +193,7 @@ class Status extends Component {
             <Text style={styles.costCalcLineText}>Gas Cost  {this.state.ticketQuantity} x {utils.formatWei(data.gasPrice)} FSN</Text>
             <View style={{height:16, width:1}}/>
             <View>
-                      <Text style={styles.stakeTextVal}>
+                      <Text style={[styles.stakeTextVal,{color:stakeTextColor}]}>
                         {this.state.totalCostString}
                         <Text style={styles.stakeTextFSN}>FSN</Text>
                       </Text>
