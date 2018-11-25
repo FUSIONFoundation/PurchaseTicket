@@ -97,6 +97,8 @@ class Status extends Component {
       );
     }
 
+    let borderColor = this.state.error ? colors.errorRed : colors.orderGrey
+
     return (
       <View style={{ marginLeft: 30, backgroundColor: colors.backgroundGrey }}>
         <View style={styles.container}>
@@ -150,7 +152,7 @@ class Status extends Component {
               <Text style={styles.labelLineText}>Ticket Quantity</Text>
               <View>
                 <TextInput
-                  style={styles.ticketQuantityInput}
+                  style={[styles.ticketQuantityInput,{borderColor:borderColor}]}
                   placeholder="0"
                   autoCorrect={false}
                   placeholderTextColor={colors.orderGrey}
@@ -634,7 +636,8 @@ class Status extends Component {
     alignSelf : 'flex-end',
     textAlign : 'right',
     paddingRight : 4,
-    paddingLeft : 4
+    paddingLeft : 4,
+    outline : 'none'
   },
   costCalcLineText : {
     fontFamily : constants.fontFamily,
