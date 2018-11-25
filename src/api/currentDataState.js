@@ -15,7 +15,8 @@ var datablock = {
     signInfo : {
         address : "0x4A5a7Aa4130e407d3708dE56db9000F059200C62",
     },
-    gasPrice : " 0.00053588",
+    gasPriceString : "0.00053588",
+    gasPrice : 0.00053588,
     ticketPrice  : 200,
     ticketPriceString : "200",
     walletBalance : 140122.4333,

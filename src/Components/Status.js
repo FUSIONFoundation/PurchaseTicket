@@ -491,7 +491,8 @@ styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: constants.fontFamily,
     fontWeight: constants.boldFont,
-    alignSelf: "flex-end"
+    alignSelf: "flex-end",
+    color : colors.textBlue,
   },
   dateValue: {
     fontSize: 14,

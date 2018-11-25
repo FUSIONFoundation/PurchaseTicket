@@ -117,7 +117,7 @@ class Status extends Component {
             <View style={styles.stakeDetailRow}>
               <Text style={styles.labelLineText}>Ticket Price</Text>
               <View>
-                <Text style={styles.stakeTextVal}>
+                <Text style={styles.valText}>
                   {data.ticketPriceString}
                   <Text style={styles.stakeTextFSN}>FSN</Text>
                 </Text>
@@ -125,10 +125,10 @@ class Status extends Component {
             </View>
             <View style={styles.orderBorder} />
             <View style={styles.stakeDetailRow}>
-              <Text style={styles.labelLineText}>FSN Staked</Text>
+              <Text style={styles.labelLineText}>Gas Price</Text>
               <View>
-                <Text style={styles.stakeTextVal}>
-                  {this.totalStake(data)}
+                <Text style={styles.valText}>
+                  {data.gasPriceString}
                   <Text style={styles.stakeTextFSN}>FSN</Text>
                 </Text>
               </View>
@@ -418,6 +418,14 @@ styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: constants.fontFamily,
     fontWeight: constants.boldFont,
+    color : colors.textBlue,
+    alignSelf: "flex-end"
+  },
+  valText: {
+    fontSize: 18,
+    fontFamily: constants.fontFamily,
+    fontWeight: constants.mediumFont,
+    color : colors.textBlue,
     alignSelf: "flex-end"
   },
   dateValue: {
