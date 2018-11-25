@@ -40,6 +40,7 @@ class Status extends Component {
 
   constructor(props) {
     super();
+    this.onChangeDate = this.onChangeDate.bind(this)
   }
 
   totalStake(data) {
@@ -266,11 +267,11 @@ class Status extends Component {
               subText="Auto Buy will stop on desired data"
             >
             { this.state.autoBuyStopDate && (
-             <DatePicker onChange={this.onChange} 
-            selected={this.state.date} 
-            minDate={new Date()}
-            showTimeSelect
-            dateFormat="Pp" 
+             <DatePicker onChange={this.onChangeDate} 
+                selected={this.state.date} 
+                minDate={new Date()}
+                showTimeSelect
+                dateFormat="Pp" 
             /> ) }
            </CheckBox>
             <TouchableOpacity disabled={!enabled} onPress={() => {}}>
@@ -290,7 +291,13 @@ class Status extends Component {
     );
   }
 
-  onChange = date => this.setState({ date })
+  onChangeDate ( date ) {
+      let dt = new Date()
+      if ( date.getTime() < dt.getTime() ) {
+        date = dt;
+      }
+      this.setState({ date })
+  }
 
   calcDisplay(data, val) {
     let x = parseInt(val);
@@ -726,7 +733,6 @@ styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     marginRight: 6,
-    color: colors.errorRed,
     alignItems: "center"
   },
   ticketQuantityInput: {
