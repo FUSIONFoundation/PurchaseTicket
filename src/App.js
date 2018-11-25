@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-import { View, Text } from "react-native";
-import logo from "./logo.svg";
+import { View } from "react-native";
 import "./App.css";
 import history from "./history.js";
 import UnlockAccount from "./Components/UnlockAccount.js";

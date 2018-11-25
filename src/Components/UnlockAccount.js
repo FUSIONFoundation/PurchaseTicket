@@ -5,27 +5,17 @@ import {
   Image,
   StyleSheet,
   TextInput,
-  TouchableHighlight,
   TouchableOpacity
 } from "react-native";
-import ActionButton from "./Input/ActionButton.js";
+
 import "../App.css";
 import history from "../history.js";
-import YesNoQuestion from "./Input/YesNoQuestion.js";
-import InputField from "./Input/InputField.js";
-import Border from "./Input/Border.js";
-import ImageUpload from "./Input/ImageUpload.js";
-import CheckBox from "./Input/CheckBox.js";
 import colors from "./colors";
 import constants from "./constants";
-import utils from "../utils";
-import moment, { relativeTimeRounding } from "moment";
-import { connectableObservableDescriptor } from "rxjs/internal/observable/ConnectableObservable";
 import currentDataState from "../api/currentDataState";
 import withSelectFiles from "react-select-files";
 import "font-awesome/css/font-awesome.min.css";
 import web3 from '../api'
-
 var styles;
 
 let radioOn = require("../images/radioOn.svg");
@@ -208,7 +198,6 @@ export default class UnlockAccount extends Component {
             secureTextEntry={this.state.secureEntry}
             placeholderTextColor={colors.orderGrey}
             maxLength={128}
-            autoCorrect={false}
             value = {this.state.password}
             onChangeText={ (val)=> {
                 this.setState( { unlockError : false, password : val, privateKeyOK : val && val.length })
@@ -265,7 +254,6 @@ export default class UnlockAccount extends Component {
             secureTextEntry={this.state.secureEntry}
             placeholderTextColor={colors.orderGrey}
             maxLength={66}
-            autoCorrect={false}
             value={this.state.password}
             onChangeText={(text)=>{
               if ( text.length < 66 ) {
@@ -306,7 +294,7 @@ export default class UnlockAccount extends Component {
   }
 }
 
-var styles = StyleSheet.create({
+styles = StyleSheet.create({
   container: {
     flex: 1,
     flexGrow: 1,
@@ -368,7 +356,6 @@ var styles = StyleSheet.create({
     borderRadius: 4,
     backgroundColor: "white",
     borderWidth: 1,
-    alignItems: "flex-start",
     width: 516,
     height: 48,
     overflow: "visible",

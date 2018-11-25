@@ -7,19 +7,13 @@ import {
   Clipboard,
   TouchableOpacity
 } from "react-native";
-import ActionButton from "./Input/ActionButton.js";
+
 import "../App.css";
 import history from "../history.js";
-import YesNoQuestion from "./Input/YesNoQuestion.js";
-import InputField from "./Input/InputField.js";
-import Border from "./Input/Border.js";
-import ImageUpload from "./Input/ImageUpload.js";
-import CheckBox from "./Input/CheckBox.js";
 import colors from "./colors";
 import constants from "./constants";
 import utils from "../utils";
 import moment from "moment";
-import { connectableObservableDescriptor } from "rxjs/internal/observable/ConnectableObservable";
 import currentDataState from "../api/currentDataState";
 
 var lineGraph = require("../images/lineGraph.svg");
@@ -99,7 +93,7 @@ class Status extends Component {
             <TouchableOpacity onPress={() => {Clipboard.setString(data.signInfo.address)}}>
               <Text style={styles.walletLabelAddress}>
                 {data.signInfo.address}
-                <i style={{ marginLeft: 4 }} class="fa fa-copy" />
+                <i style={{ marginLeft: 4 }} className="fa fa-copy" />
               </Text>
             </TouchableOpacity>
           </View>

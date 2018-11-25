@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
 import colors from "./colors";
 import constants from "./constants";
-import utils from "../utils";
 var fusionLogo = require("../images/explorer-logo.svg")
 
 export default class Header extends Component {

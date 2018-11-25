@@ -40,7 +40,7 @@ export default class CheckBox extends Component {
               {this.props.subText && (
                 <Text
                   style={[
-                    styles.questionSubText,
+                    styles.questionSubText
                     ,
                     { width: this.state.textWidth }
                   ]}

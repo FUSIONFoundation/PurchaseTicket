@@ -2,28 +2,19 @@ import React, { Component } from "react";
 import {
   View,
   Text,
-  Image,
   StyleSheet,
   Clipboard,
   TextInput,
   TouchableOpacity
 } from "react-native";
-import ActionButton from "./Input/ActionButton.js";
+
 import "../App.css";
 import history from "../history.js";
-import YesNoQuestion from "./Input/YesNoQuestion.js";
-import InputField from "./Input/InputField.js";
-import Border from "./Input/Border.js";
-import ImageUpload from "./Input/ImageUpload.js";
 import CheckBox from "./Input/CheckBox.js";
 import colors from "./colors";
 import constants from "./constants";
 import utils from "../utils";
-import moment from "moment";
-import { connectableObservableDescriptor } from "rxjs/internal/observable/ConnectableObservable";
 import currentDataState from "../api/currentDataState";
-
-var lineGraph = require("../images/lineGraph.svg");
 
 var styles;
 
@@ -49,7 +40,6 @@ class Status extends Component {
   }
 
   render() {
-    let disabled = false;
     let data = currentDataState.data;
 
     let btnStyle = styles.purchaseTicketButtonDisabled;
@@ -66,18 +56,6 @@ class Status extends Component {
       }
     }
 
-    let rewardNumber = utils.displayNumber(data.rewardsToDate, 1, true);
-    let ticketText = data.totalTickets === 1 ? "Ticket" : "Tickets";
-    let rewardStyle;
-    let textNumberOfRewardsGivenType;
-    if (rewardNumber.length < 4) {
-      rewardStyle = styles.textNumberOfRewardsGiven;
-      textNumberOfRewardsGivenType = styles.textNumberOfRewardsGivenType;
-    } else {
-      textNumberOfRewardsGivenType = styles.textNumberOfRewardsGivenTypeSmaller;
-      rewardStyle = styles.textNumberOfRewardsGivenSmaller;
-    }
-
     let displayPercent =
       data.totalTickets > 0
         ? utils.displayPercent(data.numberOfTickets / data.totalTickets)
@@ -86,10 +64,6 @@ class Status extends Component {
     if (displayPercent === "0.00" && data.numberOfTickets > 0) {
       displayPercent = "< 0.01";
     }
-
-    let dt = new moment(data.lastUpdateTime);
-
-    let dtDisplay = dt.format("LLLL z");
 
     if (!data.accountUnlocked) {
       return (
@@ -167,11 +141,10 @@ class Status extends Component {
                   autoCorrect={false}
                   placeholderTextColor={colors.orderGrey}
                   maxLength={10}
-                  autoCorrect={false}
                   value = {""+this.state.ticketQuantity}
                   onChangeText={ (val)=> {
                       let x = parseInt(val);
-                      if ( !x && x !== 0 || x < 0 ) {
+                      if ( !x && (x !== 0 || x < 0) ) {
                           x = 0;
                       }
                       this.setState( { ticketQuantity : x })

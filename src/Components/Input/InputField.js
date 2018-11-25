@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, Picker, TextInput, StyleSheet } from 'react-native'
 import CountryList from './CountryList.js'
-import constants from '../constants'
+
 
 var styles;
 
