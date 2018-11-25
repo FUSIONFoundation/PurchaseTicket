@@ -188,28 +188,18 @@ class Status extends Component {
                     maxLength={10}
                     value={"" + (this.state.ticketQuantity || "")}
                     onChangeText={val => {
-                      let x = parseInt(val);
-                      if (!x && (x !== 0 || x < 0)) {
-                        x = 0;
-                      }
-                      let valGas = new BN(x);
-                      valGas = valGas.mul(data.gasPrice);
-                      let valTik = new BN(x);
-                      valTik = valTik.mul(data.ticketPrice);
-                      valGas = valGas.add(valTik);
-                      let totalCostString = utils.formatWei(valGas.toString());
-                      this.setState({
-                        ticketQuantity: x,
-                        totalPrice: valGas,
-                        totalCostString,
-                        error: valGas.gt(data.walletBalance)
-                      });
+                      this.calcDisplay(data,val)
                     }}
                   />
                 </View>
                 <TouchableOpacity
                   onPress={() => {
-                    alert("max it!");
+                    let valGas = new BN(data.gasPrice);
+                    let valTik = new BN(data.ticketPrice);
+                    valTik = valTik.add(valGas);
+                    let num = data.walletBalance.div( valTik );
+                    this.calcDisplay(data,num.toNumber() )
+
                   }}
                 >
                   <Text style={styles.maxIt}>Max Quantity</Text>
@@ -282,6 +272,25 @@ class Status extends Component {
         </View>
       </View>
     );
+  }
+
+  calcDisplay(data,val) {
+    let x = parseInt(val);
+    if (!x && (x !== 0 || x < 0)) {
+      x = 0;
+    }
+    let valGas = new BN(x);
+    valGas = valGas.mul(data.gasPrice);
+    let valTik = new BN(x);
+    valTik = valTik.mul(data.ticketPrice);
+    valGas = valGas.add(valTik);
+    let totalCostString = utils.formatWei(valGas.toString());
+    this.setState({
+      ticketQuantity: x,
+      totalPrice: valGas,
+      totalCostString,
+      error: valGas.gt(data.walletBalance)
+    });
   }
 }
 
