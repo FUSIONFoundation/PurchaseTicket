@@ -15,7 +15,7 @@ import colors from "./colors";
 import constants from "./constants";
 import utils from "../utils";
 import currentDataState from "../api/currentDataState";
-import web3 from '../api/index.js'
+import web3 from "../api/index.js";
 var BN = web3.utils.BN;
 
 var styles;
@@ -23,16 +23,16 @@ var styles;
 class Status extends Component {
   // this is what i use for production
   state = {
-      ticketQuantity : undefined,
-      totalCost : 0 ,
-      totalCostString : "0",
-      gasCostString : "0",
-      ticketCostString : "0",
-      autoBuyTickets : false,
-      reinvestReward : false,
-      autoBuyStopDate : false,
-      totalPrice : new BN(0),
-      error : false
+    ticketQuantity: undefined,
+    totalCost: 0,
+    totalCostString: "0",
+    gasCostString: "0",
+    ticketCostString: "0",
+    autoBuyTickets: false,
+    reinvestReward: false,
+    autoBuyStopDate: false,
+    totalPrice: new BN(0),
+    error: false
   };
 
   constructor(props) {
@@ -48,13 +48,13 @@ class Status extends Component {
 
     let btnStyle = styles.purchaseTicketButtonDisabled;
     let enabled = false;
-    let purchaseText = "Purchase Tickets"
+    let purchaseText = "Purchase Tickets";
 
-    if ( this.state.ticketQuantity > 0 ) {
+    if (this.state.ticketQuantity > 0) {
       btnStyle = styles.purchaseTicketButton;
       enabled = true;
-      if ( this.state.ticketQuantity === 1) {
-         purchaseText = "Purchase 1 Ticket";
+      if (this.state.ticketQuantity === 1) {
+        purchaseText = "Purchase 1 Ticket";
       } else {
         purchaseText = `Purchase ${this.state.ticketQuantity} Tickets`;
       }
@@ -62,12 +62,12 @@ class Status extends Component {
 
     let stakeTextColor;
 
-    if ( this.state.error ) {
+    if (this.state.error) {
       enabled = false;
       btnStyle = styles.purchaseTicketButtonDisabled;
-      stakeTextColor = colors.errorRed
+      stakeTextColor = colors.errorRed;
     } else {
-      stakeTextColor = colors.textBlue
+      stakeTextColor = colors.textBlue;
     }
 
     let displayPercent =
@@ -97,7 +97,7 @@ class Status extends Component {
       );
     }
 
-    let borderColor = this.state.error ? colors.errorRed : colors.orderGrey
+    let borderColor = this.state.error ? colors.errorRed : colors.orderGrey;
 
     return (
       <View style={{ marginLeft: 30, backgroundColor: colors.backgroundGrey }}>
@@ -107,7 +107,11 @@ class Status extends Component {
           </Text>
           <View style={styles.walletBox}>
             <Text style={styles.walletLabel}>Wallet Address</Text>
-            <TouchableOpacity onPress={() => {Clipboard.setString(data.signInfo.address)}}>
+            <TouchableOpacity
+              onPress={() => {
+                Clipboard.setString(data.signInfo.address);
+              }}
+            >
               <Text style={styles.walletLabelAddress}>
                 {data.signInfo.address}
                 <i style={{ marginLeft: 4 }} className="fa fa-copy" />
@@ -115,10 +119,23 @@ class Status extends Component {
             </TouchableOpacity>
           </View>
           <View style={styles.stakeDetailBox}>
-            <Text style={styles.infoText}>Earn rewards by purchasing staking tickets. You will earn a reward of 2.5 FSN per selected ticket. If your ticket is not selected, your FSN will be returned when the ticket expires (30 days after purchase).<Text style={[styles.infoTextLink,{marginLeft:4}]}>Learn More</Text></Text>
+            <Text style={styles.infoText}>
+              Earn rewards by purchasing staking tickets. You will earn a reward
+              of 2.5 FSN per selected ticket. If your ticket is not selected,
+              your FSN will be returned when the ticket expires (30 days after
+              purchase).
+              <Text style={[styles.infoTextLink, { marginLeft: 4 }]}>
+                Learn More
+              </Text>
+            </Text>
             <View style={{ height: 20 }} />
             <View style={styles.orderBorder} />
-            <View style={[styles.fundsDetailRow,{backgroundColor:colors.backgroundGrey}]}>
+            <View
+              style={[
+                styles.fundsDetailRow,
+                { backgroundColor: colors.backgroundGrey }
+              ]}
+            >
               <Text style={styles.labelLineText}>Funds Available</Text>
               <View>
                 <Text style={styles.statText}>
@@ -148,84 +165,127 @@ class Status extends Component {
               </View>
             </View>
             <View style={styles.orderBorder} />
-            <View style={[styles.stakeDetailRow,{height:78}]}>
+            <View style={[styles.stakeDetailRow, { height: 78 }]}>
               <Text style={styles.labelLineText}>Ticket Quantity</Text>
               <View>
-                <TextInput
-                  style={[styles.ticketQuantityInput,{borderColor:borderColor}]}
-                  placeholder="0"
-                  autoCorrect={false}
-                  placeholderTextColor={colors.orderGrey}
-                  maxLength={10}
-                  value = {""+(this.state.ticketQuantity||"")}
-                  onChangeText={ (val)=> {
-                      let x = parseInt(val);
-                      if ( !x && (x !== 0 || x < 0) ) {
-                          x = 0;
-                      }
-                      let valGas =  new BN(x);
-                      valGas = valGas.mul( data.gasPrice );
-                      let valTik = new BN( x );
-                      valTik = valTik.mul( data.ticketPrice )
-                      valGas = valGas.add( valTik )
-                      let totalCostString = utils.formatWei(valGas.toString());
-                      this.setState( { ticketQuantity : x, 
-                            totalPrice : valGas, totalCostString ,
-                           error : valGas.gt(data.walletBalance) })
-                  }}
-          />
-                <TouchableOpacity onPress={()=>{
-                  alert("max it!")
-                }}>
-                    <Text style={styles.maxIt}>
-                        Max Quantity
+                <View style={{flex:1,flexDirection:'row'}}>
+                  {this.state.error && (
+                    <View style={styles.errorForFundsBox}>
+                    <Text style={styles.errorForFunds}>
+                      You don't have enough FSN
                     </Text>
+                    <i style={{position:'relative', left : -1 }} className="fa fa-caret-right"/>
+                    </View>
+                  )}
+                  <TextInput
+                    style={[
+                      styles.ticketQuantityInput,
+                      { borderColor: borderColor }
+                    ]}
+                    placeholder="0"
+                    autoCorrect={false}
+                    placeholderTextColor={colors.orderGrey}
+                    maxLength={10}
+                    value={"" + (this.state.ticketQuantity || "")}
+                    onChangeText={val => {
+                      let x = parseInt(val);
+                      if (!x && (x !== 0 || x < 0)) {
+                        x = 0;
+                      }
+                      let valGas = new BN(x);
+                      valGas = valGas.mul(data.gasPrice);
+                      let valTik = new BN(x);
+                      valTik = valTik.mul(data.ticketPrice);
+                      valGas = valGas.add(valTik);
+                      let totalCostString = utils.formatWei(valGas.toString());
+                      this.setState({
+                        ticketQuantity: x,
+                        totalPrice: valGas,
+                        totalCostString,
+                        error: valGas.gt(data.walletBalance)
+                      });
+                    }}
+                  />
+                </View>
+                <TouchableOpacity
+                  onPress={() => {
+                    alert("max it!");
+                  }}
+                >
+                  <Text style={styles.maxIt}>Max Quantity</Text>
                 </TouchableOpacity>
               </View>
             </View>
             <View style={styles.orderBorder} />
-            <View style={{height:16, width:1}}/>
-            <View style={[styles.stakeDetailRow,{height:30}]}>
+            <View style={{ height: 16, width: 1 }} />
+            <View style={[styles.stakeDetailRow, { height: 30 }]}>
               <Text style={styles.labelLineText}>Total Cost</Text>
               <View>
-                <Text style={styles.costCalcLineText}>Ticket Cost  {this.state.ticketQuantity} x {data.ticketPriceString} FSN</Text>
+                <Text style={styles.costCalcLineText}>
+                  Ticket Cost {this.state.ticketQuantity} x{" "}
+                  {data.ticketPriceString} FSN
+                </Text>
               </View>
             </View>
-            <View> 
-            <Text style={styles.costCalcLineText}>Gas Cost  {this.state.ticketQuantity} x {utils.formatWei(data.gasPrice)} FSN</Text>
-            <View style={{height:16, width:1}}/>
             <View>
-                      <Text style={[styles.stakeTextVal,{color:stakeTextColor}]}>
-                        {this.state.totalCostString}
-                        <Text style={styles.stakeTextFSN}>FSN</Text>
-                      </Text>
-                </View>
+              <Text style={styles.costCalcLineText}>
+                Gas Cost {this.state.ticketQuantity} x{" "}
+                {utils.formatWei(data.gasPrice)} FSN
+              </Text>
+              <View style={{ height: 16, width: 1 }} />
+              <View>
+                <Text style={[styles.stakeTextVal, { color: stakeTextColor }]}>
+                  {this.state.totalCostString}
+                  <Text style={styles.stakeTextFSN}>FSN</Text>
+                </Text>
+              </View>
             </View>
-            <View style={{height:20, width:1}}/>
+            <View style={{ height: 20, width: 1 }} />
             <View style={styles.orderBorder} />
-            <View style={{height:16, width:1}}/>
-            <CheckBox textWidth={512} onPress={()=>{this.setState({autoBuyTickets:!this.state.autoBuyTickets})}} on={this.state.autoBuyTickets} text="Auto Buy Tickets" subText="Tickets will be repurchased when they expire or when they win rewards"/>
-            <CheckBox textWidth={512} onPress={()=>{this.setState({reinvestReward:!this.state.reinvestReward})}} on={this.state.reinvestReward} text="Reinvest Reward" subText="Rewards that are won will be reinvested to purchase more tickets when enough rewards are collected."/>
-            <CheckBox textWidth={512} on={this.state.autoBuyStopDate} text="Auto Buy Stop Date" subText="Auto Buy will stop on desired data"/>
-            <TouchableOpacity
-            disabled = {!enabled}
-            onPress={() => {
-            }}
-          >
-            <View>
-              <Text style={btnStyle}>{purchaseText}</Text>
-            </View>
-          </TouchableOpacity>
-          <View style={{height:16,width:1}}/>
-          <Text style={styles.footerText}>Funds used to purchase tickets will be sent back after tickets have expired. Tickets expire 30 days after date of purchase. Your browser window must remain open to continue autobuy.</Text>
+            <View style={{ height: 16, width: 1 }} />
+            <CheckBox
+              textWidth={512}
+              onPress={() => {
+                this.setState({ autoBuyTickets: !this.state.autoBuyTickets });
+              }}
+              on={this.state.autoBuyTickets}
+              text="Auto Buy Tickets"
+              subText="Tickets will be repurchased when they expire or when they win rewards"
+            />
+            <CheckBox
+              textWidth={512}
+              onPress={() => {
+                this.setState({ reinvestReward: !this.state.reinvestReward });
+              }}
+              on={this.state.reinvestReward}
+              text="Reinvest Reward"
+              subText="Rewards that are won will be reinvested to purchase more tickets when enough rewards are collected."
+            />
+            <CheckBox
+              textWidth={512}
+              on={this.state.autoBuyStopDate}
+              text="Auto Buy Stop Date"
+              subText="Auto Buy will stop on desired data"
+            />
+            <TouchableOpacity disabled={!enabled} onPress={() => {}}>
+              <View>
+                <Text style={btnStyle}>{purchaseText}</Text>
+              </View>
+            </TouchableOpacity>
+            <View style={{ height: 16, width: 1 }} />
+            <Text style={styles.footerText}>
+              Funds used to purchase tickets will be sent back after tickets
+              have expired. Tickets expire 30 days after date of purchase. Your
+              browser window must remain open to continue autobuy.
+            </Text>
           </View>
-         </View>
+        </View>
       </View>
     );
   }
 }
 
- styles = StyleSheet.create({
+styles = StyleSheet.create({
   container: {
     flex: 1,
     flexGrow: 1,
@@ -401,20 +461,20 @@ class Status extends Component {
     fontSize: 12,
     fontWeight: constants.mediumFont,
     color: colors.linkBlue,
-    alignSelf : 'flex-end'
+    alignSelf: "flex-end"
   },
   stakeTextVal: {
     fontSize: 18,
     fontFamily: constants.fontFamily,
     fontWeight: constants.boldFont,
-    color : colors.textBlue,
+    color: colors.textBlue,
     alignSelf: "flex-end"
   },
   valText: {
     fontSize: 18,
     fontFamily: constants.fontFamily,
     fontWeight: constants.mediumFont,
-    color : colors.textBlue,
+    color: colors.textBlue,
     alignSelf: "flex-end"
   },
   dateValue: {
@@ -423,18 +483,18 @@ class Status extends Component {
     fontWeight: constants.regularFont,
     color: colors.textBlue
   },
-  statText : { 
+  statText: {
     fontSize: 18,
     fontFamily: constants.fontFamily,
     fontWeight: constants.mediumFont,
-    color: colors.textBlue,
+    color: colors.textBlue
   },
   infoText: {
     fontSize: 14,
     fontFamily: constants.fontFamily,
     fontWeight: constants.mediumFont,
     color: colors.textGrey,
-    lineHeight : '1.71'
+    lineHeight: "1.71"
   },
   infoTextLink: {
     fontSize: 14,
@@ -621,32 +681,53 @@ class Status extends Component {
     justifyContent: "space-between",
     height: 44
   },
+  errorForFunds: {
+    fontSize: 12,
+    fontWeight: constants.mediumFont,
+    fontFamily: constants.fontFamily,
+    color: colors.white,
+    backgroundColor: colors.errorRed,
+    paddingTop: 6,
+    paddingBottom : 6,
+    paddingLeft : 8,
+    paddingRight : 8,
+    borderRadius: 3,
+    height : 24,
+    alignSelf : 'center',
+  },
+  errorForFundsBox : {
+    flex: 1,
+    flexDirection : 'row',
+    marginRight : 6,
+    color : colors.errorRed,
+    alignItems : 'center'
+  },
   ticketQuantityInput: {
     borderColor: colors.orderGrey,
     borderRadius: 3,
     backgroundColor: "white",
     borderWidth: 1,
-    fontSize : 14,
-    fontFamily : constants.mediumFont,
-    color : colors.labelGrey,
+    fontSize: 14,
+    fontFamily: constants.mediumFont,
+    color: colors.labelGrey,
     height: 36,
     width: 110,
     marginTop: 6,
-    marginBottom : 6,
-    alignSelf : 'flex-end',
-    textAlign : 'right',
-    paddingRight : 4,
-    paddingLeft : 4,
-    outline : 'none'
+    marginBottom: 6,
+    alignSelf: "flex-end",
+    textAlign: "right",
+    paddingRight: 4,
+    paddingLeft: 4,
+    outline: "none"
   },
-  costCalcLineText : {
-    fontFamily : constants.fontFamily,
-    fontSize : 12,
-    fontWeight : constants.mediumFont,
-    color : colors.labelGrey ,
-    alignSelf : 'flex-end'
+  costCalcLineText: {
+    fontFamily: constants.fontFamily,
+    fontSize: 12,
+    fontWeight: constants.mediumFont,
+    color: colors.labelGrey,
+    alignSelf: "flex-end"
   },
-  purchaseTicketButtonDisabled : {
+  purchaseTicketButtonDisabled: {
     fontSize: 16,
     width: 556,
     borderRadius: 3,
@@ -670,11 +751,11 @@ class Status extends Component {
     padding: 12,
     marginTop: 20
   },
-  footerText : {
-    fontSize : 14,
-    fontFamily : constants.fontFamily,
-    fontWeight : constants.mediumFont,
-    color : colors.disabledGrey
+  footerText: {
+    fontSize: 14,
+    fontFamily: constants.fontFamily,
+    fontWeight: constants.mediumFont,
+    color: colors.disabledGrey
   }
 });
 
