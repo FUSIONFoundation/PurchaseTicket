@@ -264,7 +264,7 @@ class Status extends Component {
               }}
               on={this.state.autoBuyStopDate}
               text="Auto Buy Stop Date"
-              subText="Auto Buy will stop on desired data"
+              subText="Auto Buy will stop on desired date"
             >
             { this.state.autoBuyStopDate && (
              <DatePicker onChange={this.onChangeDate} 
