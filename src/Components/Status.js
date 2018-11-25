@@ -15,7 +15,8 @@ import constants from "./constants";
 import utils from "../utils";
 import moment from "moment";
 import currentDataState from "../api/currentDataState";
-
+import web3 from "../api/index.js";
+var BN = web3.utils.BN;
 var lineGraph = require("../images/lineGraph.svg");
 
 var styles;
@@ -29,7 +30,7 @@ class Status extends Component {
   }
 
   totalStake(data) {
-    return data.numberOfTickets * data.ticketPrice;
+    return data.ticketPrice.mul(new BN(data.numberOfTickets));
   }
 
   render() {
@@ -195,7 +196,7 @@ class Status extends Component {
               <Text style={styles.labelLineText}>FSN Staked</Text>
               <View>
                 <Text style={styles.stakeTextVal}>
-                  {this.totalStake(data)}
+                  {utils.formatWei(this.totalStake(data))}
                   <Text style={styles.stakeTextFSN}>FSN</Text>
                 </Text>
               </View>
@@ -215,7 +216,7 @@ class Status extends Component {
               <Text style={styles.labelLineText}>Total FSN</Text>
               <View>
                 <Text style={styles.stakeTextVal}>
-                  {data.walletBalance + this.totalStake(data)}
+                  {utils.formatWei(data.walletBalance.add( this.totalStake(data)))}
                   <Text style={styles.stakeTextFSN}>FSN</Text>
                 </Text>
               </View>
