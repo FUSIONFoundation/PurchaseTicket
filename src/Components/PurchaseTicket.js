@@ -104,18 +104,13 @@ class Status extends Component {
             <Text style={styles.infoText}>Earn rewards by purchasing staking tickets. You will earn a reward of 2.5 FSN per selected ticket. If your ticket is not selected, your FSN will be returned when the ticket expires (30 days after purchase).<Text style={[styles.infoTextLink,{marginLeft:4}]}>Learn More</Text></Text>
             <View style={{ height: 20 }} />
             <View style={styles.orderBorder} />
-            <View style={[styles.stakeDetailRow,{backgroundColor:colors.backgroundGrey}]}>
+            <View style={[styles.fundsDetailRow,{backgroundColor:colors.backgroundGrey}]}>
               <Text style={styles.labelLineText}>Funds Available</Text>
               <View>
-                <Text style={styles.stakeTextVal}>
+                <Text style={styles.statText}>
                   {data.numberOfTickets}
                   <Text style={styles.stakeTextFSN}>FSN</Text>
                 </Text>
-                {data.numberOfTickets > 0 && (
-                  <Text style={styles.viewTicketDetails}>
-                    View Ticket Details
-                  </Text>
-                )}
               </View>
             </View>
             <View style={styles.orderBorder} />
@@ -431,17 +426,22 @@ styles = StyleSheet.create({
     fontWeight: constants.regularFont,
     color: colors.textBlue
   },
+  statText : { 
+    fontSize: 18,
+    fontFamily: constants.fontFamily,
+    fontWeight: constants.mediumFont,
+    color: colors.textBlue,
+  },
   infoText: {
     fontSize: 14,
     fontFamily: constants.fontFamily,
-    fontWeight: constants.regularFont,
+    fontWeight: constants.mediumFont,
     color: colors.textGrey,
-    lineHeight : "1.71"
   },
   infoTextLink: {
     fontSize: 14,
     fontFamily: constants.fontFamily,
-    fontWeight: constants.regularFont,
+    fontWeight: constants.mediumFont,
     color: colors.linkBlue
   },
   orderBorder: {
@@ -614,6 +614,14 @@ styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     height: 56
+  },
+  fundsDetailRow: {
+    flex: 1,
+    flexBasis: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    height: 44
   }
 });
 
