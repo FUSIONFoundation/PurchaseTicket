@@ -36,7 +36,7 @@ class Status extends Component {
   render() {
     let data = currentDataState.data;
 
-    let rewardNumber = utils.displayNumber(data.rewardsToDate, 1, true);
+    let rewardNumber = utils.formatWei(data.rewardsToDate )
     let ticketText = data.totalTickets === 1 ? "Ticket" : "Tickets";
     let rewardStyle;
     let textNumberOfRewardsGivenType;
@@ -186,7 +186,7 @@ class Status extends Component {
               <Text style={styles.labelLineText}>Rewards to Date</Text>
               <View>
                 <Text style={styles.stakeTextVal}>
-                  {data.rewardsToDate.toFixed(2)}
+                  {utils.formatWei(data.rewardsToDate)}
                   <Text style={styles.stakeTextFSN}>FSN</Text>
                 </Text>
               </View>

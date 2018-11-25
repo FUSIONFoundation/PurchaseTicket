@@ -46,7 +46,12 @@ export default class Utils {
       val = Utils.insert( val, val.length - 18, "." )
     }
 
-    return Utils.removeZeros( val, true, true , true )
+    val = Utils.removeZeros( val, true, true , true )
+
+    if ( val.charAt(0) === '.') {
+      return "0" + val;
+    }
+    return val;
   }
 
   static removeZeros(val, trailing = true, leading = false, decimal = true) {
