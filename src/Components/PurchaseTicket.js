@@ -127,7 +127,7 @@ class Status extends Component {
               Earn rewards by purchasing staking tickets. You will earn a reward
               of 2.5 FSN per selected ticket. If your ticket is not selected,
               your FSN will be returned when the ticket expires (30 days after
-              purchase).
+              purchase).  NOTE: Only one ticket at a time can be purchased per block for an address.
               <Text style={[styles.infoTextLink, { marginLeft: 4 }]}>
                 Learn More
               </Text>
