@@ -4,6 +4,62 @@ var web3 = new Web3();
 // var password = "123456"
 // web3.setProvider(new web3.providers.HttpProvider("http://localhost:5488"));
 
+web3apim
+
+web3api.myapp.setNodeAddress( this.state.newNodeAddress )
+
+class myapp {
+	/**
+     * Initiate the event emitter
+     */
+	constructor() {
+		this.eventEmitter = new EventEmitter();
+	}
+	
+	setNodeAddress( newNodeAddress ) {
+
+	}
+
+	/**
+		 * Adds the @listener function to the end of the listeners array
+		 * for the event named @eventName
+		 * Will ensure that only one time the listener added for the event
+		 *
+		 * @param {string} eventName
+		 * @param {function} listener
+		 */
+	  on(eventName, listener) {
+		this.eventEmitter.on(eventName, listener); 
+	  }
+	/**
+		 * Will temove the specified @listener from @eventname list
+		 *
+		 * @param {string} eventName
+		 * @param {function} listener
+		 */
+	  removeEventListener(eventName, listener) {
+		this.eventEmitter.removeListener(eventName, listener);
+	  }
+	/**
+	   * Will emit the event on the evetn name with the @payload
+	   * and if its an error set the @error value
+	   *
+	   * @param {string} event
+	   * @param {object} payload
+	   * @param {boolean} error
+	   */
+	  emit(event, payload, error = false) {
+		this.eventEmitter.emit(event, payload, error);
+	  }
+	/**
+		 * Returns the event emitter
+		 * Used for testing purpose and avoid using this during development
+		 */
+	  getEventEmitter() {
+		return this.eventEmitter;
+	  }
+	}
+
 
 // web3._extend({
 // 	property: 'fsn',
@@ -179,6 +235,8 @@ var web3 = new Web3();
 // 		}),
 // 	]
 // });
+
+web3.myapp = new myapp()
 
 export default web3
 
