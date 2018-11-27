@@ -25,7 +25,6 @@ var NODESELECT_HEIGHT = 44;
 
 export default class NodeSelect extends Component {
   state = {
-    currentNodeAddress: null,
     initedNode: false,
     currentNodeAddress: null,
     newNodeAddress: "",
@@ -71,6 +70,7 @@ export default class NodeSelect extends Component {
           this.state.initedNode = true
           this.state.newNodeAddress = val
           this.state.inputNodeMode = false
+          this.state.connectionError = false
         }
       });
   }
@@ -87,14 +87,24 @@ export default class NodeSelect extends Component {
             this.setState( { testing : false })
         }
         if ( arg[0] === 'connected' ) {
-            this.setState( {testing : false })
-            this.currentNodeAddress = this.newNodeAddress
+            this.setState( { connectionError : false, testing : false, currentNodeAddress : this.state.newNodeAddress  })
+        }
+    } else {
+        if ( arg[0] === 'error' ) {
+            this.state( { connectionError : true })
         }
     }
   }
 
+  setNodeAddress( address ) {
+    web3api.setNodeAddress( address )
+  }
+
   componentDidMount() {
     web3api.on( "connectstatus" , this.connectionListener  );
+    if ( this.state.newNodeAddress && !this.state.testing ) {
+        web3api.setNodeAddress( this.state.newNodeAddress )
+    }
   }
 
   componentWillUnmount() {
@@ -165,8 +175,8 @@ export default class NodeSelect extends Component {
             onKeyPress={a => {
               if (a.charCode === 13) {
                 if (this.state.newNodeAddress) {
-                  this.setState({ testing: true });
-                  web3api.setNodeAddress( this.state.newNodeAddress )
+                  this.setState({ testing: true , connectionError : false });
+                  this.setNodeAddress( this.state.newNodeAddress )
                 } else {
                   this.setState({ inputNodeMode: false });
                 }
