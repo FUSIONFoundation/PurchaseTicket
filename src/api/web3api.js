@@ -64,7 +64,7 @@ export default class web3Api extends Component {
     }
 
     if  ( httpOnly ) {
-
+      // http c
       return;
     }
     

@@ -36,6 +36,8 @@ export default class NodeSelect extends Component {
   constructor(props) {
     super(props);
 
+    this.connectionListener  = this.connectionListener.bind( this )
+
     AsyncStorage.getItem("lastNodeAddress")
       .then(val => {
         if (this.didOneUpdate) {
@@ -76,8 +78,14 @@ export default class NodeSelect extends Component {
     this.didOneUpdate = true;
   }
 
-  connectionListener( name , arg ) {
+  connectionListener( arg , e ) {
     console.log("CONNECTION EVENTS FIRING AWAY", arg)
+    if ( this.state.testing ) {
+        if ( arg[0] === 'error' ) {
+            alert( "Unable to connect to " + this.state.newNodeAddress)
+            this.setState( { testing : false })
+        }
+    }
   }
 
   componentDidMount() {
