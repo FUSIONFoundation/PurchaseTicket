@@ -184,7 +184,7 @@ class Status extends Component {
                         You don't have enough FSN
                       </Text>
                       <i
-                        style={{ position: "relative", left: -1 }}
+                        style={{ position: "relative", left: -1 , color : colors.errorRed}}
                         className="fa fa-caret-right"
                       />
                     </View>
