@@ -35,7 +35,7 @@ class Status extends Component {
     autoBuyStopDate: false,
     totalPrice: new BN(0),
     error: false,
-    date : new Date()
+    date :  new Date( (new Date()).getTime()+(1000*60*60*24))
   };
 
   constructor(props) {
@@ -274,7 +274,7 @@ class Status extends Component {
             { this.state.autoBuyStopDate && (
              <DatePicker onChange={this.onChangeDate} 
                 selected={this.state.date} 
-                minDate={new Date()}
+                minDate={(new Date( (new Date()).getTime()+(1000*60*60*24)))}
                 showTimeSelect
                 dateFormat="Pp" 
             /> ) }
@@ -297,7 +297,7 @@ class Status extends Component {
   }
 
   onChangeDate ( date ) {
-      let dt = new Date()
+      let dt = new Date( (new Date()).getTime()+(1000*60*60*24))
       if ( date.getTime() < dt.getTime() ) {
         date = dt;
       }
