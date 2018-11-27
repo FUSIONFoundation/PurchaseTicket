@@ -67,9 +67,10 @@ export default class NodeSelect extends Component {
             initedNode: true
           });
         } else {
-          this.state.currentNodeAddress = null;
-          this.state.initedNode = true;
-          this.state.newNodeAddress = val;
+          this.state.currentNodeAddress = null
+          this.state.initedNode = true
+          this.state.newNodeAddress = val
+          this.state.inputNodeMode = false
         }
       });
   }
@@ -84,6 +85,10 @@ export default class NodeSelect extends Component {
         if ( arg[0] === 'error' ) {
             alert( "Unable to connect to " + this.state.newNodeAddress)
             this.setState( { testing : false })
+        }
+        if ( arg[0] === 'connected' ) {
+            this.setState( {testing : false })
+            this.currentNodeAddress = this.newNodeAddress
         }
     }
   }
@@ -185,7 +190,28 @@ export default class NodeSelect extends Component {
         </TouchableOpacity>
       );
     }
-    return <Text>{this.state.currentNodeAddress}</Text>;
+
+    let nodeString = this.state.currentNodeAddress;
+    if (nodeString.length > 18) {
+      nodeString = nodeString.substr(0, 15) + "..."
+    }
+
+     return (
+        <View style={styles.inputBackground}>
+          <View
+            style={{
+              flex: 1,
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center"
+            }}
+          >
+            <Text style={[styles.testingNode, { marginRight: 4 }]}>
+              {nodeString}
+            </Text>
+          </View>
+          </View>
+        )
   }
 }
 

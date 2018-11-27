@@ -37,6 +37,11 @@ export default class web3Api extends Component {
 
     this.lastNodeAddress = newNodeAddress
 
+    if ( this.nextMonitorCall ) {
+      clearTimeout( this.nextMonitorCall )
+      this.nextMonitorCall = null
+    }
+
     if (newNodeAddress.indexOf("ws") === 0) {
       try {
         this.provider = new _web3.providers.WebsocketProvider(newNodeAddress);
@@ -51,6 +56,7 @@ export default class web3Api extends Component {
         console.log("blockchain connected");
         this.connectedOnce = true
         this.emit( 'connectstatus', ["connected"] , null )
+        this.setupMonitor()
       });
     } else {
       this.provider = new _web3.providers.HttpProvider(newNodeAddress);
@@ -65,6 +71,13 @@ export default class web3Api extends Component {
 
     if  ( httpOnly ) {
       // http c
+      this._web3.eth.getBlockNumber().then( (block)=> {
+        this.emit( 'connectstatus', ["connected", block] , null )
+        this.setupMonitor()
+        }).
+        catch( (e) => {
+          this.emit( 'connectstatus', ["error"] , e )
+        })
       return;
     }
     
@@ -85,6 +98,24 @@ export default class web3Api extends Component {
         }
       }, 1);
     });
+  }
+
+  setupMonitor() {
+    let nextMonitorCall 
+    this._web3.eth.getBlockNumber().then( (block)=> {
+       
+       
+      }).
+      catch( (e) => {
+        if ( nextMonitorCall === this.setupMonitor ) {
+          this.emit( 'connectstatus', ["error"] , e )
+        }
+        
+      })
+      this.nextMonitorCall = setTimeout( ()=> {
+        this.setupMonitor()
+      }, 5 * 1000 )
+      nextMonitorCall = this.nextMonitorCall
   }
 
   /**
