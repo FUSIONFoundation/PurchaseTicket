@@ -15,6 +15,8 @@ export default class web3Api extends Component {
     this.eventEmitter = new EventEmitter();
     this._web3 = null
     this.provider = null
+    this.connectedOnce = false
+    this.lastNodeAddress = ""
   }
 
   static get web3() {
@@ -28,11 +30,26 @@ export default class web3Api extends Component {
     let httpOnly
 
     console.log("Attempting connect");
+
+    if ( this.connectedOnce && newNodeAddress !== this.lastNodeAddress ) {
+      this.connectedOnce = false;
+    }
+
+    this.lastNodeAddress = newNodeAddress
+
     if (newNodeAddress.indexOf("ws") === 0) {
-      this.provider = new _web3.providers.WebsocketProvider(newNodeAddress);
+      try {
+        this.provider = new _web3.providers.WebsocketProvider(newNodeAddress);
+      } catch ( e ) {
+        setTimeout( ()=> {
+          this.emit( 'connectstatus', ["error"] , e )
+        }, 1)
+        return
+      }
       httpOnly = false
       this.provider.on("connect", function() {
         console.log("blockchain connected");
+        this.connectedOnce = true
         this.emit( 'connectstatus', ["connected"] , null )
       });
     } else {
@@ -63,7 +80,9 @@ export default class web3Api extends Component {
       );
       setTimeout(() => { 
         this.emit( 'connectstatus', ["disconnected"] , null )
-        this.setNodeAddress(newNodeAddress) 
+        if ( this.connectedOnce === true ) {
+          this.setNodeAddress(newNodeAddress) 
+        }
       }, 1);
     });
   }

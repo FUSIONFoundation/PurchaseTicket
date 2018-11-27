@@ -77,7 +77,7 @@ export default class NodeSelect extends Component {
   }
 
   connectionListener( name , arg ) {
-    console.log("CONNECTION EVENTS FIRING AWAY")
+    console.log("CONNECTION EVENTS FIRING AWAY", arg)
   }
 
   componentDidMount() {
