@@ -64,7 +64,7 @@ export default class NodeSelect extends Component {
     render() {
         currentNodeAddress = AsyncStorage.getItem( "lastNodeAddress")
 
-        if ( !this.state.currentNodeAddress  ) {
+        if ( this.state.error  ) {
             return <TouchableOpacity onPress={ ()=> {
                     this.setState( { error : undefined } )
             }}>
@@ -90,7 +90,7 @@ export default class NodeSelect extends Component {
             onBlur={()=>{
                 this.setState( { inputNodeMode : false } )
             }}
-            handleKeyDown={(a)=>{
+            handlekeydown={(a)=>{
                 this.setState( { inputNodeMode : false } )
                 if ( a.keyCode = 27 ) {
                     alert("escape the node")
@@ -132,6 +132,24 @@ styles = StyleSheet.create({
       alignItems: "center",
       width: "100%"
     },
+    errorBackground : {
+        width: NODESELECT_WIDTH,
+        height : NODESELECT_HEIGHT,
+        borderRadius: 3,
+        backgroundColor: colors.errorRed,
+        flex: 1,
+        flexGrow: 1,
+        flexShrink: 0,
+        flexBasis: "auto",
+        justifyContent : 'center',
+        alignItems : 'center',
+        justifyContent : 'center',
+    }, 
+    errorText : {
+        fontSize: 12,
+        fontFamily: constants.mediumFont,
+        color: colors.white,
+    },
     nodeInput : {
         borderColor: colors.orderGrey,
         borderRadius: 3,
@@ -144,7 +162,8 @@ styles = StyleSheet.create({
         height : NODESELECT_HEIGHT - 12,
         outline: "none",
         paddingLeft : 4,
-        paddingRight : 4
+        paddingRight : 4,
+        //clearButtonMode : 'always'
     },
     inputBackground : {
         width: NODESELECT_WIDTH,
@@ -158,7 +177,6 @@ styles = StyleSheet.create({
         justifyContent : 'center',
         alignItems : 'center',
         justifyContent : 'center',
-        clearButtonMode : 'always'
     },
     selectNode: {
         fontSize: 14,
