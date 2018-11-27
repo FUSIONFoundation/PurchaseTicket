@@ -15,7 +15,7 @@ import colors from "./colors";
 import constants from "./constants";
 import currentDataState from "../api/currentDataState";
 import "font-awesome/css/font-awesome.min.css";
-import web3api from "../api";
+var web3api = currentDataState.web3api
 var styles;
 
 var currentNodeAddress;
@@ -81,11 +81,11 @@ export default class NodeSelect extends Component {
   }
 
   componentDidMount() {
-    web3api.myapp.addListener( "connectstatus" , this.connectionListener  );
+    web3api.on( "connectstatus" , this.connectionListener  );
   }
 
   componentWillUnmount() {
-    web3api.myapp.removeListener( "connectstatus" , this.connectionListener  );
+    web3api.removeEventListener( "connectstatus" , this.connectionListener  );
   }
 
   render() {
@@ -153,7 +153,7 @@ export default class NodeSelect extends Component {
               if (a.charCode === 13) {
                 if (this.state.newNodeAddress) {
                   this.setState({ testing: true });
-                  web3api.myapp.setNodeAddress( this.state.newNodeAddress )
+                  web3api.setNodeAddress( this.state.newNodeAddress )
                 } else {
                   this.setState({ inputNodeMode: false });
                 }

@@ -17,8 +17,8 @@ import utils from "../utils";
 import currentDataState from "../api/currentDataState";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import web3 from "../api/index.js";
-var BN = web3.utils.BN;
+
+var BN = currentDataState.data.BN
 
 var styles;
 

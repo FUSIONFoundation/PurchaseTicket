@@ -15,8 +15,9 @@ import constants from "./constants";
 import currentDataState from "../api/currentDataState";
 import withSelectFiles from "react-select-files";
 import "font-awesome/css/font-awesome.min.css";
-import web3 from '../api'
+var web3api = currentDataState.web3api
 var styles;
+
 
 let radioOn = require("../images/radioOn.svg");
 let radioOff = require("../images/radioOff.svg");
@@ -113,14 +114,14 @@ export default class UnlockAccount extends Component {
                     try {
                       let obj = this.state.keyData
                       currentDataState.data.accountUnlocked = true
-                      currentDataState.data.signInfo = web3.eth.accounts.decrypt( {crypto:obj.Crypto, version:obj.version}, this.state.password )
+                      currentDataState.data.signInfo = web3api.web.eth.accounts.decrypt( {crypto:obj.Crypto, version:obj.version}, this.state.password )
                     } catch (e) {
                       this.setState( { unlockError : true } );
                       return;
                     }
               } else {
                 currentDataState.data.accountUnlocked = true
-                currentDataState.data.signInfo = web3.eth.accounts.privateKeyToAccount(this.state.password);
+                currentDataState.data.signInfo = web3api.web3.eth.accounts.privateKeyToAccount(this.state.password);
               }
               history.push('/Status')
             }}
@@ -260,7 +261,7 @@ export default class UnlockAccount extends Component {
                 this.setState( { privateKeyOK : false , password : text })
               } else {
                 this.setState( { privateKeyOK : 
-                  web3.utils.isHexStrict( text )
+                  web3api.web3.utils.isHexStrict( text )
                   , password : text })
               }
             }}

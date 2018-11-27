@@ -1,9 +1,13 @@
 import moment from 'moment'
 
-import web3 from './index.js'
-var BN = web3.utils.BN;
+import web3api from './web3api.js'
+let web3interface = new web3api();
+
+var BN = web3api.web3.utils.BN;
 
 var datablock = {
+    web3api : web3interface,
+    BN,
     accountUnlocked : true,
     autoBuyOn: false,
     balanceOfFSN: 0,
@@ -30,6 +34,12 @@ console.log("WE" , datablock.walletBalance.toString() )
 
 export default class currentDataState
 {
+    static get BN() {
+        return BN
+    }
+    static get web3api() {
+        return web3interface
+    }
     static get data() {
         return datablock
     }

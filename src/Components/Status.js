@@ -15,8 +15,8 @@ import constants from "./constants";
 import utils from "../utils";
 import moment from "moment";
 import currentDataState from "../api/currentDataState";
-import web3 from "../api/index.js";
-var BN = web3.utils.BN;
+var BN = currentDataState.BN
+
 var lineGraph = require("../images/lineGraph.svg");
 
 var styles;
@@ -35,6 +35,10 @@ class Status extends Component {
 
   render() {
     let data = currentDataState.data;
+
+    if ( !BN ) {
+      BN = currentDataState.BN
+    }
 
     let rewardNumber = utils.formatWei(data.rewardsToDate )
     let ticketText = data.totalTickets === 1 ? "Ticket" : "Tickets";
