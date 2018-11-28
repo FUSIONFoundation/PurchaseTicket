@@ -70,7 +70,7 @@ export default class BlockDisplayer extends Component {
        
             <View style={styles.blockDetailRow}>
               <Text style={styles.labelLineText}>Time Stamp</Text>
-              <Text style={styles.stakeTextFSN}>{block.timestamp}</Text>
+              <Text style={styles.stakeTextFSN}>({block.timestamp})  { (new Date(block.timestamp*1000)).toString()}</Text>
             </View>
             <View style={styles.orderBorder} />
             <View style={styles.blockDetailRow}>
