@@ -24,7 +24,7 @@ var styles;
 
 class Status extends Component {
   // this is what i use for production
-  state = {};
+  state = { paintKey : 0};
 
   constructor(props) {
     super();
@@ -37,14 +37,15 @@ class Status extends Component {
 
   balanceListener( balanceInfo ) {
     currentDataState.setBalanceInfo( balanceInfo )
+    this.setState( { paintKey : this.state.paintKey + 1})
   }
 
   componentDidMount() {
-    web3api.on("balanceInfo", this.balanceListener);
+    currentDataState.web3api.on("balanceInfo", this.balanceListener);
   }
 
   componentWillUnmount() {
-    web3api.removeEventListener("balanceInfo", this.connectionListener);
+    currentDataState.web3api.removeEventListener("balanceInfo", this.balanceListener);
   }
 
   render() {

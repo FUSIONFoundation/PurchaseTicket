@@ -33,6 +33,7 @@ class Status extends Component {
     autoBuyStopDate: false,
     totalPrice: new BN(0),
     error: false,
+    repaintKey : 0,
     date: new Date(new Date().getTime() + 1000 * 60 * 60 * 24)
   };
 
@@ -48,14 +49,15 @@ class Status extends Component {
 
   balanceListener( balanceInfo ) {
     currentDataState.setBalanceInfo( balanceInfo )
+    this.setState( { repaintKey : this.state.repaintKey + 1 })
   }
 
   componentDidMount() {
-    web3api.on("balanceInfo", this.balanceListener);
+    currentDataState.web3api.on("balanceInfo", this.balanceListener);
   }
 
   componentWillUnmount() {
-    web3api.removeEventListener("balanceInfo", this.connectionListener);
+    currentDataState.web3api.removeEventListener("balanceInfo", this.balanceListener);
   }
 
   render() {
@@ -64,6 +66,10 @@ class Status extends Component {
     let btnStyle = styles.purchaseTicketButtonDisabled;
     let enabled = false;
     let purchaseText = "Purchase Tickets";
+
+    if ( data.accountUnlocked ) {
+      data.web3api.walletAddress = data.signInfo.address;
+    }
 
     if (this.state.ticketQuantity > 0) {
       btnStyle = styles.purchaseTicketButton;

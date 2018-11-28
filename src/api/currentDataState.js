@@ -44,7 +44,12 @@ export default class currentDataState {
   }
 
   static setBalanceInfo( balanceInfo ) {
-      debugger
       console.log( "balance info ",  balanceInfo )
+      if (balanceInfo.ticketPrice) {
+        datablock.ticketPrice = new BN( balanceInfo.ticketPrice )
+      }
+      if ( balanceInfo.allBalances ) {
+          datablock.walletBalance = new BN( balanceInfo.allBalances["0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"])
+      }
   }
 }

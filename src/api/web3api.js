@@ -134,10 +134,10 @@ export default class web3Api extends Component {
           return this._web3.fsn.getAllBalances(walletAddress).then( ( res )=>{
             console.log("all balances", res );
             return res
-          }).then( (timeLockBalances) => {
+          }).then( (allBalances) => {
               return this._web3.fsn.allTicketsByAddress(walletAddress).then( (res) => {
                   console.log("all tickets" , res )
-                  return { timeLockBalances , res }
+                  return { allBalances , allTickets: res }
               })
           }).then( (loadsOfInfo) => {
               return this._web3.fsn.ticketPrice().then( (res)=> {
