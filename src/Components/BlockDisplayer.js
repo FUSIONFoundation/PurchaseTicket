@@ -39,7 +39,7 @@ export default class BlockDisplayer extends Component {
             this.setState({ expand: true });
           }}
         >
-          <View style={styles.stakeDetailBox}>
+          <View style={styles.stakeDetailSmall}>
             <Text>
               Latest Block Number = {block.number}
               <i
@@ -65,7 +65,9 @@ export default class BlockDisplayer extends Component {
                 className="fa fa-caret-up"
               />
             </Text>
+            <View style={{height:8,width:1}}/>
             <View style={styles.orderBorder} />
+       
             <View style={styles.blockDetailRow}>
               <Text style={styles.labelLineText}>Time Stamp</Text>
               <Text style={styles.stakeTextFSN}>{block.timestamp}</Text>
@@ -159,7 +161,23 @@ var styles = StyleSheet.create({
     backgroundColor: "white",
     borderWidth: 1,
     width: 620,
-    padding: 32,
+    paddingRight : 32,
+    paddingTop : 12,
+    paddingBottom : 12,
+    paddingLeft : 32,
+    flex: 1,
+    flexBasis: "100%",
+    marginTop: 24,
+    overflow: "visible",
+    boxShadow: "0 2px 0 0 rgba(189, 196, 206, 0.2)"
+  },
+  stakeDetailSmall : {
+    borderColor: colors.orderGrey,
+    borderRadius: 3,
+    backgroundColor: "white",
+    borderWidth: 1,
+    width: 620,
+    padding: 12,
     flex: 1,
     flexBasis: "100%",
     marginTop: 24,
