@@ -15,7 +15,7 @@ import colors from "./colors";
 import constants from "./constants";
 import currentDataState from "../api/currentDataState";
 import "font-awesome/css/font-awesome.min.css";
-var web3api = currentDataState.web3api
+var web3api = currentDataState.web3api;
 var styles;
 
 var currentNodeAddress;
@@ -28,92 +28,95 @@ export default class NodeSelect extends Component {
     initedNode: false,
     currentNodeAddress: null,
     newNodeAddress: "",
-    error:  null,
+    error: null,
     testing: false
   };
 
   constructor(props) {
     super(props);
 
-    this.connectionListener  = this.connectionListener.bind( this )
+    this.connectionListener = this.connectionListener.bind(this);
 
-    var val = window.localStorage.getItem( "address1" )
-    var error = null
+    var val = window.localStorage.getItem("address1");
+    var error = null;
     {
-          debugger
-          if ( !error ) {
-            if (this.didOneUpdate) {
-            if (!val) {
-                val = "";
-            }
-            this.setState({
-                newNodeAddress: val,
-                currentNodeAddress: val,
-                initedNode: true
-            });
-            } else {
-            if (!val) {
-                val = "";
-            }
-            this.state.currentNodeAddress = val;
-            this.state.newNodeAddress = val;
-            this.state.initedNode = true;
-            }
-            return
-        }
-    
-        val = "";
+      if (!error) {
         if (this.didOneUpdate) {
+          if (!val) {
+            val = "";
+          }
           this.setState({
             newNodeAddress: val,
-            currentNodeAddress: null,
+            currentNodeAddress: val,
             initedNode: true
           });
         } else {
-          this.state.currentNodeAddress = null
-          this.state.initedNode = true
-          this.state.newNodeAddress = val
-          this.state.inputNodeMode = false
-          this.state.connectionError = false
+          if (!val) {
+            val = "";
+          }
+          this.state.currentNodeAddress = val;
+          this.state.newNodeAddress = val;
+          this.state.initedNode = true;
         }
+        return;
       }
+
+      val = "";
+      if (this.didOneUpdate) {
+        this.setState({
+          newNodeAddress: val,
+          currentNodeAddress: null,
+          initedNode: true
+        });
+      } else {
+        this.state.currentNodeAddress = null;
+        this.state.initedNode = true;
+        this.state.newNodeAddress = val;
+        this.state.inputNodeMode = false;
+        this.state.connectionError = false;
+      }
+    }
   }
 
   componentDidUpdate(prevProps) {
     this.didOneUpdate = true;
   }
 
-  connectionListener( arg , e ) {
-    console.log("CONNECTION EVENTS FIRING AWAY", arg)
-    if ( this.state.testing ) {
-        if ( arg[0] === 'error' ) {
-            alert( "Unable to connect to " + this.state.newNodeAddress)
-            this.setState( { testing : false })
-        }
-        if ( arg[0] === 'connected' ) {
-            this.setState( { connectionError : false, testing : false, currentNodeAddress : this.state.newNodeAddress  })
-            window.localStorage.setItem( "address1", this.state.newNodeAddress )
-        }
+  connectionListener(arg, e) {
+    console.log("CONNECTION EVENTS FIRING AWAY", arg);
+    if (this.state.testing) {
+      if (arg[0] === "error") {
+        alert("Unable to connect to " + this.state.newNodeAddress);
+        this.setState({ testing: false });
+      }
+      if (arg[0] === "connected") {
+        this.setState({
+          connectionError: false,
+          testing: false,
+          currentNodeAddress: this.state.newNodeAddress
+        });
+        window.localStorage.setItem("address1", this.state.newNodeAddress);
+      }
     } else {
-        if ( arg[0] === 'error' ) {
-            this.state( { connectionError : true })
-        }
+      if (arg[0] === "error") {
+        this.state({ connectionError: true });
+      }
     }
   }
 
-  setNodeAddress( address ) {
-    web3api.setNodeAddress( address )
+  setNodeAddress(address) {
+    web3api.setNodeAddress(address);
   }
 
   componentDidMount() {
-    web3api.on( "connectstatus" , this.connectionListener  );
-    if ( this.state.newNodeAddress && !this.state.testing ) {
-        web3api.setNodeAddress( this.state.newNodeAddress )
+    web3api.on("connectstatus", this.connectionListener);
+    if (this.state.newNodeAddress && !this.state.testing) {
+      web3api.setNodeAddress(this.state.newNodeAddress);
     }
   }
 
   componentWillUnmount() {
-    web3api.removeEventListener( "connectstatus" , this.connectionListener  );
+    web3api.removeEventListener("connectstatus", this.connectionListener);
   }
 
   render() {
@@ -122,7 +125,7 @@ export default class NodeSelect extends Component {
     if (this.state.testing) {
       let nodeString = this.state.newNodeAddress;
       if (nodeString.length > 18) {
-        nodeString = nodeString.substr(0, 15) + "..."
+        nodeString = nodeString.substr(0, 15) + "...";
       }
       return (
         <View style={styles.testingBackground}>
@@ -180,8 +183,8 @@ export default class NodeSelect extends Component {
             onKeyPress={a => {
               if (a.charCode === 13) {
                 if (this.state.newNodeAddress) {
-                  this.setState({ testing: true , connectionError : false });
-                  this.setNodeAddress( this.state.newNodeAddress )
+                  this.setState({ testing: true, connectionError: false });
+                  this.setNodeAddress(this.state.newNodeAddress);
                 } else {
                   this.setState({ inputNodeMode: false });
                 }
@@ -208,11 +211,20 @@ export default class NodeSelect extends Component {
 
     let nodeString = this.state.currentNodeAddress;
     if (nodeString.length > 18) {
-      nodeString = nodeString.substr(0, 15) + "..."
+      nodeString = nodeString.substr(0, 15) + "...";
     }
 
-     return (
-        <View style={styles.inputBackground}>
+    return (
+      <TouchableOpacity
+        onPress={() => {
+          this.setState({ inputNodeMode: true });
+        }}
+      >
+        <View
+          style={
+            this.state.error ? styles.errorBackground : styles.inputBackground
+          }
+        >
           <View
             style={{
               flex: 1,
@@ -221,12 +233,18 @@ export default class NodeSelect extends Component {
               alignItems: "center"
             }}
           >
-            <Text style={[styles.testingNode, { marginRight: 4 }]}>
+            {
+                !this.state.error && (
+                    <i key ="c11" className="fa fa-check-circle" style={{color:colors.successGreen,marginRight:4}}/>
+                )
+            }
+            <Text style={[styles.selectNode, { marginRight: 4 }]}>
               {nodeString}
             </Text>
           </View>
-          </View>
-        )
+        </View>
+      </TouchableOpacity>
+    );
   }
 }
 
@@ -251,7 +269,6 @@ styles = StyleSheet.create({
     flexBasis: "auto",
     justifyContent: "center",
     alignItems: "center",
-    justifyContent: "center"
   },
   errorText: {
     fontSize: 12,
@@ -269,8 +286,8 @@ styles = StyleSheet.create({
     width: NODESELECT_WIDTH - 32,
     height: NODESELECT_HEIGHT - 12,
     outline: "none",
-    paddingLeft: 4,
-    paddingRight: 4,
+    paddingLeft: 2,
+    paddingRight: 2,
     paddingTop: 4,
     paddingBottom: 4
     //clearButtonMode : 'always'
@@ -286,17 +303,16 @@ styles = StyleSheet.create({
     flexBasis: "auto",
     justifyContent: "center",
     alignItems: "center",
-    justifyContent: "center",
     overflow: "hidden"
   },
-  testingNode : {
+  testingNode: {
     fontSize: 12,
     fontFamily: constants.fontFamily,
     fontWeight: constants.regularFont,
     color: colors.black,
     textAlign: "center"
   },
-  testingBackground : {
+  testingBackground: {
     width: NODESELECT_WIDTH,
     height: NODESELECT_HEIGHT,
     borderRadius: 3,
@@ -305,7 +321,6 @@ styles = StyleSheet.create({
     flexGrow: 1,
     flexShrink: 0,
     flexBasis: "auto",
-    justifyContent: "center",
     alignItems: "center",
     justifyContent: "center",
     overflow: "hidden"
