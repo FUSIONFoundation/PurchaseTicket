@@ -12,7 +12,7 @@ var datablock = {
   autoBuyOn: false,
   balanceOfFSN: 0,
   numberOfTicketsToPurchase: 0,
-  numberOfTickets: 50,
+  numberOfTickets: 0,
   autoBuy: false,
   autoReinvestReward: false,
   probablity: 0.23,
@@ -53,6 +53,9 @@ export default class currentDataState {
       }
       if ( balanceInfo.gasPrice ) {
           datablock.gasPrice = new BN( balanceInfo.gasPrice )
+      }
+      if ( balanceInfo.allTickets ) {
+          datablock.numberOfTickets = Object.keys(balanceInfo.allTickets).length
       }
   }
 }
