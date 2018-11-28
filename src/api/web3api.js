@@ -148,6 +148,10 @@ export default class web3Api extends Component {
               return this._web3.eth.getGasPrice().then( (gasPrice) => {
                 return Object.assign( loadsOfInfo , { gasPrice })
               })
+          }).then( (loadsOfInfo) => {
+            return this._web3.fsn.totalNumberOfTickets().then( (totalTickets) => {
+              return Object.assign( loadsOfInfo , { totalTickets })
+            })
           }).then( (loadsOfInfo ) => {
               this.emit( "balanceInfo", loadsOfInfo, false )
           })

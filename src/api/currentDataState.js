@@ -15,8 +15,7 @@ var datablock = {
   numberOfTickets: 0,
   autoBuy: false,
   autoReinvestReward: false,
-  probablity: 0.23,
-  totalTickets: 900,
+  totalTickets: 0,
   rewardsToDate: new BN("678" + "0".repeat(18)),
   lastUpdateTime: new Date(),
   signInfo: {
@@ -56,6 +55,9 @@ export default class currentDataState {
       }
       if ( balanceInfo.allTickets ) {
           datablock.numberOfTickets = Object.keys(balanceInfo.allTickets).length
+      }
+      if ( balanceInfo.totalTickets ) {
+          datablock.totalTickets =  Object.keys(balanceInfo.allTickets).length
       }
   }
 }
