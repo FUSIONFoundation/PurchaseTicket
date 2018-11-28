@@ -28,8 +28,6 @@ class Status extends Component {
     ticketQuantity: undefined,
     totalCost: 0,
     totalCostString: "0",
-    gasCostString: "0",
-    ticketCostString: "0",
     autoBuyTickets: false,
     reinvestReward: false,
     autoBuyStopDate: false,
@@ -41,10 +39,23 @@ class Status extends Component {
   constructor(props) {
     super();
     this.onChangeDate = this.onChangeDate.bind(this);
+    this.balanceListener = this.balanceListener.bind(this)
   }
 
   totalStake(data) {
     return data.numberOfTickets * data.ticketPrice;
+  }
+
+  balanceListener( balanceInfo ) {
+    currentDataState.setBalanceInfo( balanceInfo )
+  }
+
+  componentDidMount() {
+    web3api.on("balanceInfo", this.balanceListener);
+  }
+
+  componentWillUnmount() {
+    web3api.removeEventListener("balanceInfo", this.connectionListener);
   }
 
   render() {

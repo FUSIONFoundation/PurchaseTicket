@@ -42,4 +42,9 @@ export default class currentDataState {
   static get data() {
     return datablock;
   }
+
+  static setBalanceInfo( balanceInfo ) {
+      debugger
+      console.log( "balance info ",  balanceInfo )
+  }
 }

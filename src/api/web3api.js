@@ -18,6 +18,8 @@ export default class web3Api extends Component {
     this.lastNodeAddress = "";
     this.attempForMonitor = 0;
     this.lastBlock = {};
+
+    this.setupMonitor = this.setupMonitor.bind( this )
   }
 
   static get web3() {
@@ -65,7 +67,8 @@ export default class web3Api extends Component {
     }
 
     if (!this._web3) {
-      this._web3 = new _web3(this.provider);
+      let w3 = web3FusionExtensons( new _web3(this.provider) );
+      this._web3 = w3;
     } else {
       this._web3.setProvider(this.provider);
     }
@@ -79,6 +82,7 @@ export default class web3Api extends Component {
           this.setupMonitor();
         })
         .catch(e => {
+          console.log( "error web3api connect ", e )
           this.emit("connectstatus", ["error"], e);
         });
       return;
@@ -103,7 +107,16 @@ export default class web3Api extends Component {
     });
   }
 
+  set walletAddress (address) {
+    this._walletAddress = address;
+  }
+
+  get walletAddress () {
+    return this._walletAddress
+  }
+
   setupMonitor() {
+    let walletAddress = this._walletAddress
     this.attempForMonitor += 1;
     let nextMonitorCall = this.attempForMonitor;
     console.log("checking connection ");
@@ -114,7 +127,27 @@ export default class web3Api extends Component {
           this.lastBlock = block;
           console.log(block);
           this.emit("latestBlock", block);
+
+          if ( !walletAddress || walletAddress != this._walletAddress ) {
+            return true;
+          }
+          return this._web3.fsn.getAllBalances(walletAddress).then( ( res )=>{
+            console.log("all balances", res );
+            return res
+          }).then( (timeLockBalances) => {
+              return this._web3.fsn.allTicketsByAddress(walletAddress).then( (res) => {
+                  console.log("all tickets" , res )
+                  return { timeLockBalances , res }
+              })
+          }).then( (loadsOfInfo) => {
+              return this._web3.fsn.ticketPrice().then( (res)=> {
+                return Object.assign( loadsOfInfo , { ticketPrice : res })
+              })
+          }).then( (loadsOfInfo ) => {
+              this.emit( "balanceInfo", loadsOfInfo, false )
+          })
         }
+      }).then( ( res ) => {
         setTimeout(() => {
           this.setupMonitor();
         }, 5 * 1000);
@@ -171,180 +204,511 @@ export default class web3Api extends Component {
   }
 }
 
-// _web3._extend({
-// 	property: 'fsn',
-// 	methods: [
-// 		new _web3._extend.Method({
-// 			name: 'getBalance',
-// 			call: 'fsn_getBalance',
-// 			params: 3,
-// 			inputFormatter: [
-// 				null,
-// 				_web3._extend.formatters.inputAddressFormatter,
-// 				_web3._extend.formatters.inputDefaultBlockNumberFormatter
-// 			]
-// 		}),
-// 		new _web3._extend.Method({
-// 			name: 'getAllBalances',
-// 			call: 'fsn_getAllBalances',
-// 			params: 2,
-// 			inputFormatter: [
-// 				_web3._extend.formatters.inputAddressFormatter,
-// 				_web3._extend.formatters.inputDefaultBlockNumberFormatter
-// 			]
-// 		}),
-// 		new _web3._extend.Method({
-// 			name: 'getTimeLockBalance',
-// 			call: 'fsn_getTimeLockBalance',
-// 			params: 3,
-// 			inputFormatter: [
-// 				null,
-// 				_web3._extend.formatters.inputAddressFormatter,
-// 				_web3._extend.formatters.inputDefaultBlockNumberFormatter
-// 			]
-// 		}),
-// 		new _web3._extend.Method({
-// 			name: 'getAllTimeLockBalances',
-// 			call: 'fsn_getAllTimeLockBalances',
-// 			params: 2,
-// 			inputFormatter: [
-// 				_web3._extend.formatters.inputAddressFormatter,
-// 				_web3._extend.formatters.inputDefaultBlockNumberFormatter
-// 			]
-// 		}),
-// 		new _web3._extend.Method({
-// 			name: 'getNotation',
-// 			call: 'fsn_getNotation',
-// 			params: 2,
-// 			inputFormatter: [
-// 				_web3._extend.formatters.inputAddressFormatter,
-// 				_web3._extend.formatters.inputDefaultBlockNumberFormatter
-// 			]
-// 		}),
-// 		new _web3._extend.Method({
-// 			name: 'getAddressByNotation',
-// 			call: 'fsn_getAddressByNotation',
-// 			params: 2,
-// 			inputFormatter: [
-// 				null,
-// 				_web3._extend.formatters.inputDefaultBlockNumberFormatter
-// 			]
-// 		}),
-// 		new _web3._extend.Method({
-// 			name: 'allNotation',
-// 			call: 'fsn_allNotation',
-// 			params: 1,
-// 			inputFormatter: [
-// 				_web3._extend.formatters.inputDefaultBlockNumberFormatter
-// 			]
-// 		}),
-// 		new _web3._extend.Method({
-// 			name: 'genNotation',
-// 			call: 'fsn_genNotation',
-// 			params: 2,
-// 			inputFormatter: [
-// 				_web3._extend.formatters.inputTransactionFormatter,
-// 				null
-// 			]
-// 		}),
-// 		new _web3._extend.Method({
-// 			name: 'genAsset',
-// 			call: 'fsn_genAsset',
-// 			params: 2,
-// 			inputFormatter: [
-// 				function(options){
-// 					if(options.name === undefined || !options.name){
-// 						throw new Error('invalid name');
-// 					}
-// 					if(options.symbol === undefined || !options.symbol){
-// 						throw new Error('invalid symbol');
-// 					}
-// 					if(options.decimals === undefined || options.decimals <= 0 || options.decimals > 255){
-// 						throw new Error('invalid decimals');
-// 					}
-// 					if(options.total !== undefined){
-// 						options.total = _web3.fromDecimal(options.total)
-// 					}
-// 					return _web3._extend.formatters.inputTransactionFormatter(options)
-// 				},
-// 				null
-// 			]
-// 		}),
-// 		new _web3._extend.Method({
-// 			name: 'allAssets',
-// 			call: 'fsn_allAssets',
-// 			params: 1,
-// 			inputFormatter: [
-// 				_web3._extend.formatters.inputDefaultBlockNumberFormatter
-// 			]
-// 		}),
-// 		new _web3._extend.Method({
-// 			name: 'sendAsset',
-// 			call: 'fsn_sendAsset',
-// 			params: 2,
-// 			inputFormatter: [
-// 				_web3._extend.formatters.inputTransactionFormatter,
-// 				null
-// 			]
-// 		}),
-// 		new _web3._extend.Method({
-// 			name: 'assetToTimeLock',
-// 			call: 'fsn_assetToTimeLock',
-// 			params: 2,
-// 			inputFormatter: [
-// 				function(options){
-// 					return _web3._extend.formatters.inputTransactionFormatter(options)
-// 				},
-// 				null
-// 			]
-// 		}),
-// 		new _web3._extend.Method({
-// 			name: 'timeLockToTimeLock',
-// 			call: 'fsn_timeLockToTimeLock',
-// 			params: 2,
-// 			inputFormatter: [
-// 				function(options){
-// 					return _web3._extend.formatters.inputTransactionFormatter(options)
-// 				},
-// 				null
-// 			]
-// 		}),
-// 		new _web3._extend.Method({
-// 			name: 'timeLockToAsset',
-// 			call: 'fsn_timeLockToAsset',
-// 			params: 2,
-// 			inputFormatter: [
-// 				function(options){
-// 					return _web3._extend.formatters.inputTransactionFormatter(options)
-// 				},
-// 				null
-// 			]
-// 		}),
-// 		new _web3._extend.Method({
-// 			name: 'allTickets',
-// 			call: 'fsn_allTickets',
-// 			params: 1,
-// 			inputFormatter: [
-// 				_web3._extend.formatters.inputDefaultBlockNumberFormatter
-// 			]
-// 		}),
-// 		new _web3._extend.Method({
-// 			name: 'buyTicket',
-// 			call: 'fsn_buyTicket',
-// 			params: 2,
-// 			inputFormatter: [
-// 				_web3._extend.formatters.inputTransactionFormatter,
-// 				null
-// 			]
-// 		}),
-// 	],
-// 	properties:[
-// 		new _web3._extend.Property({
-// 			name: 'coinbase',
-// 			getter: 'eth_coinbase'
-// 		}),
-// 	]
-// });
+export function web3FusionExtensons(web3) {
+  if ( !web3._extend ) {
+    // simulate the server platform so
+    // definitions below can be imported from
+    // server unchancged
+    web3._extend = web3.extend
+  }
+  // FsnJS wacom
+  web3._extend({
+    property: "fsn",
+    methods: [
+      new web3._extend.Method({
+        name: "getBalance",
+        call: "fsn_getBalance",
+        params: 3,
+        inputFormatter: [
+          null,
+          web3._extend.formatters.inputAddressFormatter,
+          web3._extend.formatters.inputDefaultBlockNumberFormatter
+        ]
+      }),
+      new web3._extend.Method({
+        name: "getAllBalances",
+        call: "fsn_getAllBalances",
+        params: 2,
+        inputFormatter: [
+          web3._extend.formatters.inputAddressFormatter,
+          web3._extend.formatters.inputDefaultBlockNumberFormatter
+        ]
+      }),
+      new web3._extend.Method({
+        name: "getTimeLockBalance",
+        call: "fsn_getTimeLockBalance",
+        params: 3,
+        inputFormatter: [
+          null,
+          web3._extend.formatters.inputAddressFormatter,
+          web3._extend.formatters.inputDefaultBlockNumberFormatter
+        ]
+      }),
+      new web3._extend.Method({
+        name: "getAllTimeLockBalances",
+        call: "fsn_getAllTimeLockBalances",
+        params: 2,
+        inputFormatter: [
+          web3._extend.formatters.inputAddressFormatter,
+          web3._extend.formatters.inputDefaultBlockNumberFormatter
+        ]
+      }),
+      new web3._extend.Method({
+        name: "getNotation",
+        call: "fsn_getNotation",
+        params: 2,
+        inputFormatter: [
+          web3._extend.formatters.inputAddressFormatter,
+          web3._extend.formatters.inputDefaultBlockNumberFormatter
+        ]
+      }),
+      new web3._extend.Method({
+        name: "getAddressByNotation",
+        call: "fsn_getAddressByNotation",
+        params: 2,
+        inputFormatter: [
+          null,
+          web3._extend.formatters.inputDefaultBlockNumberFormatter
+        ]
+      }),
+      new web3._extend.Method({
+        name: "allNotation",
+        call: "fsn_allNotation",
+        params: 1,
+        inputFormatter: [
+          web3._extend.formatters.inputDefaultBlockNumberFormatter
+        ]
+      }),
+      new web3._extend.Method({
+        name: "genNotation",
+        call: "fsn_genNotation",
+        params: 2,
+        inputFormatter: [
+          web3._extend.formatters.inputTransactionFormatter,
+          null
+        ]
+      }),
+      new web3._extend.Method({
+        name: "genAsset",
+        call: "fsn_genAsset",
+        params: 2,
+        inputFormatter: [
+          function(options) {
+            if (options.name === undefined || !options.name) {
+              throw new Error("invalid name");
+            }
+            if (options.symbol === undefined || !options.symbol) {
+              throw new Error("invalid symbol");
+            }
+            if (
+              options.decimals === undefined ||
+              options.decimals <= 0 ||
+              options.decimals > 255
+            ) {
+              throw new Error("invalid decimals");
+            }
+            if (options.total !== undefined) {
+              options.total = web3.fromDecimal(options.total);
+            }
+            return web3._extend.formatters.inputTransactionFormatter(options);
+          },
+          null
+        ]
+      }),
+      new web3._extend.Method({
+        name: "allAssets",
+        call: "fsn_allAssets",
+        params: 1,
+        inputFormatter: [
+          web3._extend.formatters.inputDefaultBlockNumberFormatter
+        ]
+      }),
+      new web3._extend.Method({
+        name: "getAsset",
+        call: "fsn_getAsset",
+        params: 2,
+        inputFormatter: [
+          null,
+          web3._extend.formatters.inputDefaultBlockNumberFormatter
+        ]
+      }),
+      new web3._extend.Method({
+        name: "sendAsset",
+        call: "fsn_sendAsset",
+        params: 2,
+        inputFormatter: [
+          web3._extend.formatters.inputTransactionFormatter,
+          null
+        ]
+      }),
+      new web3._extend.Method({
+        name: "assetToTimeLock",
+        call: "fsn_assetToTimeLock",
+        params: 2,
+        inputFormatter: [
+          function(options) {
+            return web3._extend.formatters.inputTransactionFormatter(options);
+          },
+          null
+        ]
+      }),
+      new web3._extend.Method({
+        name: "timeLockToTimeLock",
+        call: "fsn_timeLockToTimeLock",
+        params: 2,
+        inputFormatter: [
+          function(options) {
+            return web3._extend.formatters.inputTransactionFormatter(options);
+          },
+          null
+        ]
+      }),
+      new web3._extend.Method({
+        name: "timeLockToAsset",
+        call: "fsn_timeLockToAsset",
+        params: 2,
+        inputFormatter: [
+          function(options) {
+            return web3._extend.formatters.inputTransactionFormatter(options);
+          },
+          null
+        ]
+      }),
+      new web3._extend.Method({
+        name: "allTickets",
+        call: "fsn_allTickets",
+        params: 1,
+        inputFormatter: [
+          web3._extend.formatters.inputDefaultBlockNumberFormatter
+        ]
+      }),
+      new web3._extend.Method({
+        name: "allTicketsByAddress",
+        call: "fsn_allTicketsByAddress",
+        params: 2,
+        inputFormatter: [
+          web3._extend.formatters.inputAddressFormatter,
+          web3._extend.formatters.inputDefaultBlockNumberFormatter
+        ]
+      }),
+      new web3._extend.Method({
+        name: "totalNumberOfTickets",
+        call: "fsn_totalNumberOfTickets",
+        params: 1,
+        inputFormatter: [
+          web3._extend.formatters.inputDefaultBlockNumberFormatter
+        ]
+      }),
+      new web3._extend.Method({
+        name: "totalNumberOfTicketsByAddress",
+        call: "fsn_totalNumberOfTicketsByAddress",
+        params: 2,
+        inputFormatter: [
+          web3._extend.formatters.inputAddressFormatter,
+          web3._extend.formatters.inputDefaultBlockNumberFormatter
+        ]
+      }),
+      new web3._extend.Method({
+        name: "ticketPrice",
+        call: "fsn_ticketPrice",
+        params: 0,
+        inputFormatter: []
+      }),
+      new web3._extend.Method({
+        name: "buyTicket",
+        call: "fsn_buyTicket",
+        params: 2,
+        inputFormatter: [
+          web3._extend.formatters.inputTransactionFormatter,
+          null
+        ]
+      }),
+      new web3._extend.Method({
+        name: "incAsset",
+        call: "fsn_incAsset",
+        params: 2,
+        inputFormatter: [
+          web3._extend.formatters.inputTransactionFormatter,
+          null
+        ]
+      }),
+      new web3._extend.Method({
+        name: "decAsset",
+        call: "fsn_decAsset",
+        params: 2,
+        inputFormatter: [
+          web3._extend.formatters.inputTransactionFormatter,
+          null
+        ]
+      }),
+      new web3._extend.Method({
+        name: "allSwaps",
+        call: "fsn_allSwaps",
+        params: 1,
+        inputFormatter: [
+          web3._extend.formatters.inputDefaultBlockNumberFormatter
+        ]
+      }),
+      new web3._extend.Method({
+        name: "allSwapsByAddress",
+        call: "fsn_allSwapsByAddress",
+        params: 2,
+        inputFormatter: [
+          web3._extend.formatters.inputAddressFormatter,
+          web3._extend.formatters.inputDefaultBlockNumberFormatter
+        ]
+      }),
+      new web3._extend.Method({
+        name: "makeSwap",
+        call: "fsn_makeSwap",
+        params: 2,
+        inputFormatter: [
+          web3._extend.formatters.inputTransactionFormatter,
+          null
+        ]
+      }),
+      new web3._extend.Method({
+        name: "recallSwap",
+        call: "fsn_recallSwap",
+        params: 2,
+        inputFormatter: [
+          web3._extend.formatters.inputTransactionFormatter,
+          null
+        ]
+      }),
+      new web3._extend.Method({
+        name: "takeSwap",
+        call: "fsn_takeSwap",
+        params: 2,
+        inputFormatter: [
+          web3._extend.formatters.inputTransactionFormatter,
+          null
+        ]
+      })
+    ]
+  });
+
+  // fsntx
+  web3._extend({
+    property: "fsntx",
+    methods: [
+      new web3._extend.Method({
+        name: "sendRawTransaction",
+        call: "fsntx_sendRawTransaction",
+        params: 1
+      }),
+      new web3._extend.Method({
+        name: "buildGenNotationTx",
+        call: "fsntx_buildGenNotationTx",
+        params: 1,
+        inputFormatter: [web3._extend.formatters.inputTransactionFormatter]
+      }),
+      new web3._extend.Method({
+        name: "genNotation",
+        call: "fsntx_genNotation",
+        params: 1,
+        inputFormatter: [web3._extend.formatters.inputTransactionFormatter]
+      }),
+      new web3._extend.Method({
+        name: "buildGenAssetTx",
+        call: "fsntx_buildGenAssetTx",
+        params: 1,
+        inputFormatter: [
+          function(options) {
+            if (options.name === undefined || !options.name) {
+              throw new Error("invalid name");
+            }
+            if (options.symbol === undefined || !options.symbol) {
+              throw new Error("invalid symbol");
+            }
+            if (
+              options.decimals === undefined ||
+              options.decimals <= 0 ||
+              options.decimals > 255
+            ) {
+              throw new Error("invalid decimals");
+            }
+            if (options.total !== undefined) {
+              options.total = web3.fromDecimal(options.total);
+            }
+            return web3._extend.formatters.inputTransactionFormatter(options);
+          }
+        ]
+      }),
+      new web3._extend.Method({
+        name: "genAsset",
+        call: "fsntx_genAsset",
+        params: 1,
+        inputFormatter: [
+          function(options) {
+            if (options.name === undefined || !options.name) {
+              throw new Error("invalid name");
+            }
+            if (options.symbol === undefined || !options.symbol) {
+              throw new Error("invalid symbol");
+            }
+            if (
+              options.decimals === undefined ||
+              options.decimals <= 0 ||
+              options.decimals > 255
+            ) {
+              throw new Error("invalid decimals");
+            }
+            if (options.total !== undefined) {
+              options.total = web3.fromDecimal(options.total);
+            }
+            return web3._extend.formatters.inputTransactionFormatter(options);
+          }
+        ]
+      }),
+      new web3._extend.Method({
+        name: "buildSendAssetTx",
+        call: "fsntx_buildSendAssetTx",
+        params: 1,
+        inputFormatter: [web3._extend.formatters.inputTransactionFormatter]
+      }),
+      new web3._extend.Method({
+        name: "sendAsset",
+        call: "fsntx_sendAsset",
+        params: 1,
+        inputFormatter: [web3._extend.formatters.inputTransactionFormatter]
+      }),
+      new web3._extend.Method({
+        name: "buildAssetToTimeLockTx",
+        call: "fsntx_buildAssetToTimeLockTx",
+        params: 1,
+        inputFormatter: [
+          function(options) {
+            return web3._extend.formatters.inputTransactionFormatter(options);
+          }
+        ]
+      }),
+      new web3._extend.Method({
+        name: "assetToTimeLock",
+        call: "fsntx_assetToTimeLock",
+        params: 1,
+        inputFormatter: [
+          function(options) {
+            return web3._extend.formatters.inputTransactionFormatter(options);
+          }
+        ]
+      }),
+      new web3._extend.Method({
+        name: "buildTimeLockToTimeLockTx",
+        call: "fsntx_buildTimeLockToTimeLockTx",
+        params: 1,
+        inputFormatter: [
+          function(options) {
+            return web3._extend.formatters.inputTransactionFormatter(options);
+          }
+        ]
+      }),
+      new web3._extend.Method({
+        name: "timeLockToTimeLock",
+        call: "fsntx_timeLockToTimeLock",
+        params: 1,
+        inputFormatter: [
+          function(options) {
+            return web3._extend.formatters.inputTransactionFormatter(options);
+          }
+        ]
+      }),
+      new web3._extend.Method({
+        name: "buildTimeLockToAssetTx",
+        call: "fsntx_buildTimeLockToAssetTx",
+        params: 1,
+        inputFormatter: [
+          function(options) {
+            return web3._extend.formatters.inputTransactionFormatter(options);
+          }
+        ]
+      }),
+      new web3._extend.Method({
+        name: "timeLockToAsset",
+        call: "fsntx_timeLockToAsset",
+        params: 1,
+        inputFormatter: [
+          function(options) {
+            return web3._extend.formatters.inputTransactionFormatter(options);
+          }
+        ]
+      }),
+      new web3._extend.Method({
+        name: "buildBuyTicketTx",
+        call: "fsntx_buildBuyTicketTx",
+        params: 1,
+        inputFormatter: [web3._extend.formatters.inputTransactionFormatter]
+      }),
+      new web3._extend.Method({
+        name: "buyTicket",
+        call: "fsntx_buyTicket",
+        params: 1,
+        inputFormatter: [web3._extend.formatters.inputTransactionFormatter]
+      }),
+      new web3._extend.Method({
+        name: "buildIncAssetTx",
+        call: "fsntx_buildIncAssetTx",
+        params: 1,
+        inputFormatter: [web3._extend.formatters.inputTransactionFormatter]
+      }),
+      new web3._extend.Method({
+        name: "incAsset",
+        call: "fsntx_incAsset",
+        params: 1,
+        inputFormatter: [web3._extend.formatters.inputTransactionFormatter]
+      }),
+      new web3._extend.Method({
+        name: "buildDecAssetTx",
+        call: "fsntx_buildDecAssetTx",
+        params: 1,
+        inputFormatter: [web3._extend.formatters.inputTransactionFormatter]
+      }),
+      new web3._extend.Method({
+        name: "decAsset",
+        call: "fsntx_decAsset",
+        params: 1,
+        inputFormatter: [web3._extend.formatters.inputTransactionFormatter]
+      }),
+      new web3._extend.Method({
+        name: "buildMakeSwapTx",
+        call: "fsntx_buildMakeSwapTx",
+        params: 1,
+        inputFormatter: [web3._extend.formatters.inputTransactionFormatter]
+      }),
+      new web3._extend.Method({
+        name: "makeSwap",
+        call: "fsntx_makeSwap",
+        params: 1,
+        inputFormatter: [web3._extend.formatters.inputTransactionFormatter]
+      }),
+      new web3._extend.Method({
+        name: "buildRecallSwapTx",
+        call: "fsntx_buildRecallSwapTx",
+        params: 1,
+        inputFormatter: [web3._extend.formatters.inputTransactionFormatter]
+      }),
+      new web3._extend.Method({
+        name: "recallSwap",
+        call: "fsntx_recallSwap",
+        params: 1,
+        inputFormatter: [web3._extend.formatters.inputTransactionFormatter]
+      }),
+      new web3._extend.Method({
+        name: "buildTakeSwapTx",
+        call: "fsntx_buildTakeSwapTx",
+        params: 1,
+        inputFormatter: [web3._extend.formatters.inputTransactionFormatter]
+      }),
+      new web3._extend.Method({
+        name: "takeSwap",
+        call: "fsntx_takeSwap",
+        params: 1,
+        inputFormatter: [web3._extend.formatters.inputTransactionFormatter]
+      })
+    ]
+  });
+  return web3;
+}
 
 // _web3.eth.filter('latest').watch(function(err,log) {
 //     _web3.fsn.buyTicket({from:_web3.fsn.coinbase},password)

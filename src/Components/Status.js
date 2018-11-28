@@ -28,10 +28,23 @@ class Status extends Component {
 
   constructor(props) {
     super();
+    this.balanceListener = this.balanceListener.bind(this)
   }
 
   totalStake(data) {
     return data.ticketPrice.mul(new BN(data.numberOfTickets));
+  }
+
+  balanceListener( balanceInfo ) {
+    currentDataState.setBalanceInfo( balanceInfo )
+  }
+
+  componentDidMount() {
+    web3api.on("balanceInfo", this.balanceListener);
+  }
+
+  componentWillUnmount() {
+    web3api.removeEventListener("balanceInfo", this.connectionListener);
   }
 
   render() {
@@ -39,6 +52,10 @@ class Status extends Component {
 
     if ( !BN ) {
       BN = currentDataState.BN
+    }
+
+    if ( data.accountUnlocked ) {
+        data.web3api.walletAddress = data.signInfo.address;
     }
 
     let rewardNumber = utils.formatWei(data.rewardsToDate )
