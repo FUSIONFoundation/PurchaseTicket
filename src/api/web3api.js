@@ -144,6 +144,10 @@ export default class web3Api extends Component {
                 return Object.assign( loadsOfInfo , { ticketPrice : res })
               })
           }).then( (loadsOfInfo ) => {
+              return this._web3.eth.getGasPrice().then( (gasPrice) => {
+                return Object.assign( loadsOfInfo , { gasPrice })
+              })
+          }).then( (loadsOfInfo ) => {
               this.emit( "balanceInfo", loadsOfInfo, false )
           })
         }

@@ -51,6 +51,9 @@ export default class Utils {
     if ( val.charAt(0) === '.') {
       return "0" + val;
     }
+    if ( val.length === 0 ) {
+      return 0
+    }
     return val;
   }
 
