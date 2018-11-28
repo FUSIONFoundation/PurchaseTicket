@@ -15,6 +15,7 @@ import constants from "./constants";
 import utils from "../utils";
 import moment from "moment";
 import currentDataState from "../api/currentDataState";
+import BlockDisplayer from "./BlockDisplayer";
 var BN = currentDataState.BN
 
 var lineGraph = require("../images/lineGraph.svg");
@@ -102,6 +103,9 @@ class Status extends Component {
               </Text>
             </TouchableOpacity>
           </View>
+          <View style={{height:10,width:1}}/>
+          <BlockDisplayer/>
+          <View style={{height:10,width:1}}/>
           <View style={styles.largeMetricBox}>
             <View style={styles.rewardHolderView}>
               <Image
