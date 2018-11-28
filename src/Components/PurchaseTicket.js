@@ -18,7 +18,7 @@ import currentDataState from "../api/currentDataState";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-var BN = currentDataState.data.BN
+var BN = currentDataState.data.BN;
 
 var styles;
 
@@ -35,12 +35,12 @@ class Status extends Component {
     autoBuyStopDate: false,
     totalPrice: new BN(0),
     error: false,
-    date :  new Date( (new Date()).getTime()+(1000*60*60*24))
+    date: new Date(new Date().getTime() + 1000 * 60 * 60 * 24)
   };
 
   constructor(props) {
     super();
-    this.onChangeDate = this.onChangeDate.bind(this)
+    this.onChangeDate = this.onChangeDate.bind(this);
   }
 
   totalStake(data) {
@@ -127,14 +127,17 @@ class Status extends Component {
               Earn rewards by purchasing staking tickets. You will earn a reward
               of 2.5 FSN per selected ticket. If your ticket is not selected,
               your FSN will be returned when the ticket expires (30 days after
-              purchase).  NOTE: Only one ticket at a time can be purchased per block for an address.
-              <TouchableOpacity onPress={()=>{
-                //TODO: once article is up point to it
-                window.open("https://fusion.org")
-              }}>
-                  <Text style={[styles.infoTextLink, { marginLeft: 4 }]}>
-                    Learn More
-                  </Text>
+              purchase). NOTE: Only one ticket at a time can be purchased per
+              block for an address.
+              <TouchableOpacity
+                onPress={() => {
+                  //TODO: once article is up point to it
+                  window.open("https://fusion.org");
+                }}
+              >
+                <Text style={[styles.infoTextLink, { marginLeft: 4 }]}>
+                  Learn More
+                </Text>
               </TouchableOpacity>
             </Text>
             <View style={{ height: 20 }} />
@@ -184,7 +187,11 @@ class Status extends Component {
                         You don't have enough FSN
                       </Text>
                       <i
-                        style={{ position: "relative", left: -1 , color : colors.errorRed}}
+                        style={{
+                          position: "relative",
+                          left: -1,
+                          color: colors.errorRed
+                        }}
                         className="fa fa-caret-right"
                       />
                     </View>
@@ -271,14 +278,16 @@ class Status extends Component {
               text="Auto Buy Stop Date"
               subText="Auto Buy will stop on desired date"
             >
-            { this.state.autoBuyStopDate && (
-             <DatePicker onChange={this.onChangeDate} 
-                selected={this.state.date} 
-                minDate={(new Date( (new Date()).getTime()+(1000*60*60*24)))}
-                showTimeSelect
-                dateFormat="Pp" 
-            /> ) }
-           </CheckBox>
+              {this.state.autoBuyStopDate && (
+                <DatePicker
+                  onChange={this.onChangeDate}
+                  selected={this.state.date}
+                  minDate={new Date(new Date().getTime() + 1000 * 60 * 60 * 24)}
+                  showTimeSelect
+                  dateFormat="Pp"
+                />
+              )}
+            </CheckBox>
             <TouchableOpacity disabled={!enabled} onPress={() => {}}>
               <View>
                 <Text style={btnStyle}>{purchaseText}</Text>
@@ -296,12 +305,12 @@ class Status extends Component {
     );
   }
 
-  onChangeDate ( date ) {
-      let dt = new Date( (new Date()).getTime()+(1000*60*60*24))
-      if ( date.getTime() < dt.getTime() ) {
-        date = dt;
-      }
-      this.setState({ date })
+  onChangeDate(date) {
+    let dt = new Date(new Date().getTime() + 1000 * 60 * 60 * 24);
+    if (date.getTime() < dt.getTime()) {
+      date = dt;
+    }
+    this.setState({ date });
   }
 
   calcDisplay(data, val) {

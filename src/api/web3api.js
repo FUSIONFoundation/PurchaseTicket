@@ -5,7 +5,6 @@ import EventEmitter from "events";
 // var password = "123456"
 // _web3.setProvider(new _web3.providers.HttpProvider("http://localhost:5488"));
 
-
 export default class web3Api extends Component {
   /**
    * Initiate the event emitter
@@ -13,12 +12,12 @@ export default class web3Api extends Component {
   constructor(props) {
     super(props);
     this.eventEmitter = new EventEmitter();
-    this._web3 = null
-    this.provider = null
-    this.connectedOnce = false
-    this.lastNodeAddress = ""
-    this.attempForMonitor = 0
-    this.lastBlock= {}
+    this._web3 = null;
+    this.provider = null;
+    this.connectedOnce = false;
+    this.lastNodeAddress = "";
+    this.attempForMonitor = 0;
+    this.lastBlock = {};
   }
 
   static get web3() {
@@ -29,40 +28,40 @@ export default class web3Api extends Component {
   }
 
   setNodeAddress(newNodeAddress) {
-    let httpOnly
+    let httpOnly;
 
     console.log("Attempting connect");
 
-    if ( this.connectedOnce && newNodeAddress !== this.lastNodeAddress ) {
+    if (this.connectedOnce && newNodeAddress !== this.lastNodeAddress) {
       this.connectedOnce = false;
     }
 
-    this.lastNodeAddress = newNodeAddress
+    this.lastNodeAddress = newNodeAddress;
 
-    if ( this.nextMonitorCall ) {
-      clearTimeout( this.nextMonitorCall )
-      this.nextMonitorCall = null
+    if (this.nextMonitorCall) {
+      clearTimeout(this.nextMonitorCall);
+      this.nextMonitorCall = null;
     }
 
     if (newNodeAddress.indexOf("ws") === 0) {
       try {
         this.provider = new _web3.providers.WebsocketProvider(newNodeAddress);
-      } catch ( e ) {
-        setTimeout( ()=> {
-          this.emit( 'connectstatus', ["error"] , e )
-        }, 1)
-        return
+      } catch (e) {
+        setTimeout(() => {
+          this.emit("connectstatus", ["error"], e);
+        }, 1);
+        return;
       }
-      httpOnly = false
+      httpOnly = false;
       this.provider.on("connect", function() {
         console.log("blockchain connected");
-        this.connectedOnce = true
-        this.emit( 'connectstatus', ["connected"] , null )
-        this.setupMonitor()
+        this.connectedOnce = true;
+        this.emit("connectstatus", ["connected"], null);
+        this.setupMonitor();
       });
     } else {
       this.provider = new _web3.providers.HttpProvider(newNodeAddress);
-      httpOnly = true
+      httpOnly = true;
     }
 
     if (!this._web3) {
@@ -71,21 +70,23 @@ export default class web3Api extends Component {
       this._web3.setProvider(this.provider);
     }
 
-    if  ( httpOnly ) {
+    if (httpOnly) {
       // http c
-      this._web3.eth.getBlockNumber().then( (block)=> {
-        this.emit( 'connectstatus', ["connected", block] , null )
-        this.setupMonitor()
-        }).
-        catch( (e) => {
-          this.emit( 'connectstatus', ["error"] , e )
+      this._web3.eth
+        .getBlockNumber()
+        .then(block => {
+          this.emit("connectstatus", ["connected", block], null);
+          this.setupMonitor();
         })
+        .catch(e => {
+          this.emit("connectstatus", ["error"], e);
+        });
       return;
     }
-    
+
     this.provider.on("error", e => {
       console.error("Blockchain WS Error", e);
-      this.emit( 'connectstatus', ["error"] , e )
+      this.emit("connectstatus", ["error"], e);
     });
 
     this.provider.on("end", e => {
@@ -93,40 +94,40 @@ export default class web3Api extends Component {
       console.log(
         "Blockchain disconnected will try to reconnect in 15 seconds"
       );
-      setTimeout(() => { 
-        this.emit( 'connectstatus', ["disconnected"] , null )
-        if ( this.connectedOnce === true ) {
-          this.setNodeAddress(newNodeAddress) 
+      setTimeout(() => {
+        this.emit("connectstatus", ["disconnected"], null);
+        if (this.connectedOnce === true) {
+          this.setNodeAddress(newNodeAddress);
         }
       }, 1);
     });
   }
 
   setupMonitor() {
-    this.attempForMonitor += 1
-    let nextMonitorCall = this.attempForMonitor
-    console.log("checking connection ")
-    this._web3.eth.getBlock("latest").then( (block)=> {
-       
-       if ( this.lastBlock.number != block.number ) {
-         this.lastBlock = block
-         console.log(block)
-         this.emit("latestBlock", block )
-       }
-       setTimeout( ()=> {
-        this.setupMonitor()
-      }, 5 * 1000 )
-      }).
-      catch( (e) => {
-        console.log("monitor error " , e )
-        if ( this.attempForMonitor === nextMonitorCall ) {
-          this.emit( 'connectstatus', ["error"] , e )
-          setTimeout( ()=> {
-            this.setupMonitor()
-          }, 7 * 1000 )
+    this.attempForMonitor += 1;
+    let nextMonitorCall = this.attempForMonitor;
+    console.log("checking connection ");
+    this._web3.eth
+      .getBlock("latest")
+      .then(block => {
+        if (this.lastBlock.number != block.number) {
+          this.lastBlock = block;
+          console.log(block);
+          this.emit("latestBlock", block);
         }
+        setTimeout(() => {
+          this.setupMonitor();
+        }, 5 * 1000);
       })
-      
+      .catch(e => {
+        console.log("monitor error ", e);
+        if (this.attempForMonitor === nextMonitorCall) {
+          this.emit("connectstatus", ["error"], e);
+          setTimeout(() => {
+            this.setupMonitor();
+          }, 7 * 1000);
+        }
+      });
   }
 
   /**
