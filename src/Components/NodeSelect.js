@@ -37,28 +37,32 @@ export default class NodeSelect extends Component {
 
     this.connectionListener  = this.connectionListener.bind( this )
 
-    AsyncStorage.getItem("lastNodeAddress")
-      .then(val => {
-        if (this.didOneUpdate) {
-          if (!val) {
-            val = "";
-          }
-          this.setState({
-            newNodeAddress: val,
-            currentNodeAddress: val,
-            initedNode: true
-          });
-        } else {
-          if (!val) {
-            val = "";
-          }
-          this.state.currentNodeAddress = val;
-          this.state.newNodeAddress = val;
-          this.state.initedNode = true;
+    var val = window.localStorage.getItem( "address1" )
+    var error = null
+    {
+          debugger
+          if ( !error ) {
+            if (this.didOneUpdate) {
+            if (!val) {
+                val = "";
+            }
+            this.setState({
+                newNodeAddress: val,
+                currentNodeAddress: val,
+                initedNode: true
+            });
+            } else {
+            if (!val) {
+                val = "";
+            }
+            this.state.currentNodeAddress = val;
+            this.state.newNodeAddress = val;
+            this.state.initedNode = true;
+            }
+            return
         }
-      })
-      .catch(e => {
-        let val = "";
+    
+        val = "";
         if (this.didOneUpdate) {
           this.setState({
             newNodeAddress: val,
@@ -72,7 +76,7 @@ export default class NodeSelect extends Component {
           this.state.inputNodeMode = false
           this.state.connectionError = false
         }
-      });
+      }
   }
 
   componentDidUpdate(prevProps) {
@@ -88,6 +92,7 @@ export default class NodeSelect extends Component {
         }
         if ( arg[0] === 'connected' ) {
             this.setState( { connectionError : false, testing : false, currentNodeAddress : this.state.newNodeAddress  })
+            window.localStorage.setItem( "address1", this.state.newNodeAddress )
         }
     } else {
         if ( arg[0] === 'error' ) {
