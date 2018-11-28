@@ -100,6 +100,8 @@ export default class NodeSelect extends Component {
     } else {
       if (arg[0] === "error") {
         this.setState({ connectionError: true });
+      } else if ( arg[0] === 'stillgood' && this.state.connectionError ) {
+        this.setState({ connectionError: false });
       }
     }
   }
@@ -222,7 +224,7 @@ export default class NodeSelect extends Component {
       >
         <View
           style={
-            this.state.error ? styles.errorBackground : styles.inputBackground
+            this.state.connectionError ? styles.errorBackground : styles.inputBackground
           }
         >
           <View
@@ -234,7 +236,7 @@ export default class NodeSelect extends Component {
             }}
           >
             {
-                !this.state.error && (
+                !this.state.connectionError && (
                     <i key ="c11" className="fa fa-check-circle" style={{color:colors.successGreen,marginRight:4}}/>
                 )
             }

@@ -22,7 +22,7 @@ var datablock = {
   signInfo: {
     address: "0x4A5a7Aa4130e407d3708dE56db9000F059200C62"
   },
-  gasPrice: new BN("000053588000000000"),
+  gasPrice: new BN("0"),
   //123456789012345678
   ticketPrice: new BN("200" + "0".repeat(18)),
   walletBalance: new BN("0"),
