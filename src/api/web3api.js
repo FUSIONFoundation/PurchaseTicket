@@ -17,6 +17,8 @@ export default class web3Api extends Component {
     this.provider = null
     this.connectedOnce = false
     this.lastNodeAddress = ""
+    this.attempForMonitor = 0
+    this.lastBlock= {}
   }
 
   static get web3() {
@@ -101,21 +103,30 @@ export default class web3Api extends Component {
   }
 
   setupMonitor() {
-    let nextMonitorCall 
-    this._web3.eth.getBlockNumber().then( (block)=> {
+    this.attempForMonitor += 1
+    let nextMonitorCall = this.attempForMonitor
+    console.log("checking connection ")
+    this._web3.eth.getBlock("latest").then( (block)=> {
        
-       
-      }).
-      catch( (e) => {
-        if ( nextMonitorCall === this.setupMonitor ) {
-          this.emit( 'connectstatus', ["error"] , e )
-        }
-        
-      })
-      this.nextMonitorCall = setTimeout( ()=> {
+       if ( this.lastBlock.number != block.number ) {
+         this.lastBlock = block
+         console.log(block)
+         this.emit("latestBlock", block )
+       }
+       setTimeout( ()=> {
         this.setupMonitor()
       }, 5 * 1000 )
-      nextMonitorCall = this.nextMonitorCall
+      }).
+      catch( (e) => {
+        console.log("monitor error " , e )
+        if ( this.attempForMonitor === nextMonitorCall ) {
+          this.emit( 'connectstatus', ["error"] , e )
+          setTimeout( ()=> {
+            this.setupMonitor()
+          }, 7 * 1000 )
+        }
+      })
+      
   }
 
   /**

@@ -99,7 +99,7 @@ export default class NodeSelect extends Component {
       }
     } else {
       if (arg[0] === "error") {
-        this.state({ connectionError: true });
+        this.setState({ connectionError: true });
       }
     }
   }
