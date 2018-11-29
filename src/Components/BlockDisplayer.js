@@ -23,12 +23,18 @@ export default class BlockDisplayer extends Component {
 
     this.lastestBlockListener = this.lastestBlockListener.bind(this);
     this.state = {};
-    
+
     this.state.block = null;
     this.state.expand = false;
-    if ( this.props.match && this.props.match.params && this.props.match.params.blockNumber ) {
-        this.state.blockNumberToDisplay = this.props.match.params.blockNumber;
-        this.state.expand = true
+    this.state.displayLeftRight = props.displayLeftRight
+    if (
+      this.props.match &&
+      this.props.match.params &&
+      this.props.match.params.blockNumber
+    ) {
+      this.state.blockNumberToDisplay = this.props.match.params.blockNumber;
+      this.state.expand = true;
+      this.state.displayLeftRight = true
     }
   }
 
@@ -58,13 +64,25 @@ export default class BlockDisplayer extends Component {
         </TouchableOpacity>
       );
     } else {
+      let transactions = [];
+      
+      if (block.transactions && block.transactions.length > 0) {
+        for (let tx of block.transactions) {
+          transactions.push(
+            <View key={tx}>
+              <Text>{tx}</Text>
+            </View>
+          );
+        }
+      }
+
       return (
-        <TouchableOpacity
-          onPress={() => {
-            this.setState({ expand: false });
-          }}
-        >
-          <View style={styles.stakeDetailBox}>
+        <View style={styles.stakeDetailBox}>
+          <TouchableOpacity
+            onPress={() => {
+              this.setState({ expand: false });
+            }}
+          >
             <Text>
               Latest Block Number = {block.number}
               <i
@@ -72,63 +90,87 @@ export default class BlockDisplayer extends Component {
                 className="fa fa-caret-up"
               />
             </Text>
-            <View style={{height:8,width:1}}/>
-            <View style={styles.orderBorder} />
-       
-            <View style={styles.blockDetailRow}>
-              <Text style={styles.labelLineText}>Time Stamp</Text>
-              <Text style={styles.stakeTextFSN}>({block.timestamp})  { (new Date(block.timestamp*1000)).toString()}</Text>
-            </View>
-            <View style={styles.orderBorder} />
-            <View style={styles.blockDetailRow}>
-              <Text style={styles.labelLineText}>Hash</Text>
-              <Text style={styles.stakeTextFSN}>{block.hash}</Text>
-            </View>
-            <View style={styles.orderBorder} />
-            <View style={styles.blockDetailRow}>
-              <Text style={styles.labelLineText}>Parent Hash</Text>
-              <Text style={styles.stakeTextFSN}>{block.parentHash}</Text>
-            </View>
-            <View style={styles.orderBorder} />
-            <View style={styles.blockDetailRow}>
-              <Text style={styles.labelLineText}>Miner</Text>
-              <Text style={styles.stakeTextFSN}>{block.miner}</Text>
-            </View>
-            <View style={styles.orderBorder} />
-            <View style={styles.blockDetailRow}>
-              <Text style={styles.labelLineText}>Nonce</Text>
-              <Text style={styles.stakeTextFSN}>{block.nonce}</Text>
-            </View>
-            <View style={styles.orderBorder} />
-            <View style={styles.blockDetailRow}>
-              <Text style={styles.labelLineText}>Size</Text>
-              <Text style={styles.stakeTextFSN}>{block.size}</Text>
-            </View>
-            <View style={styles.orderBorder} />
-            <View style={styles.blockDetailRow}>
-              <Text style={styles.labelLineText}>Gas Used:</Text>
-              <Text style={styles.stakeTextFSN}>{block.gasUsed}</Text>
-            </View>
-            <View style={styles.orderBorder} />
-            <View style={styles.blockDetailRow}>
-              <Text style={styles.labelLineText}>Gas Limit:</Text>
-              <Text style={styles.stakeTextFSN}>{block.gasLimit}</Text>
-            </View>
-            <View style={styles.orderBorder} />
-            <View style={styles.blockDetailRow}>
-              <Text style={styles.labelLineText}>Transactions #:</Text>
-              <Text style={styles.stakeTextFSN}>
-                {block.transactions.length}
-              </Text>
-            </View>
-            <View style={styles.orderBorder} />
-            <View style={styles.blockDetailRow}>
-              <Text style={styles.labelLineText}>Total Difficulty:</Text>
-              <Text style={styles.stakeTextFSN}>{block.totalDifficulty}</Text>
-            </View>
-            <View style={styles.orderBorder} />
+          </TouchableOpacity>
+          {this.state.displayLeftRight  & (
+              <View>
+          <TouchableOpacity
+            onPress={() => {
+              this.setState({ expand: false });
+            }}
+          >
+              <i
+                style={{ color: colors.textBlue, marginLeft: 4 }}
+                className="fa fa-caret-left"
+              />
+          </TouchableOpacity>
+            <TouchableOpacity
+            onPress={() => {
+              this.setState({ expand: false });
+            }}
+          >
+              <i
+                style={{ color: colors.textBlue, marginLeft: 4 }}
+                className="fa fa-caret-right"
+              />
+             
+          </TouchableOpacity>  </View> )}
+          <View style={{ height: 8, width: 1 }} />
+          <View style={styles.orderBorder} />
+
+          <View style={styles.blockDetailRow}>
+            <Text style={styles.labelLineText}>Time Stamp</Text>
+            <Text style={styles.stakeTextFSN}>
+              ({block.timestamp}) {new Date(block.timestamp * 1000).toString()}
+            </Text>
           </View>
-        </TouchableOpacity>
+          <View style={styles.orderBorder} />
+          <View style={styles.blockDetailRow}>
+            <Text style={styles.labelLineText}>Hash</Text>
+            <Text style={styles.stakeTextFSN}>{block.hash}</Text>
+          </View>
+          <View style={styles.orderBorder} />
+          <View style={styles.blockDetailRow}>
+            <Text style={styles.labelLineText}>Parent Hash</Text>
+            <Text style={styles.stakeTextFSN}>{block.parentHash}</Text>
+          </View>
+          <View style={styles.orderBorder} />
+          <View style={styles.blockDetailRow}>
+            <Text style={styles.labelLineText}>Miner</Text>
+            <Text style={styles.stakeTextFSN}>{block.miner}</Text>
+          </View>
+          <View style={styles.orderBorder} />
+          <View style={styles.blockDetailRow}>
+            <Text style={styles.labelLineText}>Nonce</Text>
+            <Text style={styles.stakeTextFSN}>{block.nonce}</Text>
+          </View>
+          <View style={styles.orderBorder} />
+          <View style={styles.blockDetailRow}>
+            <Text style={styles.labelLineText}>Size</Text>
+            <Text style={styles.stakeTextFSN}>{block.size}</Text>
+          </View>
+          <View style={styles.orderBorder} />
+          <View style={styles.blockDetailRow}>
+            <Text style={styles.labelLineText}>Gas Used:</Text>
+            <Text style={styles.stakeTextFSN}>{block.gasUsed}</Text>
+          </View>
+          <View style={styles.orderBorder} />
+          <View style={styles.blockDetailRow}>
+            <Text style={styles.labelLineText}>Gas Limit:</Text>
+            <Text style={styles.stakeTextFSN}>{block.gasLimit}</Text>
+          </View>
+          <View style={styles.orderBorder} />
+          <View style={styles.blockDetailRow}>
+            <Text style={styles.labelLineText}>Transactions #:</Text>
+            <Text style={styles.stakeTextFSN}>{block.transactions.length}</Text>
+          </View>
+          {transactions}
+          <View style={styles.orderBorder} />
+          <View style={styles.blockDetailRow}>
+            <Text style={styles.labelLineText}>Total Difficulty:</Text>
+            <Text style={styles.stakeTextFSN}>{block.totalDifficulty}</Text>
+          </View>
+          <View style={styles.orderBorder} />
+        </View>
       );
     }
   }
@@ -139,21 +181,29 @@ export default class BlockDisplayer extends Component {
 
   componentDidMount() {
     if (!this.props.block) {
-        if ( this.state.blockNumberToDisplay ) {
-            web3api.getBlock( true, this.state.blockNumberToDisplay , this.lastestBlockListener )
-        } else {
-            web3api.on("latestBlock", this.lastestBlockListener);
-        }
+      if (this.state.blockNumberToDisplay) {
+        web3api.getBlock(
+          true,
+          this.state.blockNumberToDisplay,
+          this.lastestBlockListener
+        );
+      } else {
+        web3api.on("latestBlock", this.lastestBlockListener);
+      }
     }
   }
 
   componentWillUnmount() {
     if (!this.props.block) {
-        if ( this.state.blockNumberToDisplay ) {
-            web3api.getBlock( false, this.state.blockNumberToDisplay , this.lastestBlockListener )
-        } else {
-            web3api.removeEventListener("latestBlock", this.lastestBlockListener);
-        }
+      if (this.state.blockNumberToDisplay) {
+        web3api.getBlock(
+          false,
+          this.state.blockNumberToDisplay,
+          this.lastestBlockListener
+        );
+      } else {
+        web3api.removeEventListener("latestBlock", this.lastestBlockListener);
+      }
     }
   }
 }
@@ -176,17 +226,17 @@ var styles = StyleSheet.create({
     backgroundColor: "white",
     borderWidth: 1,
     width: 620,
-    paddingRight : 32,
-    paddingTop : 12,
-    paddingBottom : 12,
-    paddingLeft : 32,
+    paddingRight: 32,
+    paddingTop: 12,
+    paddingBottom: 12,
+    paddingLeft: 32,
     flex: 1,
     flexBasis: "100%",
     marginTop: 24,
     overflow: "visible",
     boxShadow: "0 2px 0 0 rgba(189, 196, 206, 0.2)"
   },
-  stakeDetailSmall : {
+  stakeDetailSmall: {
     borderColor: colors.orderGrey,
     borderRadius: 3,
     backgroundColor: "white",
