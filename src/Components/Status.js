@@ -5,7 +5,8 @@ import {
   Image,
   StyleSheet,
   Clipboard,
-  TouchableOpacity
+  TouchableOpacity,
+  TouchableWithoutFeedback
 } from "react-native";
 
 import "../App.css";
@@ -19,12 +20,13 @@ import BlockDisplayer from "./BlockDisplayer";
 var BN = currentDataState.BN;
 
 var lineGraph = require("../images/lineGraph.svg");
+var closebutton = require("../images/times.svg");
 
 var styles;
 
 class Status extends Component {
   // this is what i use for production
-  state = { paintKey: 0 };
+  state = { paintKey: 0, ticketDisplayOn: true };
 
   constructor(props) {
     super();
@@ -85,7 +87,7 @@ class Status extends Component {
 
     let dt = new moment(data.lastUpdateTime);
 
-    let dtDisplay = dt.toString() // dt.format("YYYY-MM-DD HH:mm:ss.SSS z");
+    let dtDisplay = dt.toString(); // dt.format("YYYY-MM-DD HH:mm:ss.SSS z");
 
     if (!data.accountUnlocked) {
       return (
@@ -101,6 +103,100 @@ class Status extends Component {
           >
             <Text style={styles.activeButton}>Select An Account</Text>
           </TouchableOpacity>
+        </View>
+      );
+    }
+
+    if (this.state.ticketDisplayOn) {
+      let tickets = Object.keys(data.allTickets ? data.allTickets : {});
+
+      let ticketViews = [];
+
+      for (let ticket of tickets) {
+        let t = data.allTickets[ticket];
+        let dt = moment(new Date(t.ExpireTime*1000));
+        let txt = dt.format("L LT z");
+        ticketViews.push(
+          <View key={"" + t.ExpireTime}>
+            <View style={styles.ticketDetailRow}>
+              <Text style={[styles.labelLineText, { width: 120 }]}>{txt}</Text>
+              <Text
+                style={[
+                  styles.labelLineText,
+                  { textAlign: "center", width: 60 }
+                ]}
+              >
+                {utils.formatWei(data.ticketPrice)}
+              </Text>
+              <Text
+                style={[
+                  styles.labelLineText,
+                  { textAlign: "right", width: 366, fontSize: 10 }
+                ]}
+              >
+                {t.ID}
+              </Text>
+            </View>
+            <View style={styles.orderBorder} />
+          </View>
+        );
+      }
+
+      return (
+        <View style={styles.container}>
+          <TouchableOpacity
+            onPress={() => {
+              this.setState({ ticketDisplayOn: false });
+            }}
+            style={{ width: "100%", height: "100%" }}
+          >
+            <Text>close</Text>
+          </TouchableOpacity>
+          <View>
+            <View style={styles.stakeDetailBox}>
+              <View style={styles.stakeDetailRow}>
+                <Text style={styles.stakeDetailText}>
+                  Ticket Details
+                  <Text style={styles.dateValue}>
+                    {"  " +
+                      data.numberOfTickets +
+                      (data.numberOfTickets === 1 ? " Ticket" : " Tickets")}
+                  </Text>
+                </Text>
+              </View>
+              <View style={styles.ticketDetailRow}>
+                <Text style={[styles.labelLineText, { width: 120 }]}>
+                  Expiration Time
+                </Text>
+                <Text style={[styles.labelLineText, { width: 80 }]}>
+                  Ticket Price
+                </Text>
+                <Text
+                  style={[
+                    styles.labelLineText,
+                    { textAlign: "right", width: 340 }
+                  ]}
+                >
+                  Ticket Hash
+                </Text>
+                <View />
+              </View>
+              <View style={styles.orderBorder} />
+              {ticketViews}
+            </View>
+            <TouchableOpacity
+              onPress={() => {
+                this.setState({ ticketDisplayOn: false });
+              }}
+              style={styles.closeButton}
+            >
+              <Image
+                resizeMode="contain"
+                source={closebutton}
+                style={{width:14, height : 14}}
+              />
+            </TouchableOpacity>
+          </View>
         </View>
       );
     }
@@ -132,7 +228,7 @@ class Status extends Component {
             </TouchableOpacity>
           </View>
           <View style={{ height: 10, width: 1 }} />
-          <BlockDisplayer />
+          <BlockDisplayer block={data.latestBlock} />
           <View style={{ height: 10, width: 1 }} />
           <View style={styles.largeMetricBox}>
             <View style={styles.rewardHolderView}>
@@ -211,9 +307,15 @@ class Status extends Component {
                   <Text style={styles.stakeTextFSN}>FSN</Text>
                 </Text>
                 {data.numberOfTickets > 0 && (
-                  <Text style={styles.viewTicketDetails}>
-                    View Ticket Details
-                  </Text>
+                  <TouchableOpacity
+                    onPress={() => {
+                      this.setState({ ticketDisplayOn: true });
+                    }}
+                  >
+                    <Text style={styles.viewTicketDetails}>
+                      View Ticket Details
+                    </Text>
+                  </TouchableOpacity>
                 )}
               </View>
             </View>
@@ -643,8 +745,8 @@ styles = StyleSheet.create({
     left: 170,
     overflow: "visible"
   },
-  titleBox : {
-    width: 620,
+  titleBox: {
+    width: 620
   },
   walletBox: {
     backgroundColor: colors.tagGrey,
@@ -708,6 +810,23 @@ styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     height: 56
+  },
+  ticketDetailRow: {
+    flex: 1,
+    flexBasis: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    height: 44,
+    width: 620
+  },
+  closeButton: {
+    width: 14,
+    height: 14,
+    position: "absolute",
+    right: 18,
+    top: 24,
+    padding: 8
   }
 });
 

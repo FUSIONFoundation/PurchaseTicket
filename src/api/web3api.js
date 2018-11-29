@@ -150,7 +150,7 @@ export default class web3Api extends Component {
               })
           }).then( (loadsOfInfo) => {
             return this._web3.fsn.totalNumberOfTickets().then( (totalTickets) => {
-              return Object.assign( loadsOfInfo , { totalTickets })
+              return Object.assign( loadsOfInfo , { totalTickets, latestBlock : block  })
             })
           }).then( (loadsOfInfo ) => {
               this.emit( "balanceInfo", loadsOfInfo, false )

@@ -8,6 +8,7 @@ var BN = web3api.web3.utils.BN;
 var datablock = {
   web3api: web3interface,
   BN,
+  latestBlock : {},
   accountUnlocked: true,
   autoBuyOn: false,
   balanceOfFSN: 0,
@@ -45,7 +46,7 @@ export default class currentDataState {
   static setBalanceInfo( balanceInfo ) {
       console.log( "balance info ",  balanceInfo )
       datablock.lastUpdateTime = new Date()
-      
+
       if (balanceInfo.ticketPrice) {
         datablock.ticketPrice = new BN( balanceInfo.ticketPrice )
       }
@@ -60,6 +61,10 @@ export default class currentDataState {
       }
       if ( balanceInfo.totalTickets ) {
           datablock.totalTickets =  Object.keys(balanceInfo.allTickets).length
+          datablock.allTickets = balanceInfo.allTickets
+      }
+      if ( balanceInfo.latestBlock ) {
+          datablock.latestBlock = balanceInfo.latestBlock
       }
   }
 }
