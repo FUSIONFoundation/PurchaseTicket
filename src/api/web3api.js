@@ -55,7 +55,7 @@ export default class web3Api extends Component {
         return;
       }
       httpOnly = false;
-      this.provider.on("connect", function() {
+      this.provider.on("connect", ()=> {
         console.log("blockchain connected");
         this.connectedOnce = true;
         this.emit("connectstatus", ["connected"], null);
@@ -115,7 +115,25 @@ export default class web3Api extends Component {
     return this._walletAddress
   }
 
+  startFilterEngine() {
+    debugger
+    let dt = new Date() 
+    this.filterEngineOn = dt
+
+    this.subscription = this._web3.eth.subscribe('logs', {
+      address: FSNCallAddress
+  }, function(error, result){
+      debugger
+      if (!error)
+          console.log(result);
+  });
+
+  }
+
   setupMonitor() {
+    if ( !this.filterEngineOn ) {
+        this.startFilterEngine()
+    }
     let walletAddress = this._walletAddress
     this.attempForMonitor += 1;
     let nextMonitorCall = this.attempForMonitor;
@@ -212,6 +230,8 @@ export default class web3Api extends Component {
     return this.eventEmitter;
   }
 }
+
+export const FSNCallAddress  = "0xffffffffffffffffffffffffffffffffffffffff"
 
 export function web3FusionExtensons(web3) {
   if ( !web3._extend ) {

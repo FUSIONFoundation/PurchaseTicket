@@ -271,7 +271,11 @@ class Status extends Component {
             <CheckBox
               textWidth={512}
               onPress={() => {
-                this.setState({ autoBuyTickets: !this.state.autoBuyTickets });
+                let obj = { autoBuyTickets: !this.state.autoBuyTickets }
+                if ( !obj.autoBuyTickets ) {
+                    obj.autoBuyStopDate = false
+                }
+                this.setState(obj);
               }}
               on={this.state.autoBuyTickets}
               text="Auto Buy Tickets"
