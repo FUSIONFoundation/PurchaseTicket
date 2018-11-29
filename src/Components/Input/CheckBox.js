@@ -18,9 +18,10 @@ export default class CheckBox extends Component {
 
   render() {
     return (
-      <View style={[styles.container, { width: this.state.textWidth }]}>
+      <View style={[styles.container, { width: this.state.textWidth , opacity : this.props.disabled ? .40 : 1}]}>
         <View style={styles.containerInner}>
           <TouchableOpacity
+            disabled={this.props.disabled}
             onPress={() => {
               this.props.onPress(!this.props.on);
             }}

@@ -288,6 +288,7 @@ class Status extends Component {
             />
             <CheckBox
               textWidth={512}
+              disabled={!this.state.autoBuyTickets}
               onPress={() => {
                 this.setState({ autoBuyStopDate: !this.state.autoBuyStopDate });
               }}
