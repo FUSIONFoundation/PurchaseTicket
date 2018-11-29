@@ -49,6 +49,7 @@ class Status extends Component {
 
   balanceListener( balanceInfo ) {
     currentDataState.setBalanceInfo( balanceInfo )
+    this.calcDisplay(currentDataState.data, this.state.ticketQuantity );
     this.setState( { repaintKey : this.state.repaintKey + 1 })
   }
 

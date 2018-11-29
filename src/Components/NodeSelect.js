@@ -212,8 +212,8 @@ export default class NodeSelect extends Component {
     }
 
     let nodeString = this.state.currentNodeAddress;
-    if (nodeString.length > 18) {
-      nodeString = nodeString.substr(0, 15) + "...";
+    if (nodeString.length > 26) {
+      nodeString = nodeString.substr(0, 23) + "...";
     }
 
     return (
@@ -224,7 +224,7 @@ export default class NodeSelect extends Component {
       >
         <View
           style={
-            this.state.connectionError ? styles.errorBackground : styles.inputBackground
+            this.state.connectionError ? styles.errorBackground : styles.standardBackground
           }
         >
           <View
@@ -240,7 +240,7 @@ export default class NodeSelect extends Component {
                     <i key ="c11" className="fa fa-check-circle" style={{color:colors.successGreen,marginRight:4}}/>
                 )
             }
-            <Text style={[styles.selectNode, { marginRight: 4 }]}>
+            <Text style={[styles.standardNode, { marginRight: 4 }]}>
               {nodeString}
             </Text>
           </View>
@@ -293,6 +293,27 @@ styles = StyleSheet.create({
     paddingTop: 4,
     paddingBottom: 4
     //clearButtonMode : 'always'
+  },
+  standardNode : {
+    color : colors.textBlue,
+    fontSize : 12,
+    fontWeight : constants.regularFont,
+    fontFamily : constants.fontFamily
+  },
+  standardBackground: {
+    width: NODESELECT_WIDTH,
+    height: NODESELECT_HEIGHT,
+    borderRadius: 3,
+    borderWidth : 1,
+    borderColor : colors.orderGrey,
+    backgroundColor: colors.white,
+    flex: 1,
+    flexGrow: 1,
+    flexShrink: 0,
+    flexBasis: "auto",
+    justifyContent: "center",
+    alignItems: "center",
+    overflow: "hidden"
   },
   inputBackground: {
     width: NODESELECT_WIDTH,
