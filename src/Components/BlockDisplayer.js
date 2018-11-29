@@ -26,7 +26,7 @@ export default class BlockDisplayer extends Component {
 
     this.state.block = null;
     this.state.expand = false;
-    this.state.displayLeftRight = props.displayLeftRight
+    this.state.displayLeftRight = props.displayLeftRight;
     if (
       this.props.match &&
       this.props.match.params &&
@@ -34,7 +34,7 @@ export default class BlockDisplayer extends Component {
     ) {
       this.state.blockNumberToDisplay = this.props.match.params.blockNumber;
       this.state.expand = true;
-      this.state.displayLeftRight = true
+      this.state.displayLeftRight = true;
     }
   }
 
@@ -65,7 +65,7 @@ export default class BlockDisplayer extends Component {
       );
     } else {
       let transactions = [];
-      
+
       if (block.transactions && block.transactions.length > 0) {
         for (let tx of block.transactions) {
           transactions.push(
@@ -78,42 +78,48 @@ export default class BlockDisplayer extends Component {
 
       return (
         <View style={styles.stakeDetailBox}>
-          <TouchableOpacity
-            onPress={() => {
-              this.setState({ expand: false });
-            }}
-          >
-            <Text>
-              Latest Block Number = {block.number}
-              <i
-                style={{ color: colors.textBlue, marginLeft: 4 }}
-                className="fa fa-caret-up"
-              />
-            </Text>
-          </TouchableOpacity>
-          {this.state.displayLeftRight  & (
-              <View>
-          <TouchableOpacity
-            onPress={() => {
-              this.setState({ expand: false });
-            }}
-          >
-              <i
-                style={{ color: colors.textBlue, marginLeft: 4 }}
-                className="fa fa-caret-left"
-              />
-          </TouchableOpacity>
+          <View style={{ flex: 1, flexDirection: "row" }}>
             <TouchableOpacity
-            onPress={() => {
-              this.setState({ expand: false });
-            }}
-          >
-              <i
-                style={{ color: colors.textBlue, marginLeft: 4 }}
-                className="fa fa-caret-right"
-              />
-             
-          </TouchableOpacity>  </View> )}
+              onPress={() => {
+                this.setState({ expand: false });
+              }}
+            >
+              <Text>
+                Latest Block Number = {block.number}
+                <i
+                  style={{ color: colors.textBlue, marginLeft: 4 }}
+                  className="fa fa-caret-up"
+                />
+              </Text>
+            </TouchableOpacity>
+            {this.state.displayLeftRight && (
+              <View style={{ flex: 1, flexDirection: "row" }}>
+                <TouchableOpacity
+                  onPress={() => {
+                    this.cleanupBlock()
+                    //debugger
+                    this.state.blockNumberToDisplay = block.number - 1;
+                    this.setupBlock()
+                  }}
+                >
+                  <i
+                    style={{ color: colors.textBlue, marginLeft: 4 }}
+                    className="fa fa-caret-left"
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    this.setState({ expand: false });
+                  }}
+                >
+                  <i
+                    style={{ color: colors.textBlue, marginLeft: 4 }}
+                    className="fa fa-caret-right"
+                  />
+                </TouchableOpacity>
+              </View>
+            )}
+          </View>
           <View style={{ height: 8, width: 1 }} />
           <View style={styles.orderBorder} />
 
@@ -179,7 +185,7 @@ export default class BlockDisplayer extends Component {
     this.setState({ block });
   }
 
-  componentDidMount() {
+  setupBlock() {
     if (!this.props.block) {
       if (this.state.blockNumberToDisplay) {
         web3api.getBlock(
@@ -193,18 +199,26 @@ export default class BlockDisplayer extends Component {
     }
   }
 
-  componentWillUnmount() {
+  cleanupBlock() {
     if (!this.props.block) {
-      if (this.state.blockNumberToDisplay) {
-        web3api.getBlock(
-          false,
-          this.state.blockNumberToDisplay,
-          this.lastestBlockListener
-        );
-      } else {
-        web3api.removeEventListener("latestBlock", this.lastestBlockListener);
+        if (this.state.blockNumberToDisplay) {
+          web3api.getBlock(
+            false,
+            this.state.blockNumberToDisplay,
+            this.lastestBlockListener
+          );
+        } else {
+          web3api.removeEventListener("latestBlock", this.lastestBlockListener);
+        }
       }
-    }
+  }
+
+  componentDidMount() {
+    this.setupBlock();
+  }
+
+  componentWillUnmount() {
+   this.cleanupBlock()
   }
 }
 
