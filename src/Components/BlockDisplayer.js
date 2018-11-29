@@ -20,11 +20,18 @@ var web3api = currentDataState.web3api;
 export default class BlockDisplayer extends Component {
   constructor(props) {
     super(props);
+
     this.lastestBlockListener = this.lastestBlockListener.bind(this);
     this.state = {};
+    
     this.state.block = null;
     this.state.expand = false;
+    if ( this.props.match && this.props.match.params && this.props.match.params.blockNumber ) {
+        this.state.blockNumberToDisplay = this.props.match.params.blockNumber;
+        this.state.expand = true
+    }
   }
+
   render() {
     let block = this.props.block || this.state.block;
 
@@ -132,13 +139,21 @@ export default class BlockDisplayer extends Component {
 
   componentDidMount() {
     if (!this.props.block) {
-      web3api.on("latestBlock", this.lastestBlockListener);
+        if ( this.state.blockNumberToDisplay ) {
+            web3api.getBlock( true, this.state.blockNumberToDisplay , this.lastestBlockListener )
+        } else {
+            web3api.on("latestBlock", this.lastestBlockListener);
+        }
     }
   }
 
   componentWillUnmount() {
     if (!this.props.block) {
-      web3api.removeEventListener("latestBlock", this.lastestBlockListener);
+        if ( this.state.blockNumberToDisplay ) {
+            web3api.getBlock( false, this.state.blockNumberToDisplay , this.lastestBlockListener )
+        } else {
+            web3api.removeEventListener("latestBlock", this.lastestBlockListener);
+        }
     }
   }
 }
