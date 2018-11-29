@@ -26,7 +26,7 @@ var styles;
 
 class Status extends Component {
   // this is what i use for production
-  state = { paintKey: 0, ticketDisplayOn: true };
+  state = { paintKey: 0, ticketDisplayOn: false };
 
   constructor(props) {
     super();
@@ -144,14 +144,6 @@ class Status extends Component {
 
       return (
         <View style={styles.container}>
-          <TouchableOpacity
-            onPress={() => {
-              this.setState({ ticketDisplayOn: false });
-            }}
-            style={{ width: "100%", height: "100%" }}
-          >
-            <Text>close</Text>
-          </TouchableOpacity>
           <View>
             <View style={styles.stakeDetailBox}>
               <View style={styles.stakeDetailRow}>
