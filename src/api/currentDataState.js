@@ -44,6 +44,8 @@ export default class currentDataState {
 
   static setBalanceInfo( balanceInfo ) {
       console.log( "balance info ",  balanceInfo )
+      datablock.lastUpdateTime = new Date()
+      
       if (balanceInfo.ticketPrice) {
         datablock.ticketPrice = new BN( balanceInfo.ticketPrice )
       }

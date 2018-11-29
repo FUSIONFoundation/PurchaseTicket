@@ -16,7 +16,7 @@ import utils from "../utils";
 import moment from "moment";
 import currentDataState from "../api/currentDataState";
 import BlockDisplayer from "./BlockDisplayer";
-var BN = currentDataState.BN
+var BN = currentDataState.BN;
 
 var lineGraph = require("../images/lineGraph.svg");
 
@@ -24,20 +24,20 @@ var styles;
 
 class Status extends Component {
   // this is what i use for production
-  state = { paintKey : 0};
+  state = { paintKey: 0 };
 
   constructor(props) {
     super();
-    this.balanceListener = this.balanceListener.bind(this)
+    this.balanceListener = this.balanceListener.bind(this);
   }
 
   totalStake(data) {
     return data.ticketPrice.mul(new BN(data.numberOfTickets));
   }
 
-  balanceListener( balanceInfo ) {
-    currentDataState.setBalanceInfo( balanceInfo )
-    this.setState( { paintKey : this.state.paintKey + 1})
+  balanceListener(balanceInfo) {
+    currentDataState.setBalanceInfo(balanceInfo);
+    this.setState({ paintKey: this.state.paintKey + 1 });
   }
 
   componentDidMount() {
@@ -45,21 +45,24 @@ class Status extends Component {
   }
 
   componentWillUnmount() {
-    currentDataState.web3api.removeEventListener("balanceInfo", this.balanceListener);
+    currentDataState.web3api.removeEventListener(
+      "balanceInfo",
+      this.balanceListener
+    );
   }
 
   render() {
     let data = currentDataState.data;
 
-    if ( !BN ) {
-      BN = currentDataState.BN
+    if (!BN) {
+      BN = currentDataState.BN;
     }
 
-    if ( data.accountUnlocked ) {
-        data.web3api.walletAddress = data.signInfo.address;
+    if (data.accountUnlocked) {
+      data.web3api.walletAddress = data.signInfo.address;
     }
 
-    let rewardNumber = utils.formatWei(data.rewardsToDate )
+    let rewardNumber = utils.formatWei(data.rewardsToDate);
     let ticketText = data.totalTickets === 1 ? "Ticket" : "Tickets";
     let rewardStyle;
     let textNumberOfRewardsGivenType;
@@ -82,21 +85,22 @@ class Status extends Component {
 
     let dt = new moment(data.lastUpdateTime);
 
-    let dtDisplay = dt.format("LLLL z");
+    let dtDisplay = dt.toString() // dt.format("YYYY-MM-DD HH:mm:ss.SSS z");
 
     if (!data.accountUnlocked) {
       return (
-        <View style={{padding:15}}>
+        <View style={{ padding: 15 }}>
           <Text style={styles.Auto_Buy_Stake_Monit}>
             You Account Must be unlocked to use this screen.
           </Text>
-          <TouchableOpacity style={{width:100}}
-                onPress={() => {
-                  history.push('/UnlockAccount')
-                }}
-              >
-              <Text style={styles.activeButton}>Select An Account</Text>
-              </TouchableOpacity>
+          <TouchableOpacity
+            style={{ width: 100 }}
+            onPress={() => {
+              history.push("/UnlockAccount");
+            }}
+          >
+            <Text style={styles.activeButton}>Select An Account</Text>
+          </TouchableOpacity>
         </View>
       );
     }
@@ -104,26 +108,32 @@ class Status extends Component {
     return (
       <View style={{ marginLeft: 30, backgroundColor: colors.backgroundGrey }}>
         <View style={styles.container}>
-          <Text style={styles.Auto_Buy_Stake_Monit}>
-            Auto Buy Stake Monitor
-          </Text>
-          <TouchableOpacity>
-            <Text style={styles.lastUpdated}>
-              <Text>↻</Text> {`Last Updated: ${dtDisplay}`}
+          <View style={styles.titleBox}>
+            <Text style={styles.Auto_Buy_Stake_Monit}>
+              Auto Buy Stake Monitor
             </Text>
-          </TouchableOpacity>
+            <TouchableOpacity>
+              <Text style={styles.lastUpdated}>
+                {`Last Updated: ${dtDisplay}`}
+              </Text>
+            </TouchableOpacity>
+          </View>
           <View style={styles.walletBox}>
             <Text style={styles.walletLabel}>Wallet Address</Text>
-            <TouchableOpacity onPress={() => {Clipboard.setString(data.signInfo.address)}}>
+            <TouchableOpacity
+              onPress={() => {
+                Clipboard.setString(data.signInfo.address);
+              }}
+            >
               <Text style={styles.walletLabelAddress}>
                 {data.signInfo.address}
                 <i style={{ marginLeft: 4 }} className="fa fa-copy" />
               </Text>
             </TouchableOpacity>
           </View>
-          <View style={{height:10,width:1}}/>
-          <BlockDisplayer/>
-          <View style={{height:10,width:1}}/>
+          <View style={{ height: 10, width: 1 }} />
+          <BlockDisplayer />
+          <View style={{ height: 10, width: 1 }} />
           <View style={styles.largeMetricBox}>
             <View style={styles.rewardHolderView}>
               <Image
@@ -169,8 +179,8 @@ class Status extends Component {
               <Text style={styles.stakeDetailText}>Stake Details</Text>
               <TouchableOpacity
                 onPress={() => {
-                  if ( !data.autoBuyOn && data.numberOfTicketsToPurchase === 0 ) {
-                    history.push('/PurchaseTicket')
+                  if (!data.autoBuyOn && data.numberOfTicketsToPurchase === 0) {
+                    history.push("/PurchaseTicket");
                   } else {
                     alert("do something");
                   }
@@ -242,7 +252,9 @@ class Status extends Component {
               <Text style={styles.labelLineText}>Total FSN</Text>
               <View>
                 <Text style={styles.stakeTextVal}>
-                  {utils.formatWei(data.walletBalance.add( this.totalStake(data)))}
+                  {utils.formatWei(
+                    data.walletBalance.add(this.totalStake(data))
+                  )}
                   <Text style={styles.stakeTextFSN}>FSN</Text>
                 </Text>
               </View>
@@ -423,13 +435,15 @@ styles = StyleSheet.create({
     fontFamily: constants.fontFamily,
     fontWeight: constants.boldFont,
     color: colors.textBlue,
-    marginBottom: 4
+    marginBottom: 4,
+    alignSelf: "flex-start"
   },
   lastUpdated: {
     fontSize: 12,
     fontFamily: constants.fontFamily,
     fontWeight: constants.regularFont,
-    color: colors.labelGrey
+    color: colors.labelGrey,
+    alignSelf: "flex-start"
   },
   labelLineText: {
     fontSize: 12,
@@ -513,7 +527,7 @@ styles = StyleSheet.create({
     fontFamily: constants.fontFamily,
     fontWeight: constants.boldFont,
     alignSelf: "flex-end",
-    color : colors.textBlue,
+    color: colors.textBlue
   },
   dateValue: {
     fontSize: 14,
@@ -628,6 +642,9 @@ styles = StyleSheet.create({
     position: "absolute",
     left: 170,
     overflow: "visible"
+  },
+  titleBox : {
+    width: 620,
   },
   walletBox: {
     backgroundColor: colors.tagGrey,
