@@ -47,7 +47,7 @@ describe("connect to server and get first block", function() {
     });
 
     it("cleans up ", function() {
-      provider.removeAllListeners();
+      provider.reset();
       web3.setProvider(null);
     });
   });
