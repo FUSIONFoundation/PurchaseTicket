@@ -103,7 +103,7 @@ export default class BlockDisplayer extends Component {
                   }}
                 >
                   <i
-                    style={{ color: colors.textBlue, marginLeft: 4 }}
+                    style={{ color: colors.textBlue, marginLeft: 4, marginRight  : 8, fontSize : 16 }}
                     className="fa fa-caret-left"
                   />
                 </TouchableOpacity>
@@ -113,7 +113,7 @@ export default class BlockDisplayer extends Component {
                   }}
                 >
                   <i
-                    style={{ color: colors.textBlue, marginLeft: 4 }}
+                    style={{ color: colors.textBlue, marginLeft: 4  , fontSize : 16}}
                     className="fa fa-caret-right"
                   />
                 </TouchableOpacity>
