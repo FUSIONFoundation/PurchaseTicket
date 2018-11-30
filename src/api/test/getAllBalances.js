@@ -2,6 +2,9 @@ var assert = require("assert");
 var Web3 = require("web3");
 var web3FusionExtend = require("../web3FusionExtend");
 
+console.log(process.env.WALLETT_ADDRESS);
+console.log(process.env.CONNECT_STRING);
+
 var web3;
 var provider;
 
@@ -11,12 +14,16 @@ describe("connect to server and get first block", function() {
       process.env.CONNECT_STRING,
       "Environment Variable CONNECT_STRING must be set."
     );
+    assert(
+        process.env.WALLETT_ADDRESS,
+        "Environment Variable WALLETT_ADDRESS must be set."
+      );
   });
 
   describe("connect to server and get first block", function() {
     it("Connect to Server", function(done) {
       provider = new Web3.providers.WebsocketProvider(
-        process.env.CONNECT_STRING
+        process.env.CONNECTSTRING
       );
       provider.on("connect", function() {
         done();
@@ -28,9 +35,9 @@ describe("connect to server and get first block", function() {
       console.log(web3.version);
     });
 
-    it("gets first block", function(done) {
-      web3.eth
-        .getBlock(0)
+    it("getAllBalances", function(done) {
+      web3.fsn
+        .getAllBalances( {from:})
         .then(block => {
           assert(
             block.number === 0,

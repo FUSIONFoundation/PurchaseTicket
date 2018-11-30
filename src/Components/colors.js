@@ -67,4 +67,12 @@ export default class Colors
     static get textGrey() {
         return '#4a4a4a'
     }
+
+    static get sexyPurple() {
+        return '#462ab0;'
+    } 
+
+    static get tagPurple() {
+     return '#dad4ef';
+    }
 }
