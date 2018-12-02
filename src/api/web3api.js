@@ -1,7 +1,7 @@
 import _web3 from "web3";
 import EventEmitter from "events";
 import currentDataState from "./currentDataState";
-var web3FusionExtend = require('./web3FusionExtend.js')
+var web3FusionExtend = require('web3-fusion-extend')
 
 // _web3.setProvider(new _web3.providers.HttpProvider("http://localhost:5488"));
 
@@ -171,9 +171,9 @@ export default class web3Api {
     this.subscriptionFSNCallAddress = this._web3.eth.subscribe(
       "logs",
       {
-        address: FSNCallAddress,
+        address: this._web3.fsn.consts.FSNCallAddress,
         fromBlock: "0x0",
-        topics: [FSNCallAddress_Topic_BuyTicketFunc]
+        topics: [this._web3.fsn.consts.FSNCallAddress_Topic_BuyTicketFunc]
       },
       (error, result) => {
         // debugger
@@ -181,7 +181,7 @@ export default class web3Api {
           //debugger
           if (result.topics.length > 0) {
             let topic = parseInt(result.topics[0].substr(2));
-            let callType = FSNCallAddress_Topic_To_Function[topic];
+            let callType = this._web3.fsn.consts.FSNCallAddress_Topic_To_Function[topic];
             console.log(callType, result);
             this._web3.eth.getTransaction(result.transactionHash, (err, tx) => {
               console.log("tx", err, tx);
@@ -315,62 +315,7 @@ export default class web3Api {
   }
 }
 
-export const TicketLogAddress = "0xfffffffffffffffffffffffffffffffffffffffe";
 
-const TicketLogAddress_Topic_To_Function = {
-  0: "ticketSelected",
-  1: "ticketReturn",
-  2: "ticketExpired"
-};
-
-export const TicketLogAddress_Topic_ticketSelected =
-  "0x0000000000000000000000000000000000000000000000000000000000000000";
-export const TicketLogAddress_Topic_ticketReturn =
-  "0x0000000000000000000000000000000000000000000000000000000000000001";
-export const TicketLogAddress_Topic_ticketExpired =
-  "0x0000000000000000000000000000000000000000000000000000000000000002";
-
-export const FSNCallAddress = "0xffffffffffffffffffffffffffffffffffffffff";
-
-const FSNCallAddress_Topic_To_Function = {
-  // GenNotationFunc wacom
-  0: "GenNotationFunc", // = iota
-  // GenAssetFunc wacom
-  1: "GenAssetFunc",
-  // SendAssetFunc wacom
-  2: "SendAssetFunc",
-  // TimeLockFunc wacom
-  3: "TimeLockFunc",
-  // BuyTicketFunc wacom
-  4: "BuyTicketFunc",
-  // AssetValueChangeFunc wacom
-  5: "AssetValueChangeFunc",
-  // MakeSwapFunc wacom
-  6: "MakeSwapFunc",
-  // RecallSwapFunc wacom
-  7: "RecallSwapFunc",
-  // TakeSwapFunc wacom
-  8: "TakeSwapFunc"
-};
-
-export const FSNCallAddress_Topic_GenNotationFunc =
-  "0x0000000000000000000000000000000000000000000000000000000000000000";
-export const FSNCallAddress_Topic_GenAssetFunc =
-  "0x0000000000000000000000000000000000000000000000000000000000000001";
-export const FSNCallAddress_Topic_SendAssetFunc =
-  "0x0000000000000000000000000000000000000000000000000000000000000002";
-export const FSNCallAddress_Topic_TimeLockFunc =
-  "0x0000000000000000000000000000000000000000000000000000000000000003";
-export const FSNCallAddress_Topic_BuyTicketFunc =
-  "0x0000000000000000000000000000000000000000000000000000000000000004";
-export const FSNCallAddress_Topic_AssetValueChangeFunc =
-  "0x0000000000000000000000000000000000000000000000000000000000000005";
-export const FSNCallAddress_Topic_MakeSwapFunc =
-  "0x0000000000000000000000000000000000000000000000000000000000000006";
-export const FSNCallAddress_Topic_RecallSwapFunc =
-  "0x0000000000000000000000000000000000000000000000000000000000000007";
-export const FSNCallAddress_Topic_TakeSwapFunc =
-  "0x0000000000000000000000000000000000000000000000000000000000000008";
 
 // _web3.eth.filter('latest').watch(function(err,log) {
 //     _web3.fsn.buyTicket({from:_web3.fsn.coinbase},password)
