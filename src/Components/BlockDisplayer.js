@@ -3,14 +3,10 @@ import {
   Text,
   View,
   StyleSheet,
-  AsyncStorage,
   TouchableOpacity,
-  TextInput,
-  ActivityIndicator
 } from "react-native";
 
 import "../App.css";
-import history from "../history.js";
 import colors from "./colors";
 import constants from "./constants";
 import currentDataState from "../api/currentDataState";

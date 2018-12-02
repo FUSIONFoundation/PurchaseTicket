@@ -211,12 +211,12 @@ export default class web3Api {
       .getBlock("latest")
       .then(block => {
         this.emit("connectstatus", ["stillgood"], false);
-        if (this.lastBlock.number != block.number) {
+        if (this.lastBlock.number !== block.number) {
           this.lastBlock = block;
           console.log(block);
           this.emit("latestBlock", block);
 
-          if (!walletAddress || walletAddress != this._walletAddress) {
+          if (!walletAddress || walletAddress !== this._walletAddress) {
             return true;
           }
           return this._web3.fsn

@@ -12,7 +12,7 @@ var datablock = {
   accountUnlocked: true,
   autoBuyOn: false,
   balanceOfFSN: 0,
-  numberOfTicketsToPurchase: 0,
+  numberOfTicketsToPurchase:  0,
   numberOfTickets: 0,
   autoBuy: false,
   autoReinvestReward: false,

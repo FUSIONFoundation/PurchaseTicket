@@ -3,22 +3,18 @@ import {
   Text,
   View,
   StyleSheet,
-  AsyncStorage,
   TouchableOpacity,
   TextInput,
   ActivityIndicator
 } from "react-native";
 
 import "../App.css";
-import history from "../history.js";
 import colors from "./colors";
 import constants from "./constants";
 import currentDataState from "../api/currentDataState";
 import "font-awesome/css/font-awesome.min.css";
 var web3api = currentDataState.web3api;
 var styles;
-
-var currentNodeAddress;
 
 var NODESELECT_WIDTH = 180;
 var NODESELECT_HEIGHT = 44;
@@ -39,42 +35,41 @@ export default class NodeSelect extends Component {
 
     var val = window.localStorage.getItem("address1");
     var error = null;
-    {
-      if (!error) {
-        if (this.didOneUpdate) {
-          if (!val) {
-            val = "";
-          }
-          this.setState({
-            newNodeAddress: val,
-            currentNodeAddress: val,
-            initedNode: true
-          });
-        } else {
-          if (!val) {
-            val = "";
-          }
-          this.state.currentNodeAddress = val;
-          this.state.newNodeAddress = val;
-          this.state.initedNode = true;
-        }
-        return;
-      }
 
-      val = "";
+    if (!error) {
       if (this.didOneUpdate) {
+        if (!val) {
+          val = "";
+        }
         this.setState({
           newNodeAddress: val,
-          currentNodeAddress: null,
+          currentNodeAddress: val,
           initedNode: true
         });
       } else {
-        this.state.currentNodeAddress = null;
-        this.state.initedNode = true;
+        if (!val) {
+          val = "";
+        }
+        this.state.currentNodeAddress = val;
         this.state.newNodeAddress = val;
-        this.state.inputNodeMode = false;
-        this.state.connectionError = false;
+        this.state.initedNode = true;
       }
+      return;
+    }
+
+    val = "";
+    if (this.didOneUpdate) {
+      this.setState({
+        newNodeAddress: val,
+        currentNodeAddress: null,
+        initedNode: true
+      });
+    } else {
+      this.state.currentNodeAddress = null;
+      this.state.initedNode = true;
+      this.state.newNodeAddress = val;
+      this.state.inputNodeMode = false;
+      this.state.connectionError = false;
     }
   }
 
@@ -100,7 +95,7 @@ export default class NodeSelect extends Component {
     } else {
       if (arg[0] === "error") {
         this.setState({ connectionError: true });
-      } else if ( arg[0] === 'stillgood' && this.state.connectionError ) {
+      } else if (arg[0] === "stillgood" && this.state.connectionError) {
         this.setState({ connectionError: false });
       }
     }
@@ -122,8 +117,6 @@ export default class NodeSelect extends Component {
   }
 
   render() {
-    currentNodeAddress = AsyncStorage.getItem("lastNodeAddress");
-
     if (this.state.testing) {
       let nodeString = this.state.newNodeAddress;
       if (nodeString.length > 18) {
@@ -224,7 +217,9 @@ export default class NodeSelect extends Component {
       >
         <View
           style={
-            this.state.connectionError ? styles.errorBackground : styles.standardBackground
+            this.state.connectionError
+              ? styles.errorBackground
+              : styles.standardBackground
           }
         >
           <View
@@ -235,11 +230,13 @@ export default class NodeSelect extends Component {
               alignItems: "center"
             }}
           >
-            {
-                !this.state.connectionError && (
-                    <i key ="c11" className="fa fa-check-circle" style={{color:colors.successGreen,marginRight:4}}/>
-                )
-            }
+            {!this.state.connectionError && (
+              <i
+                key="c11"
+                className="fa fa-check-circle"
+                style={{ color: colors.successGreen, marginRight: 4 }}
+              />
+            )}
             <Text style={[styles.standardNode, { marginRight: 4 }]}>
               {nodeString}
             </Text>
@@ -270,7 +267,7 @@ styles = StyleSheet.create({
     flexShrink: 0,
     flexBasis: "auto",
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center"
   },
   errorText: {
     fontSize: 12,
@@ -294,18 +291,18 @@ styles = StyleSheet.create({
     paddingBottom: 4
     //clearButtonMode : 'always'
   },
-  standardNode : {
-    color : colors.textBlue,
-    fontSize : 12,
-    fontWeight : constants.regularFont,
-    fontFamily : constants.fontFamily
+  standardNode: {
+    color: colors.textBlue,
+    fontSize: 12,
+    fontWeight: constants.regularFont,
+    fontFamily: constants.fontFamily
   },
   standardBackground: {
     width: NODESELECT_WIDTH,
     height: NODESELECT_HEIGHT,
     borderRadius: 3,
-    borderWidth : 1,
-    borderColor : colors.orderGrey,
+    borderWidth: 1,
+    borderColor: colors.orderGrey,
     backgroundColor: colors.white,
     flex: 1,
     flexGrow: 1,

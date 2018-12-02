@@ -5,8 +5,7 @@ import {
   Image,
   StyleSheet,
   Clipboard,
-  TouchableOpacity,
-  TouchableWithoutFeedback
+  TouchableOpacity
 } from "react-native";
 
 import "../App.css";
