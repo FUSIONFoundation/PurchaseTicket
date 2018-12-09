@@ -56,11 +56,11 @@ export default class currentDataState {
       if ( balanceInfo.gasPrice ) {
           datablock.gasPrice = new BN( balanceInfo.gasPrice )
       }
-      if ( balanceInfo.allTickets ) {
-          datablock.numberOfTickets = Object.keys(balanceInfo.allTickets).length
-      }
       if ( balanceInfo.totalTickets ) {
-          datablock.totalTickets =  Object.keys(balanceInfo.allTickets).length
+          datablock.totalTickets = balanceInfo.totalTickets
+      }
+      if ( balanceInfo.allTickets ) {
+          datablock.numberOfTickets =  Object.keys(balanceInfo.allTickets).length
           datablock.allTickets = balanceInfo.allTickets
       }
       if ( balanceInfo.latestBlock ) {
