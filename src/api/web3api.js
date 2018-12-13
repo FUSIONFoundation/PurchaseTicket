@@ -25,6 +25,7 @@ export default class web3Api {
     this.walletAddress = "";
     this.setupMonitor = this.setupMonitor.bind(this);
     this.monitoringBlocks = {};
+    this.ticketPurchasing = {}
   }
 
   static get web3() {
@@ -214,13 +215,13 @@ export default class web3Api {
       .getBlock("latest")
       .then(block => {
         this.emit("connectstatus", ["stillgood"], false);
-        if (this.lastBlock.number != block.number ||  this.mustGetOneBalance) {
+        if (this.lastBlock.number !== block.number ||  this.mustGetOneBalance) {
           this.mustGetOneBalance = false
           this.lastBlock = block;
           console.log(block);
           this.emit("latestBlock", block);
 
-          if (!walletAddress || walletAddress != this._walletAddress) {
+          if (!walletAddress || walletAddress !== this._walletAddress) {
             return true;
           }
           return this._web3.fsn
@@ -316,6 +317,46 @@ export default class web3Api {
    */
   getEventEmitter() {
     return this.eventEmitter;
+  }
+
+  buyTickets( data ) {
+    this.ticketPurchasing = data
+    data.purchaseStarted = true
+    data.activeTicketPurchase = true
+    this.emit("purchaseStarted", data )
+
+    this._web3.fsntx.buildBuyTicketTx( {from: this._walletAddress } )
+    .then( (tx) => { 
+      debugger 
+      let input = tx.input 
+      let rawTx = Object.assign( tx, {} )
+
+      console.log( currentDataState.data.signInfo )
+
+      currentDataState.data.signInfo.signTransaction( tx).then( (signedMessage )=> {
+          debugger
+          let  {r , s , v, } = signedMessage
+         
+           rawTx.r = r
+           rawTx.s = s
+           rawTx.v = v
+           rawTx.input = input
+
+  console.log(rawTx)
+          this._web3.fsntx.sendRawTransaction( rawTx ).then(
+            (a) =>{
+              
+              debugger
+              console.log(a)
+            }
+          )
+      } )
+      
+    })
+    .catch( (err) =>  {
+      debugger
+      console.log( "error trying to buy ticket")
+    })
   }
 }
 

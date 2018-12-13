@@ -1,10 +1,5 @@
 import React, { Component } from "react";
-import {
-  Text,
-  View,
-  StyleSheet,
-  TouchableOpacity,
-} from "react-native";
+import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 
 import "../App.css";
 import colors from "./colors";
@@ -92,14 +87,18 @@ export default class BlockDisplayer extends Component {
               <View style={{ flex: 1, flexDirection: "row" }}>
                 <TouchableOpacity
                   onPress={() => {
-                    this.cleanupBlock()
+                    this.cleanupBlock();
                     //debugger
-                    this.state.blockNumberToDisplay = block.number - 1;
-                    this.setupBlock()
+                    this.setupBlock(block.number - 1);
                   }}
                 >
                   <i
-                    style={{ color: colors.textBlue, marginLeft: 4, marginRight  : 8, fontSize : 16 }}
+                    style={{
+                      color: colors.textBlue,
+                      marginLeft: 4,
+                      marginRight: 8,
+                      fontSize: 16
+                    }}
                     className="fa fa-caret-left"
                   />
                 </TouchableOpacity>
@@ -109,7 +108,11 @@ export default class BlockDisplayer extends Component {
                   }}
                 >
                   <i
-                    style={{ color: colors.textBlue, marginLeft: 4  , fontSize : 16}}
+                    style={{
+                      color: colors.textBlue,
+                      marginLeft: 4,
+                      fontSize: 16
+                    }}
                     className="fa fa-caret-right"
                   />
                 </TouchableOpacity>
@@ -181,32 +184,33 @@ export default class BlockDisplayer extends Component {
     this.setState({ block });
   }
 
-  setupBlock() {
+  setupBlock(blockNumber) {
+    let blockToUse = blockNumber || this.state.blockNumberToDisplay;
+  
     if (!this.props.block) {
-      if (this.state.blockNumberToDisplay) {
-        web3api.getBlock(
-          true,
-          this.state.blockNumberToDisplay,
-          this.lastestBlockListener
-        );
+      if (blockToUse) {
+        web3api.getBlock(true, blockToUse, this.lastestBlockListener);
       } else {
         web3api.on("latestBlock", this.lastestBlockListener);
       }
+    }
+    if (blockNumber !== undefined) {
+      this.setState({ blockNumberToDisplay: blockNumber });
     }
   }
 
   cleanupBlock() {
     if (!this.props.block) {
-        if (this.state.blockNumberToDisplay) {
-          web3api.getBlock(
-            false,
-            this.state.blockNumberToDisplay,
-            this.lastestBlockListener
-          );
-        } else {
-          web3api.removeEventListener("latestBlock", this.lastestBlockListener);
-        }
+      if (this.state.blockNumberToDisplay) {
+        web3api.getBlock(
+          false,
+          this.state.blockNumberToDisplay,
+          this.lastestBlockListener
+        );
+      } else {
+        web3api.removeEventListener("latestBlock", this.lastestBlockListener);
       }
+    }
   }
 
   componentDidMount() {
@@ -214,7 +218,7 @@ export default class BlockDisplayer extends Component {
   }
 
   componentWillUnmount() {
-   this.cleanupBlock()
+    this.cleanupBlock();
   }
 }
 

@@ -15,7 +15,7 @@
     "react-scripts": "2.1.1",
     "react-select-files": "^0.1.0",
     "web3": "^1.0.0-beta.36",
-    "web3-fusion-extend": "^1.0.0-beta.3"
+    "web3-fusion-extend": "^1.0.0-beta.8"
   },
   "scripts": {
     "start": "react-scripts start",

@@ -261,7 +261,8 @@ class Status extends Component {
                   <TextInput
                     style={[
                       styles.ticketQuantityInput,
-                      { borderColor: this.state.daysError ? colors.errorRed : colors.orderGrey }
+                      { color : daysTextcolor,
+                        borderColor: this.state.daysError ? colors.errorRed : colors.orderGrey }
                     ]}
                     placeholder="30"
                     autoCorrect={false}
@@ -350,7 +351,9 @@ class Status extends Component {
                 />
               )}
             </CheckBox>
-            <TouchableOpacity disabled={!enabled} onPress={() => {}}>
+            <TouchableOpacity disabled={!enabled} onPress={() => {
+                this.purchaseTicket()
+            }}>
               <View>
                 <Text style={btnStyle}>{purchaseText}</Text>
               </View>
@@ -363,8 +366,19 @@ class Status extends Component {
             </Text>
           </View>
         </View>
+        {/* {this.state.purchasingTicket && (
+            <View style={{position:'absolute', backgroundColor : 'rgba(0,0,0,.3)' , top:0, left : 0, width : '100%', height : '100%'}}>
+              <Text style={{fontSize:30}}> Buying Tickets </Text>
+            </View>
+        )} */}
       </View>
     );
+  }
+
+  purchaseTicket() {
+    currentDataState.web3api.buyTickets( {  data : this.state } )
+    this.setState({purchasingTicket:true})
+    history.push("/Status");
   }
 
   onChangeDate(date) {
