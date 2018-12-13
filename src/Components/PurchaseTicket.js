@@ -26,7 +26,9 @@ class Status extends Component {
   // this is what i use for production
   state = {
     ticketQuantity: undefined,
+    daysQuantity : "30",
     totalCost: 0,
+    daysError : false , 
     totalCostString: "0",
     autoBuyTickets: false,
     reinvestReward: false,
@@ -90,6 +92,15 @@ class Status extends Component {
       stakeTextColor = colors.errorRed;
     } else {
       stakeTextColor = colors.textBlue;
+    }
+
+    let daysTextcolor 
+    if ( this.state.daysError ) {
+      enabled = false;
+      btnStyle = styles.purchaseTicketButtonDisabled;
+      daysTextcolor = colors.errorRed;
+    } else {
+      daysTextcolor = colors.textBlue
     }
 
     let displayPercent =
@@ -240,6 +251,34 @@ class Status extends Component {
                 >
                   <Text style={styles.maxIt}>Max Quantity</Text>
                 </TouchableOpacity>
+              </View>
+            </View>
+            <View style={styles.orderBorder} />
+            <View style={[styles.stakeDetailRow, { height: 78 }]}>
+              <Text style={styles.labelLineText}>Ticket Days</Text>
+              <View>
+                <View style={{ flex: 1, flexDirection: "row" }}>
+                  <TextInput
+                    style={[
+                      styles.ticketQuantityInput,
+                      { borderColor: this.state.daysError ? colors.errorRed : colors.orderGrey }
+                    ]}
+                    placeholder="30"
+                    autoCorrect={false}
+                    placeholderTextColor={colors.orderGrey}
+                    maxLength={10}
+                    value={"" + (this.state.daysQuantity || "")}
+                    onChangeText={val => {
+                      let days = parseInt( val )
+                      if ( isNaN(days) || days < 1 || days > 100 ) {
+                        this.setState(  { daysQuantity : val, daysError : true })
+                      } else {
+                        this.setState( { daysQuantity : days, daysError  : false  } )
+                      }
+                    }}
+                  />
+                </View>
+                <Text style={[styles.maxIt,{color : colors.orderGrey}]}>(1-100)</Text>
               </View>
             </View>
             <View style={styles.orderBorder} />
