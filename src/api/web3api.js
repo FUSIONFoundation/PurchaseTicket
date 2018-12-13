@@ -69,6 +69,7 @@ export default class web3Api {
         console.log("blockchain connected");
         this.connectedOnce = true;
         this.emit("connectstatus", ["connected"], null);
+        this.mustGetOneBalance = true
         this.setupMonitor();
       });
     } else {
@@ -157,6 +158,7 @@ export default class web3Api {
 
   set walletAddress(address) {
     this._walletAddress = address;
+    this.mustGetOneBalance = true
   }
 
   get walletAddress() {
@@ -164,6 +166,7 @@ export default class web3Api {
   }
 
   startFilterEngine() {
+    return ; // will be doing soon
     //debugger
     let dt = new Date();
     this.filterEngineOn = dt;
@@ -176,7 +179,7 @@ export default class web3Api {
         topics: [this._web3.fsn.consts.FSNCallAddress_Topic_BuyTicketFunc]
       },
       (error, result) => {
-        // debugger
+        debugger
         if (!error) {
           //debugger
           if (result.topics.length > 0) {
@@ -211,7 +214,8 @@ export default class web3Api {
       .getBlock("latest")
       .then(block => {
         this.emit("connectstatus", ["stillgood"], false);
-        if (this.lastBlock.number != block.number) {
+        if (this.lastBlock.number != block.number ||  this.mustGetOneBalance) {
+          this.mustGetOneBalance = false
           this.lastBlock = block;
           console.log(block);
           this.emit("latestBlock", block);
