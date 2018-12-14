@@ -8,8 +8,9 @@
 # testing
 /coverage
 
-# production
-/build
+# we will but latest build up for git pipeline
+# # production
+# /build
 
 # misc
 .DS_Store
