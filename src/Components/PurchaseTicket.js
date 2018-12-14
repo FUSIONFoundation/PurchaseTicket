@@ -376,7 +376,7 @@ class Status extends Component {
   }
 
   purchaseTicket() {
-    currentDataState.web3api.buyTickets( {  data : this.state } )
+    currentDataState.web3api.buyTickets( this.state )
     this.setState({purchasingTicket:true})
     history.push("/Status");
   }

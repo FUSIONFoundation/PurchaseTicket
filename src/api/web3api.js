@@ -320,33 +320,84 @@ export default class web3Api {
   }
 
   buyTickets( data ) {
-    this.ticketPurchasing = data
+    currentDataState.data.ticketPurchasing = data
     data.purchaseStarted = true
     data.activeTicketPurchase = true
-    this.emit("purchaseStarted", data )
+    data.ticketsPurchased = 0
+    data.startBlock = this.lastBlock.number
+    data.lastStatus = ""
 
-    this.ticketPurchasing.lastStatus = "Trying to purchase ticket"
+    if ( this.lastTicketCheckTimer ) {
+      clearTimeout( this.lastTicketCheckTimer )
+      this.lastTicketCheckTimer = null
+    }
+
+    let cb;
+
+    let timerFunc =  ()=> { 
+      this.lastTicketCheckTimer = null
+      if ( data.startBlock < this.lastBlock.number ) {
+          this.purchaseOneTicket( data, cb )
+      } else {
+        data.lastStatus = "Wait for new block..." 
+        data.lastCall = "purchaseWaitForNewBlock"
+        this.emit("purchaseWaitForNewBlock", data )
+        this.lastTicketCheckTimer = setTimeout( timerFunc
+          , 1000  )
+      }
+    }
+    timerFunc = timerFunc.bind(this)
+
+    cb =  (err, step)=> {
+      if ( !err ) {
+        data.ticketsPurchased += 1
+      }
+      data.lastStatus = step
+      if ( data.ticketsPurchased < data.ticketQuantity ) {
+        // schedule another purchase
+        if ( !err ) {
+            data.lastStatus = "Purchase next ticket"
+        }
+        data.lastCall = "purchaseAgain"
+        this.emit("purchaseAgain", data )
+        this.lastTicketCheckTimer = setTimeout( timerFunc
+         , 1000  )
+      } else {
+        data.lastStatus = "Completed"
+        data.activeTicketPurchase = false
+        data.lastCall = "purchaseCompleted"
+        this.emit("purchaseCompleted", data )
+      }
+    }
+
+    cb = cb.bind(this)
+
+    this.purchaseOneTicket(data, cb )
+    data.lastCall = "purchaseStarted"
+    this.emit("purchaseStarted", data )
+  }
+
+  purchaseOneTicket(data , cb) {
     this._web3.fsntx.buildBuyTicketTx( {from: this._walletAddress } )
     .then( (tx) => { 
         return this._web3.fsn.signAndTransmit( tx, currentDataState.data.signInfo.signTransaction )
     })
     .then( (txHash)=> {
-      this.ticketPurchasing.lastStatus = "Ticket Purchase Started TX=" + txHash
-      console.log("build transaction txhash = " , txHash)
+      data.lastStatus = "Submitted:" + txHash
+      data.lastCall = "purchaseSubmitTicket"
+      this.emit("purchaseSubmitTicket", data )
       return this.waitForTransactionToComplete( txHash).then( (r)=>{
           if ( r.status ) {
-            this.ticketPurchasing.lastStatus = "Ticket bought"
+            cb( null, "Ticket bought" )
           } else {
-            this.ticketPurchasing.lastStatus = "Failed to buy ticket will retry"
-          }
-          console.log( r )    
+            cb( new Error("failed to buy"), "Failed to buy ticket will retry" )
+          }    
       }).catch ( (err)=> {
-        this.ticketPurchasing.lastStatus = "Error waiting for ticket to complete"
-        console.log( err ) 
+          cb( err ,  "Error waiting for ticket to complete") 
       })
     })
     .catch( (err) =>  {
-      console.log( "error trying to buy ticket")
+      cb(err, "unknown")
     })
   }
 

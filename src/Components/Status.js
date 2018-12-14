@@ -25,11 +25,12 @@ var styles;
 
 class Status extends Component {
   // this is what i use for production
-  state = { paintKey: 0, ticketDisplayOn: false };
+  state = { paintKey: 0, ticketDisplayOn: false, lastTicketStatus : "" };
 
   constructor(props) {
     super();
     this.balanceListener = this.balanceListener.bind(this);
+    this.purchaseTikStatus = this.purchaseTikStatus.bind(this)
   }
 
   totalStake(data) {
@@ -41,8 +42,17 @@ class Status extends Component {
     this.setState({ paintKey: this.state.paintKey + 1 });
   }
 
+  purchaseTikStatus(data) {
+    this.setState( { lastTicketStatus : data.lastCall })
+  }
+
   componentDidMount() {
     currentDataState.web3api.on("balanceInfo", this.balanceListener);
+    currentDataState.web3api.on("purchaseAgain", this.purchaseTikStatus )
+    currentDataState.web3api.on("purchaseCompleted", this.purchaseTikStatus )
+    currentDataState.web3api.on("purchaseStarted", this.purchaseTikStatus )
+    currentDataState.web3api.on("purchaseWaitForNewBlock", this.purchaseTikStatus )
+    currentDataState.web3api.on("purchaseSubmitTicket", this.purchaseTikStatus )
   }
 
   componentWillUnmount() {
@@ -50,6 +60,11 @@ class Status extends Component {
       "balanceInfo",
       this.balanceListener
     );
+    currentDataState.web3api.removeEventListener("purchaseAgain", this.purchaseTikStatus )
+    currentDataState.web3api.removeEventListener("purchaseCompleted", this.purchaseTikStatus )
+    currentDataState.web3api.removeEventListener("purchaseStarted", this.purchaseTikStatus )
+    currentDataState.web3api.removeEventListener("purchaseWaitForNewBlock", this.purchaseTikStatus )
+    currentDataState.web3api.removeEventListener("purchaseSubmitTicket", this.purchaseTikStatus )
   }
 
   render() {
@@ -85,6 +100,22 @@ class Status extends Component {
     }
 
     let dt = new moment(data.lastUpdateTime);
+
+    let ticketPurchaseStatus
+    let ticketStatus = currentDataState.data.ticketPurchasing
+    if ( ticketStatus === undefined ) {
+      ticketStatus = { activeTicketPurchase : false }
+    }
+    let msg = ticketStatus.lastTicketStatus
+ 
+
+    if ( ticketStatus.activeTicketPurchase ) {
+        ticketPurchaseStatus = ( <View key="ticketPurchaseView">
+            <Text>{`${ticketStatus.ticketsPurchased} of ${ticketStatus.ticketQuantity}`}</Text>
+            <Text>{msg}</Text>
+        </View>)
+    }
+
 
     let dtDisplay = dt.toString(); // dt.format("YYYY-MM-DD HH:mm:ss.SSS z");
 
@@ -192,6 +223,8 @@ class Status extends Component {
       );
     }
 
+    
+   
     return (
       <View style={{ marginLeft: 30, backgroundColor: colors.backgroundGrey }}>
         <View style={styles.container}>
@@ -273,13 +306,14 @@ class Status extends Component {
                   }
                 }}
               >
-                {this.handleStakeButtons(data)}
+                {this.handleStakeButtons(data, ticketStatus)}
               </TouchableOpacity>
             </View>
             <View style={{ height: 20 }} />
             <View style={styles.stakeDetailRow}>
               <Text style={styles.labelLineText}>Staking Status</Text>
-              {data.autoBuyOn || data.numberOfTickets ? (
+              {ticketPurchaseStatus}
+              { ticketStatus.activeTicketPurchase ? (
                 <Text key="ab1" style={styles.activeButton}>
                   Active
                 </Text>
@@ -402,15 +436,15 @@ class Status extends Component {
     );
   }
 
-  handleStakeButtons(data) {
-    if (!data.autoBuyOn && data.numberOfTicketsToPurchase === 0) {
+  handleStakeButtons(data, ticketStatus ) {
+    if ( !ticketStatus.activeTicketPurchase ) {
       return (
         <Text key="ab1" style={styles.stakesPurchaseTicketButtton}>
           Purchase Staking Tickets
         </Text>
       );
     }
-    if (data.autoBuyOn) {
+    if ( ticketStatus.activeTicketPurchase ) {
       return (
         <View
           style={{
@@ -420,7 +454,7 @@ class Status extends Component {
           }}
         >
           <Text key="ab1" style={styles.stopAutoBuyButton}>
-            Stop Auto Buy
+            Stop Purchasing
           </Text>
         </View>
       );
