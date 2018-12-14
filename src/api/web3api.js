@@ -325,38 +325,44 @@ export default class web3Api {
     data.activeTicketPurchase = true
     this.emit("purchaseStarted", data )
 
+    this.ticketPurchasing.lastStatus = "Trying to purchase ticket"
     this._web3.fsntx.buildBuyTicketTx( {from: this._walletAddress } )
     .then( (tx) => { 
-      debugger 
-      let input = tx.input 
-      let rawTx = Object.assign( tx, {} )
-
-      console.log( currentDataState.data.signInfo )
-
-      currentDataState.data.signInfo.signTransaction( tx).then( (signedMessage )=> {
-          debugger
-          let  {r , s , v, } = signedMessage
-         
-           rawTx.r = r
-           rawTx.s = s
-           rawTx.v = v
-           rawTx.input = input
-
-  console.log(rawTx)
-          this._web3.fsntx.sendRawTransaction( rawTx ).then(
-            (a) =>{
-              
-              debugger
-              console.log(a)
-            }
-          )
-      } )
-      
+        return this._web3.fsn.signAndTransmit( tx, currentDataState.data.signInfo.signTransaction )
+    })
+    .then( (txHash)=> {
+      this.ticketPurchasing.lastStatus = "Ticket Purchase Started TX=" + txHash
+      console.log("build transaction txhash = " , txHash)
+      return this.waitForTransactionToComplete( txHash).then( (r)=>{
+          if ( r.status ) {
+            this.ticketPurchasing.lastStatus = "Ticket bought"
+          } else {
+            this.ticketPurchasing.lastStatus = "Failed to buy ticket will retry"
+          }
+          console.log( r )    
+      }).catch ( (err)=> {
+        this.ticketPurchasing.lastStatus = "Error waiting for ticket to complete"
+        console.log( err ) 
+      })
     })
     .catch( (err) =>  {
-      debugger
       console.log( "error trying to buy ticket")
     })
+  }
+
+  waitForTransactionToComplete(transID)  {
+    return this._web3.eth
+      .getTransactionReceipt(transID)
+      .then(receipt => {
+        if (!receipt) {
+          // assume not scheduled yet
+          return this.waitForTransactionToComplete(transID);
+        }
+        return receipt;
+      })
+      .catch(err => {
+        throw err;
+      });
   }
 }
 
