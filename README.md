@@ -1,3 +1,10 @@
+Fusion Purchase Ticket
+
+Enables you to purchase a ticket on the Fusion network
+
+try it out at autobuy.fusionnetwork.io
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
