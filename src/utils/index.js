@@ -112,4 +112,34 @@ export default class Utils {
     a = a * 100;
     return a.toFixed(2);
   }
+
+  static midHashDisplay(addr) {
+    let first = addr.substr(0, 9);
+    let end = addr.substr(addr.length - 10, 9);
+    return first + "..." + end;
+  }
+
+  /**
+   * Should be called to get ascii from it's hex representation
+   *
+   * @method toAscii
+   * @param {String} string in hex
+   * @returns {String} ascii string representation of hex value
+   */
+  static toAscii(hex) {
+    // Find termination
+    var str = "";
+    var i = 0,
+      l = hex.length;
+    if (hex.substring(0, 2) === "0x") {
+      i = 2;
+    }
+    for (; i < l; i += 2) {
+      var code = parseInt(hex.substr(i, 2), 16);
+      str += String.fromCharCode(code);
+    }
+
+    return str;
+  }
+
 }

@@ -1,7 +1,9 @@
 import _web3 from "web3";
 import EventEmitter from "events";
+import utils from "../utils"
 import currentDataState from "./currentDataState";
 var web3FusionExtend = require('web3-fusion-extend')
+
 
 // _web3.setProvider(new _web3.providers.HttpProvider("http://localhost:5488"));
 
@@ -160,6 +162,7 @@ export default class web3Api {
   set walletAddress(address) {
     this._walletAddress = address;
     this.mustGetOneBalance = true
+    this.ticketPurchasing = {}
   }
 
   get walletAddress() {
@@ -319,6 +322,20 @@ export default class web3Api {
     return this.eventEmitter;
   }
 
+  stopTicketPurchase()
+  {
+    currentDataState.data.ticketPurchasing = false
+
+    if ( this.lastTicketCheckTimer ) {
+      // stop the previous time
+      clearTimeout( this.lastTicketCheckTimer )
+      currentDataState.data.lastStatus = "Completed"
+      currentDataState.data.activeTicketPurchase = false
+      currentDataState.data.lastCall = "purchaseCompleted"
+      this.emit("purchaseCompleted", currentDataState )
+    }
+  }
+
   buyTickets( data ) {
     currentDataState.data.ticketPurchasing = data
     data.purchaseStarted = true
@@ -353,7 +370,8 @@ export default class web3Api {
         data.ticketsPurchased += 1
       }
       data.lastStatus = step
-      if ( data.ticketsPurchased < data.ticketQuantity ) {
+      if ( data.activeTicketPurchase &&
+           data.ticketsPurchased < data.ticketQuantity ) {
         // schedule another purchase
         if ( !err ) {
             data.lastStatus = "Purchase next ticket"
@@ -383,31 +401,39 @@ export default class web3Api {
         return this._web3.fsn.signAndTransmit( tx, currentDataState.data.signInfo.signTransaction )
     })
     .then( (txHash)=> {
-      data.lastStatus = "Submitted:" + txHash
+      if ( !data.activeTicketPurchase) {
+        cb ( null  , "asked to leave")
+        return true
+      }
+      data.lastStatus = "Pending Tx:" + utils.midHashDisplay( txHash )
       data.lastCall = "purchaseSubmitTicket"
       this.emit("purchaseSubmitTicket", data )
-      return this.waitForTransactionToComplete( txHash).then( (r)=>{
+      return this.waitForTransactionToComplete( txHash, data ).then( (r)=>{
           if ( r.status ) {
             cb( null, "Ticket bought" )
           } else {
             cb( new Error("failed to buy"), "Failed to buy ticket will retry" )
           }    
       }).catch ( (err)=> {
+        console.log(err)
           cb( err ,  "Error waiting for ticket to complete") 
       })
     })
     .catch( (err) =>  {
-      cb(err, "unknown")
+      cb(err, "unknown err")
     })
   }
 
-  waitForTransactionToComplete(transID)  {
+  waitForTransactionToComplete(transID,data)  {
     return this._web3.eth
       .getTransactionReceipt(transID)
       .then(receipt => {
         if (!receipt) {
           // assume not scheduled yet
-          return this.waitForTransactionToComplete(transID);
+          if (!data.activeTicketPurchase) {
+            throw Error("asked to stop purchasing")
+          }
+          return this.waitForTransactionToComplete(transID, data);
         }
         return receipt;
       })
@@ -416,7 +442,6 @@ export default class web3Api {
       });
   }
 }
-
 
 
 // _web3.eth.filter('latest').watch(function(err,log) {

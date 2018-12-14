@@ -25,7 +25,7 @@ var styles;
 
 class Status extends Component {
   // this is what i use for production
-  state = { paintKey: 0, ticketDisplayOn: false, lastTicketStatus : "" };
+  state = { paintKey: 0, ticketDisplayOn: false, lastTicketStatus : "" , ticketStop : false };
 
   constructor(props) {
     super();
@@ -43,7 +43,7 @@ class Status extends Component {
   }
 
   purchaseTikStatus(data) {
-    this.setState( { lastTicketStatus : data.lastCall })
+    this.setState( { lastTicketStatus : data.lastCall, ticketStop : false })
   }
 
   componentDidMount() {
@@ -106,13 +106,23 @@ class Status extends Component {
     if ( ticketStatus === undefined ) {
       ticketStatus = { activeTicketPurchase : false }
     }
-    let msg = ticketStatus.lastTicketStatus
- 
+    let msg = ticketStatus.lastStatus
 
     if ( ticketStatus.activeTicketPurchase ) {
-        ticketPurchaseStatus = ( <View key="ticketPurchaseView">
-            <Text>{`${ticketStatus.ticketsPurchased} of ${ticketStatus.ticketQuantity}`}</Text>
-            <Text>{msg}</Text>
+        let widgetWidth = 224
+        let widgetHeight = 20
+        let width = parseInt( widgetWidth * (ticketStatus.ticketsPurchased + 1)/ ticketStatus.ticketQuantity )
+        ticketPurchaseStatus = ( <View key="ticketPurchaseView" style={{width:widgetWidth, height:  24 , alignItems : 'flex-start', justifyContent : 'flex-start'}}>
+            <View style={{width:200, height:  widgetHeight }}>
+                <View style={{width:widgetWidth,height:widgetHeight,backgroundColor:'transparent', position :'absolute' , 
+                              top : 0 , left : 0, borderWidth : 1, borderColor : colors.orderGrey,  borderRadius: 3 }}/>
+                <View style={{width:width,height:widgetHeight,backgroundColor:colors.successGreen, position :'absolute' , 
+                              top : 0 , left : 0, borderWidth : 1, borderColor : 'transparent',  borderRadius: 3 }}/>
+              <Text  style={[styles.labelLineText,{width:widgetWidth, 
+                              height : widgetHeight, position :'absolute' , textAlign : 'center',
+                              top : 4 , left : 0}]}>{`${ticketStatus.ticketsPurchased+1} of ${ticketStatus.ticketQuantity}`}</Text>
+            </View>
+            <Text  style={[styles.labelLineText,{width:widgetWidth, marginTop : 4}]}>{msg}</Text>
         </View>)
     }
 
@@ -298,11 +308,15 @@ class Status extends Component {
             <View style={styles.stakeDetailRow}>
               <Text style={styles.stakeDetailText}>Stake Details</Text>
               <TouchableOpacity
-                onPress={() => {
-                  if (!data.autoBuyOn && data.numberOfTicketsToPurchase === 0) {
+                  disabled = {this.state.ticketStop }
+                onPress={() => {                  
+                  if (  !ticketStatus.activeTicketPurchase ) {
                     history.push("/PurchaseTicket");
                   } else {
-                    alert("do something");
+                    if ( window.confirm("Are you sure you want to stop purchasing?")) {
+                      this.setState( {  ticketStop : true })
+                      currentDataState.web3api.stopTicketPurchase()
+                    }
                   }
                 }}
               >
@@ -450,11 +464,11 @@ class Status extends Component {
           style={{
             borderRadius: 3,
             borderWidth: 1,
-            borderColor: colors.orderGrey
+            borderColor: this.state.ticketStop ? colors.errorRed : colors.orderGrey
           }}
         >
           <Text key="ab1" style={styles.stopAutoBuyButton}>
-            Stop Purchasing
+            {!this.state.ticketStop ?  "Stop Purchasing" : "Stopping Purchasing"}
           </Text>
         </View>
       );
