@@ -1,7 +1,7 @@
 import _web3 from "web3";
 import EventEmitter from "events";
 import utils from "../utils"
-import currentDataState from "./currentDataState";
+var currentDataState;
 var web3FusionExtend = require('web3-fusion-extend')
 
 
@@ -24,10 +24,13 @@ export default class web3Api {
     this.lastNodeAddress = "";
     this.attempForMonitor = 0;
     this.lastBlock = {};
-    this.walletAddress = "";
+    this._walletAddress = "";
     this.setupMonitor = this.setupMonitor.bind(this);
     this.monitoringBlocks = {};
-    this.ticketPurchasing = {}
+  }
+
+  setDataStore(dataStore) {
+    currentDataState = dataStore
   }
 
   static get web3() {
@@ -160,9 +163,11 @@ export default class web3Api {
   }
 
   set walletAddress(address) {
-    this._walletAddress = address;
-    this.mustGetOneBalance = true
-    this.ticketPurchasing = {}
+    if ( address !== this._walletAddress) {
+      this._walletAddress = address;
+      this.mustGetOneBalance = true
+      currentDataState.data.ticketPurchasing = {}
+    }
   }
 
   get walletAddress() {
@@ -324,13 +329,12 @@ export default class web3Api {
 
   stopTicketPurchase()
   {
-    currentDataState.data.ticketPurchasing = false
+    currentDataState.data.ticketPurchasing.activeTicketPurchase = false
 
     if ( this.lastTicketCheckTimer ) {
       // stop the previous time
       clearTimeout( this.lastTicketCheckTimer )
       currentDataState.data.lastStatus = "Completed"
-      currentDataState.data.activeTicketPurchase = false
       currentDataState.data.lastCall = "purchaseCompleted"
       this.emit("purchaseCompleted", currentDataState )
     }
@@ -415,7 +419,6 @@ export default class web3Api {
             cb( new Error("failed to buy"), "Failed to buy ticket will retry" )
           }    
       }).catch ( (err)=> {
-        console.log(err)
           cb( err ,  "Error waiting for ticket to complete") 
       })
     })

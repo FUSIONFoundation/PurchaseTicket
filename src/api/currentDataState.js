@@ -1,6 +1,7 @@
 import moment from "moment";
-
 import web3api from "./web3api.js";
+
+
 let web3interface = new web3api();
 
 var BN = web3api.web3.utils.BN;
@@ -68,3 +69,5 @@ export default class currentDataState {
       }
   }
 }
+
+web3interface.setDataStore( currentDataState )
