@@ -31,8 +31,6 @@ var datablock = {
   lastTicketExpires: moment("20190101", "YYYYMMDD")
 };
 
-console.log("WE", datablock.walletBalance.toString());
-
 export default class currentDataState {
   static get BN() {
     return BN;
@@ -45,7 +43,6 @@ export default class currentDataState {
   }
 
   static setBalanceInfo( balanceInfo ) {
-      console.log( "balance info ",  balanceInfo )
       datablock.lastUpdateTime = new Date()
 
       if (balanceInfo.ticketPrice) {

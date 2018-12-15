@@ -154,7 +154,6 @@ export default class UnlockAccount extends Component {
         <TouchableOpacity
           onPress={() => {
             glb_selectFiles({multiple: false}).then( (files) => {
-              console.log(files)
               if ( files.length === 1 ) {
                 // read the 
                 let reader = new FileReader();
@@ -165,17 +164,14 @@ export default class UnlockAccount extends Component {
                   }
                   try {
                     let obj = JSON.parse( data );
-                    console.log(obj);
                     if ( !obj.address ) {
                       this.setState( {error:'Invalid key store file ', keyData : null})
                     } else {
                       this.setState( {error: null , keyData : obj } );
-                      // console.log( web3.eth.accounts.decrypt( {crypto:obj.Crypto, version:obj.version}, "password") )
                     }
                   } catch (e) {
                     this.setState( {error:'Unable to read file', keyData : null })
                   }
-                  console.log(event.target.result);
                 };
                 reader.onerror = (event) => {
                   this.setState( {error:'Unable to read file', keyData : null})

@@ -78,7 +78,6 @@ export default class NodeSelect extends Component {
   }
 
   connectionListener(arg, e) {
-    console.log("CONNECTION EVENTS FIRING AWAY", arg);
     if (this.state.testing) {
       if (arg[0] === "error") {
         alert("Unable to connect to " + this.state.newNodeAddress);

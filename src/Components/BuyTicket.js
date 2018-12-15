@@ -135,7 +135,6 @@ class UserInfo extends Component {
           }
           onPress={() => {
             alert("send data to an application/data is in the console");
-            console.log(data);
             // remember you can use history.push
             // to move around
             //
