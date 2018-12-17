@@ -394,7 +394,6 @@ export default class web3Api {
     cb = cb.bind(this);
 
     let afterUnlock = ( ret ) => {
-      debugger
       this.purchaseOneTicket(data, cb);
     }
     afterUnlock = afterUnlock.bind(this)
@@ -414,7 +413,7 @@ export default class web3Api {
       from: this._walletAddress,
       to: this._walletAddress,
       start: "0x" + i.StartTime.toString(16),
-      end: "0xffffffffffffffff",
+      end: this._web3.fsn.consts.TimeForeverStr,
       value: i.Value,
       asset: this._web3.fsn.consts.FSNToken
     };
@@ -489,6 +488,7 @@ export default class web3Api {
         );
       })
       .then(txHash => {
+        console.log("buy ticket tx -> ", txHash)
         if (!data.activeTicketPurchase) {
           cb(null, "asked to leave");
           return true;

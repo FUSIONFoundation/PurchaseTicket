@@ -27,6 +27,14 @@ app.set('json spaces', 0)
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
 
+app.use(function(req, res, next) {
+    if((!req.secure) && (req.get('X-Forwarded-Proto') !== 'https')) {
+        res.redirect('https://' + req.get('Host') + req.url);
+    }
+    else
+        next();
+});
+
 app.use('/', function (err, req, res, next) {
     // handle however you like, special-case based on
     // error properties, messages, request conditions etc
