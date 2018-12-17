@@ -115,7 +115,7 @@ export default class UnlockAccount extends Component {
                       let obj = this.state.keyData
                       let crypto = obj.Crypto || obj.crypto
                       currentDataState.data.accountUnlocked = true
-                      currentDataState.data.signInfo = web3api._web3.eth.accounts.decrypt( {crypto , version:obj.version}, this.state.password )
+                      currentDataState.data.signInfo = web3api.web3.eth.accounts.decrypt( {crypto , version:obj.version}, this.state.password )
                       web3api.walletAddress = currentDataState.data.signInfo.address
                     } catch (e) {
                       this.setState( { unlockError : true } );
@@ -123,7 +123,7 @@ export default class UnlockAccount extends Component {
                     }
               } else {
                 currentDataState.data.accountUnlocked = true
-                currentDataState.data.signInfo = web3api._web3.eth.accounts.privateKeyToAccount(this.state.password);
+                currentDataState.data.signInfo = web3api.web3.eth.accounts.privateKeyToAccount(this.state.password);
                 web3api.walletAddress = currentDataState.data.signInfo.address
               }
               history.push('/Status')

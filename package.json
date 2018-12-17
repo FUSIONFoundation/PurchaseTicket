@@ -1,22 +1,7 @@
 {
-  "name": "autobuy",
+  "name": "purchaseticket",
   "version": "0.1.0",
   "private": true,
-  "dependencies": {
-    "chai": "^4.2.0",
-    "font-awesome": "^4.7.0",
-    "moment": "^2.22.2",
-    "react": "^16.6.3",
-    "react-art": "^16.6.3",
-    "react-datepicker": "^2.0.0",
-    "react-dom": "^16.6.3",
-    "react-native-web": "^0.9.8",
-    "react-router-dom": "^4.3.1",
-    "react-scripts": "2.1.1",
-    "react-select-files": "^0.1.0",
-    "web3": "^1.0.0-beta.36",
-    "web3-fusion-extend": "^1.0.0-beta.11"
-  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
@@ -33,6 +18,28 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "mocha": "^5.2.0"
+    "chai": "^4.2.0",
+    "font-awesome": "^4.7.0",
+    "mocha": "^5.2.0",
+    "moment": "^2.22.2",
+    "react": "^16.6.3",
+    "react-art": "^16.6.3",
+    "react-datepicker": "^2.0.0",
+    "react-dom": "^16.6.3",
+    "react-native-web": "^0.9.8",
+    "react-router-dom": "^4.3.1",
+    "react-scripts": "2.1.1",
+    "react-select-files": "^0.1.0",
+    "web3": "^1.0.0-beta.36",
+    "web3-fusion-extend": "^1.0.0-beta.12"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "compression": "^1.7.3",
+    "cookie-parser": "^1.4.3",
+    "express": "^4.16.4",
+    "jade": "^1.11.0",
+    "less-middleware": "^3.0.1",
+    "path": "^0.12.7"
   }
 }
