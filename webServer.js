@@ -28,6 +28,11 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
 
 app.use(function(req, res, next) {
+    if ( req.url.indexOf( "Echo") > 0 ) {
+        // let heart beat through
+        next();
+        return
+    }
     if((!req.secure) && (req.get('X-Forwarded-Proto') !== 'https')) {
         res.redirect('https://' + req.get('Host') + req.url);
     }
