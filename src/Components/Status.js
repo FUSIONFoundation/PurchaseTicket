@@ -111,7 +111,8 @@ class Status extends Component {
     if ( ticketStatus.activeTicketPurchase ) {
         let widgetWidth = 224
         let widgetHeight = 20
-        let width = parseInt( widgetWidth * (ticketStatus.ticketsPurchased + 1)/ ticketStatus.ticketQuantity )
+   
+        let width = parseInt( widgetWidth * (ticketStatus.ticketsPurchased )/ ticketStatus.ticketQuantity )
         ticketPurchaseStatus = ( <View key="ticketPurchaseView" style={{width:widgetWidth, height:  24 , alignItems : 'flex-start', justifyContent : 'flex-start'}}>
             <View style={{width:200, height:  widgetHeight }}>
                 <View style={{width:widgetWidth,height:widgetHeight,backgroundColor:'transparent', position :'absolute' , 

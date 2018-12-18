@@ -158,7 +158,7 @@ class Status extends Component {
             <Text style={styles.infoText}>
               Earn rewards by purchasing staking tickets. You will earn a reward
               of 2.5 FSN per selected ticket. If your ticket is not selected,
-              your FSN will be returned when the ticket expires (30 days after
+              your FSN will be returned when the ticket expires (the days selected after
               purchase). NOTE: Only one ticket at a time can be purchased per
               block for an address. ALSO when there are not enough time locked
               tokens, buy ticket will automatically time lock 200 FSN to
@@ -284,7 +284,7 @@ class Status extends Component {
                     value={"" + (this.state.daysQuantity || "")}
                     onChangeText={val => {
                       let days = parseInt(val);
-                      if (isNaN(days) || days < 1 || days > 100) {
+                      if (isNaN(days) || days < 21 || days > 100) {
                         this.setState({ daysQuantity: val, daysError: true });
                       } else {
                         this.setState({ daysQuantity: days, daysError: false });
@@ -293,7 +293,7 @@ class Status extends Component {
                   />
                 </View>
                 <Text style={[styles.maxIt, { color: colors.orderGrey }]}>
-                  (1-100)
+                  (21-100)
                 </Text>
               </View>
             </View>

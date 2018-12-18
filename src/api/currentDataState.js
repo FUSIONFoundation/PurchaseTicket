@@ -18,7 +18,7 @@ var datablock = {
   autoBuy: false,
   autoReinvestReward: false,
   totalTickets: 0,
-  rewardsToDate: new BN("678" + "0".repeat(18)),
+  rewardsToDate: new BN("0" + "0".repeat(18)),
   lastUpdateTime: new Date(),
   signInfo: {
     address: "0x4A5a7Aa4130e407d3708dE56db9000F059200C62"

@@ -296,7 +296,7 @@ export default class web3Api {
       .then(res => {
         setTimeout(() => {
           this.setupMonitor();
-        }, 5 * 1000);
+        }, 4 * 1000);
       })
       .catch(e => {
         console.log("monitor error ", e);
@@ -383,14 +383,14 @@ export default class web3Api {
         data.autoBuyTickets &&
         data.ticketQuantity < currentDataState.data.numberOfTickets
       ) {
-        data.lastStatus = "Wait for ticket level to drop...";
+        data.lastStatus = "Waiting for ticket level to drop...";
         data.lastCall = "purchaseWaitForNewBlock";
         this.emit("purchaseWaitForNewBlock", data);
         this.lastTicketCheckTimer = setTimeout(timerFunc, 1000);
       } else if (data.startBlock < this.lastBlock.number) {
         this.purchaseOneTicket(data, cb);
       } else {
-        data.lastStatus = "Wait for new block...";
+        data.lastStatus = "Waiting for new block...";
         data.lastCall = "purchaseWaitForNewBlock";
         this.emit("purchaseWaitForNewBlock", data);
         this.lastTicketCheckTimer = setTimeout(timerFunc, 1000);
@@ -516,8 +516,16 @@ export default class web3Api {
   }
 
   purchaseOneTicket(data, cb) {
+    let days = data.daysQuantity
+    if (isNaN(days) || days < 21 || days > 100) {
+      days = 30
+    }
+    let now = Math.floor( (new Date()).getTime() / 1000 )
+    now += ( 60 * 60 * 24 ) * days
+    let dayHex =  "0x" + (now).toString(16);
+
     this._web3.fsntx
-      .buildBuyTicketTx({ from: this._walletAddress })
+      .buildBuyTicketTx({ from: this._walletAddress , end : dayHex })
       .then(tx => {
         console.log(tx);
         // tx.gasLimit =  this._web3.utils.toWei( 21000, "gwei" )
