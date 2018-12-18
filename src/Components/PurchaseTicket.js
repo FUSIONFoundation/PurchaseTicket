@@ -157,7 +157,11 @@ class Status extends Component {
               of 2.5 FSN per selected ticket. If your ticket is not selected,
               your FSN will be returned when the ticket expires (30 days after
               purchase). NOTE: Only one ticket at a time can be purchased per
-              block for an address.
+              block for an address.  ALSO when there are not enough time locked
+              tokens, buy ticket will automatically time lock 200 FSN to purchase 
+              a ticket.   After the ticket expires the purchase ticket program
+              will try to remove the time lock from the 200 FSN.   This will
+              use gas from your account to send the unlock request.
               <TouchableOpacity
                 onPress={() => {
                   //TODO: once article is up point to it

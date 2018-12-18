@@ -226,7 +226,7 @@ export default class web3Api {
         if (this.lastBlock.number !== block.number || this.mustGetOneBalance) {
           this.mustGetOneBalance = false;
           this.lastBlock = block;
-          console.log(block);
+          //console.log(block);
           this.emit("latestBlock", block);
 
           if (!walletAddress || walletAddress !== this._walletAddress) {
@@ -235,14 +235,14 @@ export default class web3Api {
           return this._web3.fsn
             .getAllBalances(walletAddress)
             .then(res => {
-              console.log("all balances", res);
+              //console.log("all balances", res);
               return res;
             })
             .then(allBalances => {
               return this._web3.fsn
                 .allTicketsByAddress(walletAddress)
                 .then(res => {
-                  console.log("all tickets", res);
+                  //console.log("all tickets", res);
                   return { allBalances, allTickets: res };
                 });
             })
@@ -340,6 +340,7 @@ export default class web3Api {
   }
 
   buyTickets(data) {
+    let originalData = Object.assign(data, { original: true });
     currentDataState.data.ticketPurchasing = data;
     data.purchaseStarted = true;
     data.activeTicketPurchase = true;
@@ -356,7 +357,15 @@ export default class web3Api {
 
     let timerFunc = () => {
       this.lastTicketCheckTimer = null;
-      if (data.startBlock < this.lastBlock.number) {
+      if (
+        data.autoBuyTickets &&
+        data.ticketQuantity < currentDataState.data.numberOfTickets
+      ) {
+        data.lastStatus = "Wait for ticket level to drop...";
+        data.lastCall = "purchaseWaitForNewBlock";
+        this.emit("purchaseWaitForNewBlock", data);
+        this.lastTicketCheckTimer = setTimeout(timerFunc, 1000);
+      } else if (data.startBlock < this.lastBlock.number) {
         this.purchaseOneTicket(data, cb);
       } else {
         data.lastStatus = "Wait for new block...";
@@ -384,28 +393,32 @@ export default class web3Api {
         this.emit("purchaseAgain", data);
         this.lastTicketCheckTimer = setTimeout(timerFunc, 1000);
       } else {
+        if (data.activeTicketPurchase && data.autoBuyTickets) {
+          this.buyTickets(originalData);
+          return;
+        }
         data.lastStatus = "Completed";
-        data.activeTicketPurchase = false;
         data.lastCall = "purchaseCompleted";
         this.emit("purchaseCompleted", data);
+        data.activeTicketPurchase = false;
       }
     };
 
     cb = cb.bind(this);
 
-    let afterUnlock = ( ret ) => {
+    let afterUnlock = ret => {
       this.purchaseOneTicket(data, cb);
-    }
-    afterUnlock = afterUnlock.bind(this)
+    };
+    afterUnlock = afterUnlock.bind(this);
 
-    this.freeTicketTimeLockbalances(data, afterUnlock )
+    this.freeTicketTimeLockbalances(data, afterUnlock);
 
     data.lastCall = "purchaseStarted";
     this.emit("purchaseStarted", data);
   }
 
   unlockNextTimeLock(timelocks, index, cb, data) {
-    if (timelocks.length === index || (data && !data.activeTicketPurchase) ) {
+    if (timelocks.length === index || (data && !data.activeTicketPurchase)) {
       return true;
     }
     let i = timelocks[index];
@@ -426,7 +439,7 @@ export default class web3Api {
         );
       })
       .then(txHash => {
-        console.log("Unlock request sent for 200 Ticket -> ", txHash)
+        console.log("Unlock request sent for 200 Ticket -> ", txHash);
         return this.unlockNextTimeLock(timelocks, index + 1, cb, data);
       })
       .catch(err => {
@@ -436,7 +449,7 @@ export default class web3Api {
       });
   }
 
-  freeTicketTimeLockbalances(data, cb ) {
+  freeTicketTimeLockbalances(data, cb) {
     this._web3.fsn
       .getAllTimeLockBalances(this._walletAddress)
       .then(timelocks => {
@@ -444,6 +457,7 @@ export default class web3Api {
         let fusion = timelocks[this._web3.fsn.consts.FSNToken];
         if (fusion && fusion.Items) {
           let items = fusion.Items;
+
           for (let i of items) {
             let now = new Date().getTime() / 1000;
             if (
@@ -451,18 +465,19 @@ export default class web3Api {
               i.Value === "200000000000000000000" &&
               i.StartTime < now
             ) {
+              console.log("adding time lock balance to unlock");
               process.push(i);
             }
           }
         }
-        
+        process = []; // turn it off for now
         if (process.length) {
-          return this.unlockNextTimeLock(process, 0, cb, data).then( (ret) => {
+          return this.unlockNextTimeLock(process, 0, cb, data).then(ret => {
             if (cb) {
               cb(null, data);
             }
-            return true
-          })
+            return true;
+          });
         } else {
           if (cb) {
             cb(null, data);
@@ -481,6 +496,7 @@ export default class web3Api {
     this._web3.fsntx
       .buildBuyTicketTx({ from: this._walletAddress })
       .then(tx => {
+        console.log(tx);
         // tx.gasLimit =  this._web3.utils.toWei( 21000, "gwei" )
         return this._web3.fsn.signAndTransmit(
           tx,
@@ -488,7 +504,7 @@ export default class web3Api {
         );
       })
       .then(txHash => {
-        console.log("buy ticket tx -> ", txHash)
+        console.log("buy ticket tx -> ", txHash);
         if (!data.activeTicketPurchase) {
           cb(null, "asked to leave");
           return true;
