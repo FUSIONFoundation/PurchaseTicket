@@ -27,6 +27,7 @@ var datablock = {
   //123456789012345678
   ticketPrice: new BN("200" + "0".repeat(18)),
   walletBalance: new BN("0"),
+  timelockUsableBalance : new BN("0"),
   autoBuyStopTime: moment("20190214", "YYYYMMDD"),
   lastTicketExpires: moment("20190101", "YYYYMMDD")
 };
@@ -50,6 +51,9 @@ export default class currentDataState {
       }
       if ( balanceInfo.allBalances ) {
           datablock.walletBalance = new BN( balanceInfo.allBalances["0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"])
+      }
+      if ( balanceInfo.timelockUsableBalance ) {
+        datablock.timelockUsableBalance = balanceInfo.timelockUsableBalance
       }
       if ( balanceInfo.gasPrice ) {
           datablock.gasPrice = new BN( balanceInfo.gasPrice )

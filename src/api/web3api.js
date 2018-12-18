@@ -240,10 +240,32 @@ export default class web3Api {
             })
             .then(allBalances => {
               return this._web3.fsn
-                .allTicketsByAddress(walletAddress)
-                .then(res => {
-                  //console.log("all tickets", res);
-                  return { allBalances, allTickets: res };
+                .getAllTimeLockBalances(this._walletAddress)
+                .then(timelocks => {
+                    let timelockUsableBalance = new currentDataState.BN(0)
+                    let fusion = timelocks[this._web3.fsn.consts.FSNToken];
+                    // debugger
+                    if (fusion && fusion.Items) {
+                      let items = fusion.Items;
+
+                      for (let i of items) {
+                        let start = (new Date()).getTime() / 1000 
+                        let end = (new Date()).getTime() / 1000  + ( 60 * 60 * 24 * 30 )
+                        if (
+                          (i.EndTime  >= end  || 
+                            i.EndTime === this._web3.fsn.consts.TimeForever ) &&
+                          i.StartTime < start
+                        ) {
+                          timelockUsableBalance = timelockUsableBalance.add( new currentDataState.BN( i.Value ))
+                        }
+                      }
+                    }
+                    return this._web3.fsn
+                      .allTicketsByAddress(walletAddress)
+                      .then(res => {
+                        //console.log("all tickets", res);
+                        return { allBalances, allTickets: res , timelockUsableBalance };
+                      });
                 });
             })
             .then(loadsOfInfo => {
@@ -450,46 +472,47 @@ export default class web3Api {
   }
 
   freeTicketTimeLockbalances(data, cb) {
-    this._web3.fsn
-      .getAllTimeLockBalances(this._walletAddress)
-      .then(timelocks => {
-        let process = [];
-        let fusion = timelocks[this._web3.fsn.consts.FSNToken];
-        if (fusion && fusion.Items) {
-          let items = fusion.Items;
+    return cb(null, data);
+    // this._web3.fsn
+    //   .getAllTimeLockBalances(this._walletAddress)
+    //   .then(timelocks => {
+    //     let process = [];
+    //     let fusion = timelocks[this._web3.fsn.consts.FSNToken];
+    //     if (fusion && fusion.Items) {
+    //       let items = fusion.Items;
 
-          for (let i of items) {
-            let now = new Date().getTime() / 1000;
-            if (
-              i.EndTime === this._web3.fsn.consts.TimeForever &&
-              i.Value === "200000000000000000000" &&
-              i.StartTime < now
-            ) {
-              console.log("adding time lock balance to unlock");
-              process.push(i);
-            }
-          }
-        }
-        process = []; // turn it off for now
-        if (process.length) {
-          return this.unlockNextTimeLock(process, 0, cb, data).then(ret => {
-            if (cb) {
-              cb(null, data);
-            }
-            return true;
-          });
-        } else {
-          if (cb) {
-            cb(null, data);
-          }
-          return true;
-        }
-      })
-      .catch(err => {
-        if (cb) {
-          cb(err, data);
-        }
-      });
+    //       for (let i of items) {
+    //         let now = new Date().getTime() / 1000;
+    //         if (
+    //           i.EndTime === this._web3.fsn.consts.TimeForever &&
+    //           i.Value === "200000000000000000000" &&
+    //           i.StartTime < now
+    //         ) {
+    //           console.log("adding time lock balance to unlock");
+    //           process.push(i);
+    //         }
+    //       }
+    //     }
+    //     process = []; // turn it off for now
+    //     if (process.length) {
+    //       return this.unlockNextTimeLock(process, 0, cb, data).then(ret => {
+    //         if (cb) {
+    //           cb(null, data);
+    //         }
+    //         return true;
+    //       });
+    //     } else {
+    //       if (cb) {
+    //         cb(null, data);
+    //       }
+    //       return true;
+    //     }
+    //   })
+    //   .catch(err => {
+    //     if (cb) {
+    //       cb(err, data);
+    //     }
+    //   });
   }
 
   purchaseOneTicket(data, cb) {

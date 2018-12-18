@@ -390,11 +390,21 @@ class Status extends Component {
             </View>
             <View style={styles.orderBorder} />
             <View style={styles.stakeDetailRow}>
+              <Text style={styles.labelLineText}>Timelocked FSN Available</Text>
+              <View>
+                <Text style={styles.stakeTextVal}>
+                  {utils.formatWei(data.timelockUsableBalance)}
+                  <Text style={styles.stakeTextFSN}>FSN</Text>
+                </Text>
+              </View>
+            </View>
+            <View style={styles.orderBorder} />
+            <View style={styles.stakeDetailRow}>
               <Text style={styles.labelLineText}>Total FSN</Text>
               <View>
                 <Text style={styles.stakeTextVal}>
                   {utils.formatWei(
-                    data.walletBalance.add(this.totalStake(data))
+                    data.timelockUsableBalance.add(data.walletBalance.add(this.totalStake(data)))
                   )}
                   <Text style={styles.stakeTextFSN}>FSN</Text>
                 </Text>

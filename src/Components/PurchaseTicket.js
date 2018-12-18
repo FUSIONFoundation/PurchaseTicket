@@ -26,33 +26,33 @@ class Status extends Component {
   // this is what i use for production
   state = {
     ticketQuantity: undefined,
-    daysQuantity : "30",
+    daysQuantity: "30",
     totalCost: 0,
-    daysError : false , 
+    daysError: false,
     totalCostString: "0",
     autoBuyTickets: false,
     reinvestReward: false,
     autoBuyStopDate: false,
     totalPrice: new BN(0),
     error: false,
-    repaintKey : 0,
+    repaintKey: 0,
     date: new Date(new Date().getTime() + 1000 * 60 * 60 * 24)
   };
 
   constructor(props) {
     super();
     this.onChangeDate = this.onChangeDate.bind(this);
-    this.balanceListener = this.balanceListener.bind(this)
+    this.balanceListener = this.balanceListener.bind(this);
   }
 
   totalStake(data) {
     return data.numberOfTickets * data.ticketPrice;
   }
 
-  balanceListener( balanceInfo ) {
-    currentDataState.setBalanceInfo( balanceInfo )
-    this.calcDisplay(currentDataState.data, this.state.ticketQuantity );
-    this.setState( { repaintKey : this.state.repaintKey + 1 })
+  balanceListener(balanceInfo) {
+    currentDataState.setBalanceInfo(balanceInfo);
+    this.calcDisplay(currentDataState.data, this.state.ticketQuantity);
+    this.setState({ repaintKey: this.state.repaintKey + 1 });
   }
 
   componentDidMount() {
@@ -60,7 +60,10 @@ class Status extends Component {
   }
 
   componentWillUnmount() {
-    currentDataState.web3api.removeEventListener("balanceInfo", this.balanceListener);
+    currentDataState.web3api.removeEventListener(
+      "balanceInfo",
+      this.balanceListener
+    );
   }
 
   render() {
@@ -70,7 +73,7 @@ class Status extends Component {
     let enabled = false;
     let purchaseText = "Purchase Tickets";
 
-    if ( data.accountUnlocked ) {
+    if (data.accountUnlocked) {
       data.web3api.walletAddress = data.signInfo.address;
     }
 
@@ -94,13 +97,13 @@ class Status extends Component {
       stakeTextColor = colors.textBlue;
     }
 
-    let daysTextcolor 
-    if ( this.state.daysError ) {
+    let daysTextcolor;
+    if (this.state.daysError) {
       enabled = false;
       btnStyle = styles.purchaseTicketButtonDisabled;
       daysTextcolor = colors.errorRed;
     } else {
-      daysTextcolor = colors.textBlue
+      daysTextcolor = colors.textBlue;
     }
 
     let displayPercent =
@@ -157,11 +160,11 @@ class Status extends Component {
               of 2.5 FSN per selected ticket. If your ticket is not selected,
               your FSN will be returned when the ticket expires (30 days after
               purchase). NOTE: Only one ticket at a time can be purchased per
-              block for an address.  ALSO when there are not enough time locked
-              tokens, buy ticket will automatically time lock 200 FSN to purchase 
-              a ticket.   After the ticket expires the purchase ticket program
-              will try to remove the time lock from the 200 FSN.   This will
-              use gas from your account to send the unlock request.
+              block for an address. ALSO when there are not enough time locked
+              tokens, buy ticket will automatically time lock 200 FSN to
+              purchase a ticket. After the ticket expires the purchase ticket
+              program will try to remove the time lock from the 200 FSN. This
+              will use gas from your account to send the unlock request.
               <TouchableOpacity
                 onPress={() => {
                   //TODO: once article is up point to it
@@ -181,10 +184,10 @@ class Status extends Component {
                 { backgroundColor: colors.backgroundGrey }
               ]}
             >
-              <Text style={styles.labelLineText}>Funds Available</Text>
+              <Text style={styles.labelLineText}>Funds Available (FSN+Timelocked FSN)</Text>
               <View>
                 <Text style={styles.statText}>
-                  {utils.formatWei(data.walletBalance)}
+                  {utils.formatWei(data.timelockUsableBalance.add(data.walletBalance))}
                   <Text style={styles.stakeTextFSN}>FSN</Text>
                 </Text>
               </View>
@@ -249,7 +252,9 @@ class Status extends Component {
                     let valGas = new BN(data.gasPrice);
                     let valTik = new BN(data.ticketPrice);
                     valTik = valTik.add(valGas);
-                    let num = data.walletBalance.div(valTik);
+                    let num = data.timelockUsableBalance
+                      .add(data.walletBalance)
+                      .div(valTik);
                     this.calcDisplay(data, num.toNumber());
                   }}
                 >
@@ -265,8 +270,12 @@ class Status extends Component {
                   <TextInput
                     style={[
                       styles.ticketQuantityInput,
-                      { color : daysTextcolor,
-                        borderColor: this.state.daysError ? colors.errorRed : colors.orderGrey }
+                      {
+                        color: daysTextcolor,
+                        borderColor: this.state.daysError
+                          ? colors.errorRed
+                          : colors.orderGrey
+                      }
                     ]}
                     placeholder="30"
                     autoCorrect={false}
@@ -274,16 +283,18 @@ class Status extends Component {
                     maxLength={10}
                     value={"" + (this.state.daysQuantity || "")}
                     onChangeText={val => {
-                      let days = parseInt( val )
-                      if ( isNaN(days) || days < 1 || days > 100 ) {
-                        this.setState(  { daysQuantity : val, daysError : true })
+                      let days = parseInt(val);
+                      if (isNaN(days) || days < 1 || days > 100) {
+                        this.setState({ daysQuantity: val, daysError: true });
                       } else {
-                        this.setState( { daysQuantity : days, daysError  : false  } )
+                        this.setState({ daysQuantity: days, daysError: false });
                       }
                     }}
                   />
                 </View>
-                <Text style={[styles.maxIt,{color : colors.orderGrey}]}>(1-100)</Text>
+                <Text style={[styles.maxIt, { color: colors.orderGrey }]}>
+                  (1-100)
+                </Text>
               </View>
             </View>
             <View style={styles.orderBorder} />
@@ -316,9 +327,9 @@ class Status extends Component {
             <CheckBox
               textWidth={512}
               onPress={() => {
-                let obj = { autoBuyTickets: !this.state.autoBuyTickets }
-                if ( !obj.autoBuyTickets ) {
-                    obj.autoBuyStopDate = false
+                let obj = { autoBuyTickets: !this.state.autoBuyTickets };
+                if (!obj.autoBuyTickets) {
+                  obj.autoBuyStopDate = false;
                 }
                 this.setState(obj);
               }}
@@ -326,7 +337,7 @@ class Status extends Component {
               text="Auto Buy Tickets"
               subText="Tickets will be repurchased when they expire or when they win rewards"
             />
-            <CheckBox
+            {/* <CheckBox
               textWidth={512}
               onPress={() => {
                 this.setState({ reinvestReward: !this.state.reinvestReward });
@@ -334,7 +345,7 @@ class Status extends Component {
               on={this.state.reinvestReward}
               text="Reinvest Reward"
               subText="Rewards that are won will be reinvested to purchase more tickets when enough rewards are collected."
-            />
+            /> */}
             <CheckBox
               textWidth={512}
               disabled={!this.state.autoBuyTickets}
@@ -355,9 +366,12 @@ class Status extends Component {
                 />
               )}
             </CheckBox>
-            <TouchableOpacity disabled={!enabled} onPress={() => {
-                this.purchaseTicket()
-            }}>
+            <TouchableOpacity
+              disabled={!enabled}
+              onPress={() => {
+                this.purchaseTicket();
+              }}
+            >
               <View>
                 <Text style={btnStyle}>{purchaseText}</Text>
               </View>
@@ -380,8 +394,8 @@ class Status extends Component {
   }
 
   purchaseTicket() {
-    currentDataState.web3api.buyTickets( this.state )
-    this.setState({purchasingTicket:true})
+    currentDataState.web3api.buyTickets(this.state);
+    this.setState({ purchasingTicket: true });
     history.push("/Status");
   }
 
@@ -408,7 +422,7 @@ class Status extends Component {
       ticketQuantity: x,
       totalPrice: valGas,
       totalCostString,
-      error: valGas.gt(data.walletBalance)
+      error: valGas.gt(data.timelockUsableBalance.add(data.walletBalance))
     });
   }
 }
