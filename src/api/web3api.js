@@ -385,6 +385,18 @@ export default class web3Api {
 
     let timerFunc = () => {
       this.lastTicketCheckTimer = null;
+      if ( data.autoBuyStopDate ) {
+        let stopTime = data.date.getTime()
+        let now = (new Date()).getTime()
+        if( stopTime < now ) {
+          data.lastStatus = "Completed";
+          data.lastCall = "purchaseCompleted";
+          data.activeTicketPurchase = false;
+          this.emit("purchaseCompleted", data);
+          return
+        }
+      }
+
       if (
         data.autoBuyTickets &&
         data.ticketQuantity < currentDataState.data.numberOfTickets
@@ -427,8 +439,8 @@ export default class web3Api {
         }
         data.lastStatus = "Completed";
         data.lastCall = "purchaseCompleted";
-        this.emit("purchaseCompleted", data);
         data.activeTicketPurchase = false;
+        this.emit("purchaseCompleted", data);
       }
     };
 
