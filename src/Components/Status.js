@@ -25,12 +25,17 @@ var styles;
 
 class Status extends Component {
   // this is what i use for production
-  state = { paintKey: 0, ticketDisplayOn: false, lastTicketStatus : "" , ticketStop : false };
+  state = {
+    paintKey: 0,
+    ticketDisplayOn: false,
+    lastTicketStatus: "",
+    ticketStop: false
+  };
 
   constructor(props) {
     super();
     this.balanceListener = this.balanceListener.bind(this);
-    this.purchaseTikStatus = this.purchaseTikStatus.bind(this)
+    this.purchaseTikStatus = this.purchaseTikStatus.bind(this);
   }
 
   totalStake(data) {
@@ -43,16 +48,19 @@ class Status extends Component {
   }
 
   purchaseTikStatus(data) {
-    this.setState( { lastTicketStatus : data.lastCall, ticketStop : false })
+    this.setState({ lastTicketStatus: data.lastCall, ticketStop: false });
   }
 
   componentDidMount() {
     currentDataState.web3api.on("balanceInfo", this.balanceListener);
-    currentDataState.web3api.on("purchaseAgain", this.purchaseTikStatus )
-    currentDataState.web3api.on("purchaseCompleted", this.purchaseTikStatus )
-    currentDataState.web3api.on("purchaseStarted", this.purchaseTikStatus )
-    currentDataState.web3api.on("purchaseWaitForNewBlock", this.purchaseTikStatus )
-    currentDataState.web3api.on("purchaseSubmitTicket", this.purchaseTikStatus )
+    currentDataState.web3api.on("purchaseAgain", this.purchaseTikStatus);
+    currentDataState.web3api.on("purchaseCompleted", this.purchaseTikStatus);
+    currentDataState.web3api.on("purchaseStarted", this.purchaseTikStatus);
+    currentDataState.web3api.on(
+      "purchaseWaitForNewBlock",
+      this.purchaseTikStatus
+    );
+    currentDataState.web3api.on("purchaseSubmitTicket", this.purchaseTikStatus);
   }
 
   componentWillUnmount() {
@@ -60,11 +68,37 @@ class Status extends Component {
       "balanceInfo",
       this.balanceListener
     );
-    currentDataState.web3api.removeEventListener("purchaseAgain", this.purchaseTikStatus )
-    currentDataState.web3api.removeEventListener("purchaseCompleted", this.purchaseTikStatus )
-    currentDataState.web3api.removeEventListener("purchaseStarted", this.purchaseTikStatus )
-    currentDataState.web3api.removeEventListener("purchaseWaitForNewBlock", this.purchaseTikStatus )
-    currentDataState.web3api.removeEventListener("purchaseSubmitTicket", this.purchaseTikStatus )
+    currentDataState.web3api.removeEventListener(
+      "purchaseAgain",
+      this.purchaseTikStatus
+    );
+    currentDataState.web3api.removeEventListener(
+      "purchaseCompleted",
+      this.purchaseTikStatus
+    );
+    currentDataState.web3api.removeEventListener(
+      "purchaseStarted",
+      this.purchaseTikStatus
+    );
+    currentDataState.web3api.removeEventListener(
+      "purchaseWaitForNewBlock",
+      this.purchaseTikStatus
+    );
+    currentDataState.web3api.removeEventListener(
+      "purchaseSubmitTicket",
+      this.purchaseTikStatus
+    );
+  }
+
+  tickRate(data, erc20fsn = true) {
+    let totalTickets = data.totalTickets || 1;
+    if (totalTickets === 0) {
+      totalTickets = 1;
+    }
+    let probablity = 5760 * (1 / totalTickets);
+    let rewardRate = (probablity * (erc20fsn ? 0.625 : 2.5)) / 200;
+    let yearly = rewardRate * 365 * 100;
+    return yearly.toFixed( yearly > 99 ? 0 : 1 ) + "%";
   }
 
   render() {
@@ -101,32 +135,82 @@ class Status extends Component {
 
     let dt = new moment(data.lastUpdateTime);
 
-    let ticketPurchaseStatus
-    let ticketStatus = currentDataState.data.ticketPurchasing
-    if ( ticketStatus === undefined ) {
-      ticketStatus = { activeTicketPurchase : false }
+    let ticketPurchaseStatus;
+    let ticketStatus = currentDataState.data.ticketPurchasing;
+    if (ticketStatus === undefined) {
+      ticketStatus = { activeTicketPurchase: false };
     }
-    let msg = ticketStatus.lastStatus
+    let msg = ticketStatus.lastStatus;
 
-    if ( ticketStatus.activeTicketPurchase ) {
-        let widgetWidth = 224
-        let widgetHeight = 20
-   
-        let width = parseInt( widgetWidth * (ticketStatus.ticketsPurchased )/ ticketStatus.ticketQuantity )
-        ticketPurchaseStatus = ( <View key="ticketPurchaseView" style={{width:widgetWidth, height:  24 , alignItems : 'flex-start', justifyContent : 'flex-start'}}>
-            <View style={{width:200, height:  widgetHeight }}>
-                <View style={{width:widgetWidth,height:widgetHeight,backgroundColor:'transparent', position :'absolute' , 
-                              top : 0 , left : 0, borderWidth : 1, borderColor : colors.orderGrey,  borderRadius: 3 }}/>
-                <View style={{width:width,height:widgetHeight,backgroundColor:colors.successGreen, position :'absolute' , 
-                              top : 0 , left : 0, borderWidth : 1, borderColor : 'transparent',  borderRadius: 3 }}/>
-              <Text  style={[styles.labelLineText,{width:widgetWidth, 
-                              height : widgetHeight, position :'absolute' , textAlign : 'center',
-                              top : 4 , left : 0}]}>{`${ticketStatus.ticketsPurchased+1} of ${ticketStatus.ticketQuantity}`}</Text>
-            </View>
-            <Text  style={[styles.labelLineText,{width:widgetWidth, marginTop : 4}]}>{msg}</Text>
-        </View>)
+    if (ticketStatus.activeTicketPurchase) {
+      let widgetWidth = 224;
+      let widgetHeight = 20;
+
+      let width = parseInt(
+        (widgetWidth * ticketStatus.ticketsPurchased) /
+          ticketStatus.ticketQuantity
+      );
+      ticketPurchaseStatus = (
+        <View
+          key="ticketPurchaseView"
+          style={{
+            width: widgetWidth,
+            height: 24,
+            alignItems: "flex-start",
+            justifyContent: "flex-start"
+          }}
+        >
+          <View style={{ width: 200, height: widgetHeight }}>
+            <View
+              style={{
+                width: widgetWidth,
+                height: widgetHeight,
+                backgroundColor: "transparent",
+                position: "absolute",
+                top: 0,
+                left: 0,
+                borderWidth: 1,
+                borderColor: colors.orderGrey,
+                borderRadius: 3
+              }}
+            />
+            <View
+              style={{
+                width: width,
+                height: widgetHeight,
+                backgroundColor: colors.successGreen,
+                position: "absolute",
+                top: 0,
+                left: 0,
+                borderWidth: 1,
+                borderColor: "transparent",
+                borderRadius: 3
+              }}
+            />
+            <Text
+              style={[
+                styles.labelLineText,
+                {
+                  width: widgetWidth,
+                  height: widgetHeight,
+                  position: "absolute",
+                  textAlign: "center",
+                  top: 4,
+                  left: 0
+                }
+              ]}
+            >{`${ticketStatus.ticketsPurchased + 1} of ${
+              ticketStatus.ticketQuantity
+            }`}</Text>
+          </View>
+          <Text
+            style={[styles.labelLineText, { width: widgetWidth, marginTop: 4 }]}
+          >
+            {msg}
+          </Text>
+        </View>
+      );
     }
-
 
     let dtDisplay = dt.toString(); // dt.format("YYYY-MM-DD HH:mm:ss.SSS z");
 
@@ -155,7 +239,7 @@ class Status extends Component {
 
       for (let ticket of tickets) {
         let t = data.allTickets[ticket];
-        let dt = moment(new Date(t.ExpireTime*1000));
+        let dt = moment(new Date(t.ExpireTime * 1000));
         let txt = dt.format("L LT z");
         ticketViews.push(
           <View key={"" + t.ExpireTime}>
@@ -226,7 +310,7 @@ class Status extends Component {
               <Image
                 resizeMode="contain"
                 source={closebutton}
-                style={{width:14, height : 14}}
+                style={{ width: 14, height: 14 }}
               />
             </TouchableOpacity>
           </View>
@@ -234,8 +318,6 @@ class Status extends Component {
       );
     }
 
-    
-   
     return (
       <View style={{ marginLeft: 30, backgroundColor: colors.backgroundGrey }}>
         <View style={styles.container}>
@@ -301,6 +383,25 @@ class Status extends Component {
                     <Text style={rewardStyle}>{rewardNumber}</Text>
                     <Text style={textNumberOfRewardsGivenType}>FSN</Text>
                   </View>
+                  <View>
+                    <Text style={styles.simpleLineText}>
+                      Ticket Yearly Reward Rate
+                    </Text>
+                    <Text
+                      style={[styles.simpleLineText,{marginTop:4}]}
+                    >
+                    <Text>ERC20FSN</Text>
+                      { " " + this.tickRate(data, true) + " "} 
+                    </Text>
+                    
+                    <Text
+                      style={[styles.simpleLineText,{marginTop:4}]}
+                    >
+                    <Text>PFSN</Text>
+                      {" " + this.tickRate(data, false) + " "}
+                      
+                    </Text>
+                  </View>
                 </View>
               </View>
             </View>
@@ -309,14 +410,18 @@ class Status extends Component {
             <View style={styles.stakeDetailRow}>
               <Text style={styles.stakeDetailText}>Stake Details</Text>
               <TouchableOpacity
-                  disabled = {this.state.ticketStop }
-                onPress={() => {                  
-                  if (  !ticketStatus.activeTicketPurchase ) {
+                disabled={this.state.ticketStop}
+                onPress={() => {
+                  if (!ticketStatus.activeTicketPurchase) {
                     history.push("/PurchaseTicket");
                   } else {
-                    if ( window.confirm("Are you sure you want to stop purchasing?")) {
-                      this.setState( {  ticketStop : true })
-                      currentDataState.web3api.stopTicketPurchase()
+                    if (
+                      window.confirm(
+                        "Are you sure you want to stop purchasing?"
+                      )
+                    ) {
+                      this.setState({ ticketStop: true });
+                      currentDataState.web3api.stopTicketPurchase();
                     }
                   }
                 }}
@@ -328,7 +433,7 @@ class Status extends Component {
             <View style={styles.stakeDetailRow}>
               <Text style={styles.labelLineText}>Staking Status</Text>
               {ticketPurchaseStatus}
-              { ticketStatus.activeTicketPurchase ? (
+              {ticketStatus.activeTicketPurchase ? (
                 <Text key="ab1" style={styles.activeButton}>
                   Active
                 </Text>
@@ -405,7 +510,9 @@ class Status extends Component {
               <View>
                 <Text style={styles.stakeTextVal}>
                   {utils.formatWei(
-                    data.timelockUsableBalance.add(data.walletBalance.add(this.totalStake(data)))
+                    data.timelockUsableBalance.add(
+                      data.walletBalance.add(this.totalStake(data))
+                    )
                   )}
                   <Text style={styles.stakeTextFSN}>FSN</Text>
                 </Text>
@@ -461,25 +568,27 @@ class Status extends Component {
     );
   }
 
-  handleStakeButtons(data, ticketStatus ) {
-    if ( !ticketStatus.activeTicketPurchase ) {
+  handleStakeButtons(data, ticketStatus) {
+    if (!ticketStatus.activeTicketPurchase) {
       return (
         <Text key="ab1" style={styles.stakesPurchaseTicketButtton}>
           Purchase Staking Tickets
         </Text>
       );
     }
-    if ( ticketStatus.activeTicketPurchase ) {
+    if (ticketStatus.activeTicketPurchase) {
       return (
         <View
           style={{
             borderRadius: 3,
             borderWidth: 1,
-            borderColor: this.state.ticketStop ? colors.errorRed : colors.orderGrey
+            borderColor: this.state.ticketStop
+              ? colors.errorRed
+              : colors.orderGrey
           }}
         >
           <Text key="ab1" style={styles.stopAutoBuyButton}>
-            {!this.state.ticketStop ?  "Stop Purchasing" : "Stopping Purchasing"}
+            {!this.state.ticketStop ? "Stop Purchasing" : "Stopping Purchasing"}
           </Text>
         </View>
       );
@@ -750,7 +859,7 @@ styles = StyleSheet.create({
   },
   rewardGivenBoxTextHolder: {
     marginLeft: 32,
-    paddingTop: 8
+    paddingTop: 24
   },
   textNumberOfRewardsGivenType: {
     fontSize: 12,
