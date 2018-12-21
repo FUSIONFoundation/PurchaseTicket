@@ -36,6 +36,7 @@ class Status extends Component {
     super();
     this.balanceListener = this.balanceListener.bind(this);
     this.purchaseTikStatus = this.purchaseTikStatus.bind(this);
+    this.leavePage = this.leavePage.bind(this);
   }
 
   totalStake(data) {
@@ -48,7 +49,22 @@ class Status extends Component {
   }
 
   purchaseTikStatus(data) {
-    this.setState({ autoBuyOn :  data.autoBuyTickets, lastTicketStatus: data.lastCall, ticketStop: false });
+    let ticketStatus = currentDataState.data.ticketPurchasing;
+    if (ticketStatus === undefined) {
+      ticketStatus = { activeTicketPurchase: false };
+    }
+    if (ticketStatus.activeTicketPurchase && !this.setUnload) {
+      this.setUnload = true;
+      window.addEventListener("beforeunload", this.leavePage);
+    } else if (!ticketStatus.activeTicketPurchase && this.setUnload) {
+      this.setUnload = false;
+      window.removeEventListener("beforeunload", this.leavePage);
+    }
+    this.setState({
+      autoBuyOn: data.autoBuyTickets,
+      lastTicketStatus: data.lastCall,
+      ticketStop: false
+    });
   }
 
   componentDidMount() {
@@ -63,7 +79,19 @@ class Status extends Component {
     currentDataState.web3api.on("purchaseSubmitTicket", this.purchaseTikStatus);
   }
 
+  leavePage(e) {
+    let msg =
+      "Tickets are being bought, are you sure you want to leave this page?";
+    e.returnValue = msg;
+    return msg;
+  }
+
   componentWillUnmount() {
+    if (this.setUnload) {
+      this.setUnload = false;
+      window.removeEventListener("beforeunload", this.leavePage);
+    }
+
     currentDataState.web3api.removeEventListener(
       "balanceInfo",
       this.balanceListener
@@ -98,7 +126,7 @@ class Status extends Component {
     let probablity = 5760 * (1 / totalTickets);
     let rewardRate = (probablity * (erc20fsn ? 0.625 : 2.5)) / 200;
     let yearly = rewardRate * 365 * 100;
-    return yearly.toFixed( yearly > 99 ? 0 : 1 ) + "%";
+    return yearly.toFixed(yearly > 99 ? 0 : 1) + "%";
   }
 
   render() {
@@ -226,7 +254,7 @@ class Status extends Component {
               history.push("/UnlockAccount");
             }}
           >
-            <Text style={styles.activeButton}>Select An Account</Text>
+            <Text style={[styles.stakesPurchaseTicketButtton,{textAlign:'center',width:200}]}>Select An Account</Text>
           </TouchableOpacity>
         </View>
       );
@@ -387,19 +415,14 @@ class Status extends Component {
                     <Text style={styles.simpleLineText}>
                       Ticket Yearly Reward Rate
                     </Text>
-                    <Text
-                      style={[styles.simpleLineText,{marginTop:4}]}
-                    >
-                    <Text>ERC20FSN</Text>
-                      { " " + this.tickRate(data, true) + " "} 
+                    <Text style={[styles.simpleLineText, { marginTop: 4 }]}>
+                      <Text>ERC20FSN</Text>
+                      {" " + this.tickRate(data, true) + " "}
                     </Text>
-                    
-                    <Text
-                      style={[styles.simpleLineText,{marginTop:4}]}
-                    >
-                    <Text>PFSN</Text>
+
+                    <Text style={[styles.simpleLineText, { marginTop: 4 }]}>
+                      <Text>PFSN</Text>
                       {" " + this.tickRate(data, false) + " "}
-                      
                     </Text>
                   </View>
                 </View>
@@ -449,7 +472,7 @@ class Status extends Component {
               <View>
                 <Text style={styles.stakeTextVal}>
                   {data.numberOfTickets}
-                  <Text style={styles.stakeTextFSN}>FSN</Text>
+                  <Text style={styles.stakeTextFSN}>Tickets</Text>
                 </Text>
                 {data.numberOfTickets > 0 && (
                   <TouchableOpacity
@@ -588,7 +611,11 @@ class Status extends Component {
           }}
         >
           <Text key="ab1" style={styles.stopAutoBuyButton}>
-            {!this.state.ticketStop ? ( this.state.autoBuyOn ? "Stop AutoBuy" : "Stop Purchasing" ) : "Stopping Purchasing"}
+            {!this.state.ticketStop
+              ? this.state.autoBuyOn
+                ? "Stop AutoBuy"
+                : "Stop Purchasing"
+              : "Stopping Purchasing"}
           </Text>
         </View>
       );

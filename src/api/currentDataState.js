@@ -10,7 +10,7 @@ var datablock = {
   web3api: web3interface,
   BN,
   latestBlock : {},
-  accountUnlocked: true,
+  accountUnlocked: false,
   autoBuyOn: false,
   balanceOfFSN: 0,
   numberOfTicketsToPurchase:  0,
