@@ -571,7 +571,7 @@ export default class web3Api {
         data.lastStatus = "Pending Tx:" + utils.midHashDisplay(txHash);
         data.lastCall = "purchaseSubmitTicket";
         this.emit("purchaseSubmitTicket", data);
-        return this.waitForTransactionToComplete(txHash, data)
+        return this.waitForTransactionToComplete(txHash,data)
           .then(r => {
             if (r.status) {
               cb(null, "Ticket bought");
@@ -588,7 +588,10 @@ export default class web3Api {
       });
   }
 
-  waitForTransactionToComplete(transID, data) {
+  waitForTransactionToComplete(transID,data) {
+    if (!data.activeTicketPurchase) {
+      return true;
+    }
     return this._web3.eth
       .getTransactionReceipt(transID)
       .then(receipt => {
@@ -597,7 +600,7 @@ export default class web3Api {
           if (!data.activeTicketPurchase) {
             throw Error("asked to stop purchasing");
           }
-          return this.waitForTransactionToComplete(transID, data);
+          return this.waitForTransactionToComplete(transID,data);
         }
         return receipt;
       })

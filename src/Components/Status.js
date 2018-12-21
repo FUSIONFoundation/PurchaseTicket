@@ -48,7 +48,7 @@ class Status extends Component {
   }
 
   purchaseTikStatus(data) {
-    this.setState({ lastTicketStatus: data.lastCall, ticketStop: false });
+    this.setState({ autoBuyOn :  data.autoBuyTickets, lastTicketStatus: data.lastCall, ticketStop: false });
   }
 
   componentDidMount() {
@@ -519,7 +519,7 @@ class Status extends Component {
               </View>
             </View>
             <View style={styles.orderBorder} />
-            {data.autoBuyOn && (
+            {this.state.autoBuyOn && (
               <View key="aaa">
                 <View style={styles.stakeDetailRow}>
                   <Text style={styles.labelLineText}>Auto Buy Tickets</Text>
@@ -527,7 +527,7 @@ class Status extends Component {
                     On
                   </Text>
                 </View>
-                <View style={styles.orderBorder} />
+                {/* <View style={styles.orderBorder} />
                 <View style={styles.stakeDetailRow}>
                   <Text style={styles.labelLineText}>Auto Reinvest Reward</Text>
                   <Text
@@ -540,13 +540,13 @@ class Status extends Component {
                   >
                     {data.autoReinvestReward ? "On" : "Off"}
                   </Text>
-                </View>
-                <View style={styles.orderBorder} />
+                </View> */}
+                {/* <View style={styles.orderBorder} />
                 <View style={styles.stakeDetailRow}>
                   <Text style={styles.labelLineText}>Auto Buy Stop Time</Text>
                   <Text style={styles.dateValue}>
-                    {data.autoBuyStopTime
-                      ? data.autoBuyStopTime.format("lll")
+                    {this.state.autoBuyStopTime
+                      ? this.state.autoBuyStopDate.format("lll")
                       : "Never"}
                   </Text>
                 </View>
@@ -557,8 +557,8 @@ class Status extends Component {
                     {data.lastTicketExpires
                       ? data.lastTicketExpires.format("lll")
                       : "----"}
-                  </Text>
-                </View>
+                  </Text> */}
+                {/* </View> */}
                 <View style={styles.orderBorder} />
               </View>
             )}
@@ -588,7 +588,7 @@ class Status extends Component {
           }}
         >
           <Text key="ab1" style={styles.stopAutoBuyButton}>
-            {!this.state.ticketStop ? "Stop Purchasing" : "Stopping Purchasing"}
+            {!this.state.ticketStop ? ( this.state.autoBuyOn ? "Stop AutoBuy" : "Stop Purchasing" ) : "Stopping Purchasing"}
           </Text>
         </View>
       );
