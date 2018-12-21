@@ -140,7 +140,7 @@ class Status extends Component {
       data.web3api.walletAddress = data.signInfo.address;
     }
 
-    let rewardNumber = utils.formatWei(data.rewardsToDate);
+    let rewardNumber = data.rewardsToDate;
     let ticketText = data.totalTickets === 1 ? "Ticket" : "Tickets";
     let rewardStyle;
     let textNumberOfRewardsGivenType;
@@ -492,7 +492,7 @@ class Status extends Component {
               <Text style={styles.labelLineText}>Rewards to Date</Text>
               <View>
                 <Text style={styles.stakeTextVal}>
-                  {utils.formatWei(data.rewardsToDate)}
+                  {data.rewardsToDate}
                   <Text style={styles.stakeTextFSN}>FSN</Text>
                 </Text>
               </View>

@@ -68,6 +68,9 @@ export default class currentDataState {
       if ( balanceInfo.latestBlock ) {
           datablock.latestBlock = balanceInfo.latestBlock
       }
+      if ( balanceInfo.rewardEarn ) {
+        datablock.rewardsToDate =  balanceInfo.rewardEarn
+      }
   }
 }
 

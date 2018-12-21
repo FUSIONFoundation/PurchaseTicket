@@ -3,6 +3,7 @@ import EventEmitter from "events";
 import utils from "../utils";
 var currentDataState;
 var web3FusionExtend = require("web3-fusion-extend");
+const rp = require("request-promise");
 
 // _web3.setProvider(new _web3.providers.HttpProvider("http://localhost:5488"));
 
@@ -166,6 +167,7 @@ export default class web3Api {
       this._walletAddress = address;
       this.mustGetOneBalance = true;
       currentDataState.data.ticketPurchasing = {};
+      currentDataState.data.rewardsToDate = '-'
     }
   }
 
@@ -293,7 +295,28 @@ export default class web3Api {
                     latestBlock: block
                   });
                 });
-            })
+            }).then( (loadsOfInfo) => {
+              const requestOptions = {
+                method: "GET",
+                uri: "http://api.fusionnetwork.io/balances/"+this._walletAddress,
+                qs: {
+                },
+                headers: {
+                },
+                json: true,
+                gzip: true
+              };
+
+              return rp(requestOptions)
+                .then(response => {
+                  if ( Array.isArray(response) && response.length > 0 ) {
+                    return Object.assign(loadsOfInfo, {
+                      rewardEarn : response[0].rewardEarn
+                    });
+                  }
+                  return loadsOfInfo
+                })
+            } )
             .then(loadsOfInfo => {
               this.emit("balanceInfo", loadsOfInfo, false);
             });
