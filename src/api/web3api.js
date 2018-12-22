@@ -298,7 +298,7 @@ export default class web3Api {
             }).then( (loadsOfInfo) => {
               const requestOptions = {
                 method: "GET",
-                uri: "http://api.fusionnetwork.io/balances/"+this._walletAddress,
+                uri: "https://api.fusionnetwork.io/balances/"+this._walletAddress,
                 qs: {
                 },
                 headers: {
@@ -314,6 +314,10 @@ export default class web3Api {
                       rewardEarn : response[0].rewardEarn
                     });
                   }
+                  return loadsOfInfo
+                })
+                .catch( (err)=> {
+                  console.log("can't get balance", err)
                   return loadsOfInfo
                 })
             } )
