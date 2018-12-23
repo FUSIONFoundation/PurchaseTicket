@@ -79,7 +79,7 @@ export default class AppSelect extends Component {
             <SelectItem image={asset} text="Asset Gateway" link="https://assetgateway.fusionnetwork.io"/>
             <SelectItem image={autobuy} text="Auto Buy Stake" link="https://tickets.fusionnetwork.io"/>
             <SelectItem image={block} text="Block Explorer" link="https://blocks.fusionnetwork.io"/>
-            <SelectItem image={network} text="Network Monitor" link="https://node.fusionnetwork.io"/>
+            <SelectItem image={network} text="Network Monitor" link="http://node.fusionnetwork.io"/>
             <SelectItem image={swap} text="Quantum Swap" link="https://swap.fusionnetwork.io"/>
           </View>
         </View>
