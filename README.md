@@ -1,8 +1,15 @@
-Fusion Purchase Ticket
+Fusion purchase ticket
 
-Enables you to purchase a ticket on the Fusion network
+The PSN network is powered by a Proof of Stake consensus algorithm that requires network participants to set up a node and purchase ‘tickets’ in order to be selected to validate blocks on the chain. 
 
-try it out at autobuy.fusionnetwork.io
+On the Payable Stage Network, the cost of a staking ticket is 200 P-FSN. Once a ticket is purchased, it enters the lottery to pack and validate the next block. The ticket remains in the lottery pool until it is picked. This means that if your ticket is not picked for a block it automatically enters the lottery to compete to validate the following block 15 seconds later (and so on) until it is picked.
+
+1. If your ticket is not picked within 30 days, the staked 200 P-FSN are returned to your wallet and you will need to purchase a new ticket to participate.
+
+2. If your ticket is picked to validate a block, then the 200 P-FSN used for staking will be returned to your wallet immediately with an additional reward of 2.5 P-FSN (and later 0.625 ERC-20 FSN bonus reward).
+
+
+You can purchase tickets through the user interface at autobuy.fusionnetwork.io
 
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
