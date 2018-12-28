@@ -122,8 +122,12 @@ export default class UnlockAccount extends Component {
                       return;
                     }
               } else {
+                let pass = this.state.password;
+                if (!pass.startsWith("0x") ) {
+                  pass = "0x" + pass
+                }
                 currentDataState.data.accountUnlocked = true
-                currentDataState.data.signInfo = web3api.web3.eth.accounts.privateKeyToAccount(this.state.password);
+                currentDataState.data.signInfo = web3api.web3.eth.accounts.privateKeyToAccount(pass);
                 web3api.walletAddress = currentDataState.data.signInfo.address
               }
               history.push('/Status')
@@ -248,7 +252,7 @@ export default class UnlockAccount extends Component {
         <View style={styles.passwordInputBox}>
           <TextInput
             style={styles.passwordInput}
-            placeholder="Private Key - starts with 0x"
+            placeholder="Private Key"
             autoCorrect={false}
             autoComplete="current-password"
             secureTextEntry={this.state.secureEntry}
@@ -256,11 +260,12 @@ export default class UnlockAccount extends Component {
             maxLength={66}
             value={this.state.password}
             onChangeText={(text)=>{
-              if ( text.length < 66 ) {
+              if ( (text.startsWith("0x") && text.length < 66) || 
+                   (!text.startsWith("0x") && text.length < 64 ) ) {
                 this.setState( { privateKeyOK : false , password : text })
               } else {
                 this.setState( { privateKeyOK : 
-                  web3api.web3.utils.isHexStrict( text )
+                  web3api.web3.utils.isHexStrict( text.startsWith("0x") ? text : "0x" + text  )
                   , password : text })
               }
             }}
