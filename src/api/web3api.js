@@ -42,6 +42,7 @@ export default class web3Api {
 
   setNodeAddress(newNodeAddress) {
     let httpOnly;
+    let provider;
 
     console.log("Attempting connect");
 
@@ -62,8 +63,17 @@ export default class web3Api {
     }
 
     if (newNodeAddress.indexOf("ws") === 0) {
+      let onHandle = () => {
+        console.log("blockchain connected");
+        this.connectedOnce = true;
+        provider.__connected = true;
+        this.emit("connectstatus", ["connected"], null);
+        this.mustGetOneBalance = true;
+        this.setupMonitor();
+      };
+      onHandle = onHandle.bind(this);
       try {
-        this.provider = new Web3.providers.WebsocketProvider(newNodeAddress);
+        provider = new Web3.providers.WebsocketProvider(newNodeAddress, {timeout : 10000 });
       } catch (e) {
         setTimeout(() => {
           this.emit("connectstatus", ["error"], e);
@@ -71,27 +81,17 @@ export default class web3Api {
         return;
       }
       httpOnly = false;
-      this.provider.on("connect", () => {
-        console.log("blockchain connected");
-        this.connectedOnce = true;
-        this.emit("connectstatus", ["connected"], null);
-        this.mustGetOneBalance = true;
-        this.setupMonitor();
-      });
+      provider.on("connect", onHandle);
     } else {
-      this.provider = new Web3.providers.HttpProvider(newNodeAddress);
+      provider = new Web3.providers.HttpProvider(newNodeAddress);
       httpOnly = true;
     }
 
-    if (!this._web3) {
-      let wb = new Web3(this.provider);
+    if (httpOnly) {
+      let wb = new Web3(provider);
       let w3 = web3FusionExtend.extend(wb);
       this._web3 = w3;
-    } else {
-      this._web3.setProvider(this.provider);
-    }
 
-    if (httpOnly) {
       // http c
       this._web3.eth
         .getBlockNumber()
@@ -103,26 +103,79 @@ export default class web3Api {
           console.log("error web3api connect ", e);
           this.emit("connectstatus", ["error"], e);
         });
+      provider.__connected = true;
+      this.provider = provider;
       return;
     }
 
-    this.provider.on("error", e => {
+    let resetInfo = {};
+
+    let errorHandler = e => {
+      if ( !provider || provider.__ignoreNotifications) {
+        // debugger
+        return
+      }
       console.error("Blockchain WS Error", e);
       this.emit("connectstatus", ["error"], e);
-    });
+      if (!resetInfo.resetConnection) {
+        this._web3 = null;
+        resetInfo.resetConnection = true;
+        this.provider.disconnect();
+        this.provider = null;
+        provider.__connected = false;
+        setTimeout(() => {
+          this.emit("connectstatus", ["disconnected"], null);
+          if (this.connectedOnce === true) {
+            this.setNodeAddress(newNodeAddress);
+          }
+        }, 500);
+      }
+    };
 
-    this.provider.on("end", e => {
-      this._web3 = null;
-      console.log(
-        "Blockchain disconnected will try to reconnect in 15 seconds"
-      );
-      setTimeout(() => {
-        this.emit("connectstatus", ["disconnected"], null);
-        if (this.connectedOnce === true) {
-          this.setNodeAddress(newNodeAddress);
-        }
-      }, 1);
-    });
+    errorHandler = errorHandler.bind(this);
+
+    provider.on("error", errorHandler);
+
+    let disconnectHandler = () => {
+      if ( !provider || provider.__ignoreNotifications) {
+        // debugger
+        return
+      }
+      console.log("Blockchain disconnected will try to reconnect");
+      this.emit("connectstatus", ["error"], new Error("disconnected"));
+      if (!resetInfo.resetConnection) {
+        provider.disconnect();
+        this._web3 = null;
+        this.provider = null;
+        provider.__connected = false;
+        resetInfo.resetConnection = true;
+        setTimeout(() => {
+          this.emit("connectstatus", ["disconnected"], null);
+          if (this.connectedOnce === true) {
+            this.setNodeAddress(newNodeAddress);
+          }
+        }, 500);
+      }
+    };
+
+    disconnectHandler = disconnectHandler.bind(this);
+
+    provider.on("end", disconnectHandler);
+
+    if ( this.provider ) {
+      if ( this.previousProvider ) {
+        this.previousProvider.__ignoreNotifications = true
+        try {
+          this.previousProvider.disconnect()
+        } catch (e) {}
+      }
+      this.previousProvider = this.provider
+    }
+
+    this.provider = provider;
+    let wb = new Web3(provider);
+    let w3 = web3FusionExtend.extend(wb);
+    this._web3 = w3;
   }
 
   getBlock(add, blockNumberToDisplay, lastestBlockListener) {
@@ -167,7 +220,7 @@ export default class web3Api {
       this._walletAddress = address;
       this.mustGetOneBalance = true;
       currentDataState.data.ticketPurchasing = {};
-      currentDataState.data.rewardsToDate = '-'
+      currentDataState.data.rewardsToDate = "-";
     }
   }
 
@@ -213,7 +266,22 @@ export default class web3Api {
     );
   }
 
+  checkConnection() {
+    if (!this._web3 || !this.provider || !this.provider.__connected) {
+      this.emit("connectstatus", ["error"], new Error("no connection"));
+      throw new Error("disconnected");
+    }
+  }
+
   setupMonitor() {
+    if (!this._web3 || !this.provider || !this.provider.__connected) {
+      // reconnecting need to wait
+      this.emit("connectstatus", ["error"], new Error("no connection"));
+      setTimeout(() => {
+        this.setupMonitor();
+      }, 4 * 1000);
+      return;
+    }
     if (!this.subscriptionFSNCallAddress) {
       this.startFilterEngine();
     }
@@ -224,7 +292,12 @@ export default class web3Api {
     this._web3.eth
       .getBlock("latest")
       .then(block => {
+        if ( !block ) {
+          throw new Error("no block")
+        }
+        // console.log("c1")        
         this.emit("connectstatus", ["stillgood"], false);
+        this.checkConnection();
         if (this.lastBlock.number !== block.number || this.mustGetOneBalance) {
           this.mustGetOneBalance = false;
           this.lastBlock = block;
@@ -234,6 +307,8 @@ export default class web3Api {
           if (!walletAddress || walletAddress !== this._walletAddress) {
             return true;
           }
+          //console.log("c2") 
+          this.checkConnection();
           return this._web3.fsn
             .getAllBalances(walletAddress)
             .then(res => {
@@ -241,6 +316,8 @@ export default class web3Api {
               return res;
             })
             .then(allBalances => {
+              this.checkConnection();
+              // console.log("c3") 
               return this._web3.fsn
                 .getAllTimeLockBalances(this._walletAddress)
                 .then(timelocks => {
@@ -264,10 +341,13 @@ export default class web3Api {
                       }
                     }
                   }
+                  this.checkConnection();
+                  //console.log("c4") 
                   return this._web3.fsn
                     .allTicketsByAddress(walletAddress)
                     .then(res => {
                       //console.log("all tickets", res);
+                      console.log("c5") 
                       return {
                         allBalances,
                         allTickets: res,
@@ -277,16 +357,22 @@ export default class web3Api {
                 });
             })
             .then(loadsOfInfo => {
+              //console.log("c6") 
+              this.checkConnection();
               return this._web3.fsn.ticketPrice().then(res => {
                 return Object.assign(loadsOfInfo, { ticketPrice: res });
               });
             })
             .then(loadsOfInfo => {
+              this.checkConnection();
+              //console.log("c7") 
               return this._web3.eth.getGasPrice().then(gasPrice => {
                 return Object.assign(loadsOfInfo, { gasPrice });
               });
             })
             .then(loadsOfInfo => {
+              //console.log("c8") 
+              this.checkConnection();
               return this._web3.fsn
                 .totalNumberOfTickets()
                 .then(totalTickets => {
@@ -295,51 +381,56 @@ export default class web3Api {
                     latestBlock: block
                   });
                 });
-            }).then( (loadsOfInfo) => {
+            })
+            .then(loadsOfInfo => {
+              //console.log("c9") 
               const requestOptions = {
                 method: "GET",
-                uri: "https://api.fusionnetwork.io/balances/"+this._walletAddress,
-                qs: {
-                },
-                headers: {
-                },
+                uri:
+                  "https://api.fusionnetwork.io/balances/" +
+                  this._walletAddress,
+                qs: {},
+                headers: {},
                 json: true,
                 gzip: true
               };
 
               return rp(requestOptions)
                 .then(response => {
-                  if ( Array.isArray(response) && response.length > 0 ) {
+                  if (Array.isArray(response) && response.length > 0) {
                     return Object.assign(loadsOfInfo, {
-                      rewardEarn : response[0].rewardEarn
+                      rewardEarn: response[0].rewardEarn
                     });
                   }
-                  return loadsOfInfo
+                  return loadsOfInfo;
                 })
-                .catch( (err)=> {
-                  console.log("can't get balance", err)
-                  return loadsOfInfo
-                })
-            } )
+                .catch(err => {
+                  //console.log("can't get balance", err);
+                  return loadsOfInfo;
+                });
+            })
             .then(loadsOfInfo => {
+              //console.log("c10") 
               this.emit("balanceInfo", loadsOfInfo, false);
             });
         }
       })
       .then(res => {
+        //console.log("c11") 
         setTimeout(() => {
           this.setupMonitor();
         }, 4 * 1000);
       })
       .catch(e => {
-        console.log("monitor error ", e);
+        //console.log("monitor error ", e);
         if (this.attempForMonitor === nextMonitorCall) {
           this.emit("connectstatus", ["error"], e);
           setTimeout(() => {
             this.setupMonitor();
           }, 7 * 1000);
         }
-      });
+      }
+    )
   }
 
   /**
@@ -412,15 +503,15 @@ export default class web3Api {
 
     let timerFunc = () => {
       this.lastTicketCheckTimer = null;
-      if ( data.autoBuyStopDate ) {
-        let stopTime = data.date.getTime()
-        let now = (new Date()).getTime()
-        if( stopTime < now ) {
+      if (data.autoBuyStopDate) {
+        let stopTime = data.date.getTime();
+        let now = new Date().getTime();
+        if (stopTime < now) {
           data.lastStatus = "Completed";
           data.lastCall = "purchaseCompleted";
           data.activeTicketPurchase = false;
           this.emit("purchaseCompleted", data);
-          return
+          return;
         }
       }
 
@@ -444,31 +535,33 @@ export default class web3Api {
     timerFunc = timerFunc.bind(this);
 
     cb = (err, step) => {
-      if (!err) {
-        data.ticketsPurchased += 1;
-      }
-      data.lastStatus = step;
-      if (
-        data.activeTicketPurchase &&
-        data.ticketsPurchased < data.ticketQuantity
-      ) {
-        // schedule another purchase
+      setTimeout(() => {
         if (!err) {
-          data.lastStatus = "Purchase next ticket";
+          data.ticketsPurchased += 1;
         }
-        data.lastCall = "purchaseAgain";
-        this.emit("purchaseAgain", data);
-        this.lastTicketCheckTimer = setTimeout(timerFunc, 1000);
-      } else {
-        if (data.activeTicketPurchase && data.autoBuyTickets) {
-          this.buyTickets(originalData);
-          return;
+        data.lastStatus = step;
+        if (
+          data.activeTicketPurchase &&
+          data.ticketsPurchased < data.ticketQuantity
+        ) {
+          // schedule another purchase
+          if (!err) {
+            data.lastStatus = "Purchase next ticket";
+          }
+          data.lastCall = "purchaseAgain";
+          this.emit("purchaseAgain", data);
+          this.lastTicketCheckTimer = setTimeout(timerFunc, 1000);
+        } else {
+          if (data.activeTicketPurchase && data.autoBuyTickets) {
+            this.buyTickets(originalData);
+            return;
+          }
+          data.lastStatus = "Completed";
+          data.lastCall = "purchaseCompleted";
+          data.activeTicketPurchase = false;
+          this.emit("purchaseCompleted", data);
         }
-        data.lastStatus = "Completed";
-        data.lastCall = "purchaseCompleted";
-        data.activeTicketPurchase = false;
-        this.emit("purchaseCompleted", data);
-      }
+      }, 10);
     };
 
     cb = cb.bind(this);
@@ -571,6 +664,11 @@ export default class web3Api {
   }
 
   purchaseOneTicket(data, cb) {
+    if (!this._web3 || !this.provider || !this.provider.__connected) {
+      // reconnecting need to wait
+      cb(new Error("reconnecting"), "reconnecting");
+      return;
+    }
     let days = data.daysQuantity;
     if (isNaN(days) || days < 21 || days > 100) {
       days = 30;
@@ -584,6 +682,11 @@ export default class web3Api {
       .then(tx => {
         console.log(tx);
         // tx.gasLimit =  this._web3.utils.toWei( 21000, "gwei" )
+        if (!this._web3 || !this.provider || !this.provider.__connected) {
+          // reconnecting need to wait
+          cb(new Error("reconnecting"), "reconnecting");
+          return;
+        }
         return this._web3.fsn.signAndTransmit(
           tx,
           currentDataState.data.signInfo.signTransaction
@@ -598,7 +701,12 @@ export default class web3Api {
         data.lastStatus = "Pending Tx:" + utils.midHashDisplay(txHash);
         data.lastCall = "purchaseSubmitTicket";
         this.emit("purchaseSubmitTicket", data);
-        return this.waitForTransactionToComplete(txHash,data)
+        this.checkConnection();
+        return this.waitForTransactionToComplete(
+          txHash,
+          data,
+          new Date().getTime() + 120000
+        )
           .then(r => {
             if (r.status) {
               cb(null, "Ticket bought");
@@ -611,27 +719,47 @@ export default class web3Api {
           });
       })
       .catch(err => {
+        console.log(err)
         cb(err, "unknown err");
       });
   }
 
-  waitForTransactionToComplete(transID,data) {
+  waitForTransactionToComplete(transID, data, maxWaitTime) {
+    if (!this._web3 || !this.provider || !this.provider.__connected) {
+      // reconnecting need to wait
+      throw new Error("reconnecting");
+      return;
+    }
     if (!data.activeTicketPurchase) {
       return true;
     }
+    let now = (new Date()).getTime()
+    //console.log( maxWaitTime , now )
+    if (maxWaitTime < now ) {
+      // a long time has past
+      // assume that transaction is lost
+      // or network is backlogged
+      // continue on
+      // console.log("too much time leaving");
+      throw new Error("Error waiting for ticket to complete, timed out");
+      return true;
+    }
+    // console.log("GTR E")
     return this._web3.eth
       .getTransactionReceipt(transID)
       .then(receipt => {
+        //console.log("GTR L")
         if (!receipt) {
           // assume not scheduled yet
           if (!data.activeTicketPurchase) {
             throw Error("asked to stop purchasing");
           }
-          return this.waitForTransactionToComplete(transID,data);
+          return this.waitForTransactionToComplete(transID, data, maxWaitTime);
         }
         return receipt;
       })
       .catch(err => {
+        // console.log("GTR L")
         throw err;
       });
   }
