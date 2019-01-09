@@ -246,7 +246,7 @@ class Status extends Component {
       return (
         <View style={{ padding: 15 }}>
           <Text style={styles.Auto_Buy_Stake_Monit}>
-            You Account Must be unlocked to use this screen.
+            Your Account Must be unlocked to use this screen.
           </Text>
           <TouchableOpacity
             style={{ width: 100 }}
