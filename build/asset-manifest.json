@@ -1,10 +1,10 @@
 {
   "main.css": "/static/css/main.ecdb98cc.chunk.css",
-  "main.js": "/static/js/main.0de4952c.chunk.js",
-  "main.js.map": "/static/js/main.0de4952c.chunk.js.map",
+  "main.js": "/static/js/main.f7a13f34.chunk.js",
+  "main.js.map": "/static/js/main.f7a13f34.chunk.js.map",
   "static/css/1.40ba6fae.chunk.css": "/static/css/1.40ba6fae.chunk.css",
-  "static/js/1.6065fd5b.chunk.js": "/static/js/1.6065fd5b.chunk.js",
-  "static/js/1.6065fd5b.chunk.js.map": "/static/js/1.6065fd5b.chunk.js.map",
+  "static/js/1.bb28618b.chunk.js": "/static/js/1.bb28618b.chunk.js",
+  "static/js/1.bb28618b.chunk.js.map": "/static/js/1.bb28618b.chunk.js.map",
   "runtime~main.js": "/static/js/runtime~main.229c360f.js",
   "runtime~main.js.map": "/static/js/runtime~main.229c360f.js.map",
   "static/media/block.svg": "/static/media/block.7cca8210.svg",
@@ -22,9 +22,9 @@
   "static/media/autobuy.svg": "/static/media/autobuy.9cef8488.svg",
   "static/media/network.svg": "/static/media/network.3b85bc05.svg",
   "static/media/swap.svg": "/static/media/swap.8ebdea22.svg",
-  "static/css/main.ecdb98cc.chunk.css.map": "/static/css/main.ecdb98cc.chunk.css.map",
   "static/css/1.40ba6fae.chunk.css.map": "/static/css/1.40ba6fae.chunk.css.map",
+  "static/css/main.ecdb98cc.chunk.css.map": "/static/css/main.ecdb98cc.chunk.css.map",
   "index.html": "/index.html",
-  "precache-manifest.a5b286d8107239b982afebfd1386bfa3.js": "/precache-manifest.a5b286d8107239b982afebfd1386bfa3.js",
+  "precache-manifest.cda35268f9f42fd532f9cb9eb48d7e35.js": "/precache-manifest.cda35268f9f42fd532f9cb9eb48d7e35.js",
   "service-worker.js": "/service-worker.js"
 }

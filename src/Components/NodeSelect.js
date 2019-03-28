@@ -33,13 +33,13 @@ export default class NodeSelect extends Component {
 
     this.connectionListener = this.connectionListener.bind(this);
 
-    var val = window.localStorage.getItem("address2");
+    var val = window.localStorage.getItem("addressPSN2");
     var error = null;
 
     if (!error) {
       if (this.didOneUpdate) {
         if (!val) {
-          val = "wss://gateway.fusionnetwork.io:10001";
+          val = "wss://gatewaypsn2.fusionnetwork.io:10001";
         }
         this.setState({
           newNodeAddress: val,
@@ -48,7 +48,7 @@ export default class NodeSelect extends Component {
         });
       } else {
         if (!val) {
-          val = "wss://gateway.fusionnetwork.io:10001";
+          val = "wss://gatewaypsn2.fusionnetwork.io:10001";
         }
         this.state.currentNodeAddress = val;
         this.state.newNodeAddress = val;
@@ -89,7 +89,7 @@ export default class NodeSelect extends Component {
           testing: false,
           currentNodeAddress: this.state.newNodeAddress
         });
-        window.localStorage.setItem("address2", this.state.newNodeAddress);
+        window.localStorage.setItem("addressPSN2", this.state.newNodeAddress);
       }
     } else {
       if (arg[0] === "error") {
