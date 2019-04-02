@@ -20,7 +20,7 @@ class App extends Component {
     }
     return (
       <View>
-        <Header title="Auto Buy Stake" titleWidth={150} version="1.00.00" nodeSelect={true}/>
+        <Header title="Auto Buy Stake" titleWidth={150} version="2.00.00" nodeSelect={true}/>
         <Router history={history}>
             <div>
               <Route exact path="/" component={UnlockAccount} />

@@ -14,7 +14,7 @@ export default class Header extends Component {
         <View style={{flex:1,flexDirection:'row',justifyContent:'flex-start', alignItems:'center'}}>
           <Image source={fusionLogo} resizeMode="contain" style={{marginLeft:80,width:129,height:29}}/>
           <Text style={styles.titleAutoBuy}>Auto Buy Stake</Text>
-          <Text style={styles.programVersion}>1.00.00</Text>
+          <Text style={styles.programVersion}>2.00.00</Text>
         </View>
         <View style={styles.nodeSelectBox}>
             <NodeSelect/>
