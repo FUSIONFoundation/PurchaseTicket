@@ -31,7 +31,7 @@
     "react-scripts": "2.1.1",
     "react-select-files": "^0.1.0",
     "web3": "1.0.0-beta.37",
-    "web3-fusion-extend": "^1.0.0-beta.17"
+    "web3-fusion-extend": "^1.0.0-beta.33"
   },
   "dependencies": {
     "body-parser": "^1.18.3",

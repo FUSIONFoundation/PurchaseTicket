@@ -347,7 +347,7 @@ export default class web3Api {
                     .allTicketsByAddress(walletAddress)
                     .then(res => {
                       //console.log("all tickets", res);
-                      console.log("c5") 
+                      //console.log("c5") 
                       return {
                         allBalances,
                         allTickets: res,
@@ -359,13 +359,16 @@ export default class web3Api {
             .then(loadsOfInfo => {
               //console.log("c6") 
               this.checkConnection();
-              return this._web3.fsn.ticketPrice().then(res => {
+              return this._web3.fsn.ticketPrice("latest").then(res => {
                 return Object.assign(loadsOfInfo, { ticketPrice: res });
-              });
+              }).catch ((err)=>{
+                console.log("error getting ticket price", err )
+                throw err
+              })
             })
             .then(loadsOfInfo => {
               this.checkConnection();
-              //console.log("c7") 
+             //console.log("c7") 
               return this._web3.eth.getGasPrice().then(gasPrice => {
                 return Object.assign(loadsOfInfo, { gasPrice });
               });
