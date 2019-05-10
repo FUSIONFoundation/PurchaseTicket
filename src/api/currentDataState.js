@@ -25,7 +25,7 @@ var datablock = {
   },
   gasPrice: new BN("0"),
   //123456789012345678
-  ticketPrice: new BN("200" + "0".repeat(18)),
+  ticketPrice: new BN("5000" + "0".repeat(18)),
   walletBalance: new BN("0"),
   timelockUsableBalance : new BN("0"),
   autoBuyStopTime: moment("20190214", "YYYYMMDD"),

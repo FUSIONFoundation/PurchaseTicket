@@ -124,7 +124,7 @@ class Status extends Component {
       totalTickets = 1;
     }
     let probablity = 5760 * (1 / totalTickets);
-    let rewardRate = (probablity * (erc20fsn ? 0.625 : 2.5)) / 200;
+    let rewardRate = (probablity * (erc20fsn ? 0.625 : 2.5)) / 5000;
     let yearly = rewardRate * 365 * 100;
     return yearly.toFixed(yearly > 99 ? 0 : 1) + "%";
   }
