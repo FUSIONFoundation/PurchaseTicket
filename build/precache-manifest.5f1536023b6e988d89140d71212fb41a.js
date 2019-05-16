@@ -4,7 +4,7 @@ self.__precacheManifest = [
     "url": "/static/media/radioOff.53ea8205.svg"
   },
   {
-    "revision": "84015f7551d171b37552",
+    "revision": "e8d8b60855718a5ea301",
     "url": "/static/css/main.9c4b743c.chunk.css"
   },
   {
@@ -28,12 +28,12 @@ self.__precacheManifest = [
     "url": "/static/media/fontawesome-webfont.fee66e71.woff"
   },
   {
-    "revision": "b06871f281fee6b241d60582ae9369b9",
-    "url": "/static/media/fontawesome-webfont.b06871f2.ttf"
-  },
-  {
     "revision": "674f50d287a8c48dc19ba404d20fe713",
     "url": "/static/media/fontawesome-webfont.674f50d2.eot"
+  },
+  {
+    "revision": "b06871f281fee6b241d60582ae9369b9",
+    "url": "/static/media/fontawesome-webfont.b06871f2.ttf"
   },
   {
     "revision": "912ec66d7572ff821749319396470bde",
@@ -48,8 +48,8 @@ self.__precacheManifest = [
     "url": "/static/media/radioOn.0ef10e99.svg"
   },
   {
-    "revision": "84015f7551d171b37552",
-    "url": "/static/js/main.84015f75.chunk.js"
+    "revision": "e8d8b60855718a5ea301",
+    "url": "/static/js/main.e8d8b608.chunk.js"
   },
   {
     "revision": "70a8f22857787c696d0f70c7e7e12c17",
@@ -96,7 +96,7 @@ self.__precacheManifest = [
     "url": "/static/css/1.6625d372.chunk.css"
   },
   {
-    "revision": "508198011fe13fe2094aad60b3db2c99",
+    "revision": "1242653de9ab7b59502e61fd7cd223af",
     "url": "/index.html"
   }
 ];

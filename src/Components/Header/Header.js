@@ -38,6 +38,7 @@ export default class Header extends Component {
           style={{
             flex: 1,
             flexDirection: "row",
+            flexBasis : 'auto',
             justifyContent: "flex-start",
             alignItems: "center"
           }}
@@ -89,6 +90,7 @@ var styles = StyleSheet.create({
   appSelect: {
     height: 40,
     flex: 1,
+    flexBasis : 'auto',
     flexDirection: "row",
     justifyContent: "flex-start",
     alignItems: "center",
