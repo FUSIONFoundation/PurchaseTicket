@@ -76,6 +76,7 @@ export default class Header extends Component {
 var styles = StyleSheet.create({
   container: {
     flex: 1,
+    flexBasis : 'auto',
     flexDirection: "row",
     justifyContent: "flex-start",
     alignItems: "center",

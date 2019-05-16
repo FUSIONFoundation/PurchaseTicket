@@ -357,6 +357,7 @@ styles = StyleSheet.create({
     paddingRight: 32
   },
   selectWalletBox: {
+    flexBasis : 'auto',
     borderColor: colors.orderGrey,
     borderRadius: 4,
     backgroundColor: "white",
@@ -366,7 +367,6 @@ styles = StyleSheet.create({
     overflow: "visible",
     //boxShadow: "0 2px 0 0 rgba(189, 196, 206, 0.2)",
     flex: 1,
-    flexBasis: "100%",
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 16
