@@ -142,4 +142,25 @@ export default class Utils {
     return str;
   }
 
+
+  static formatPercent( a ) {
+    if (  typeof a === 'string') {
+      return "-"
+    }
+    if ( a > 99 ) {
+      a = a.toFixed( 0 )
+    } else {
+      a = a.toFixed(2)
+    }
+    return a + "%"
+  } 
+
+  static getServer() {
+    if ( window.location.href.indexOf( "useServer2") > 0 ) {
+      return  "https://api2.fusionnetwork.io";
+    } else {
+      return  "https://api.fusionnetwork.io";
+    }
+  }
+
 }

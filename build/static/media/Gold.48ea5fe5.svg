@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="64px" height="64px" viewBox="0 0 64 64" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 53 (72520) - https://sketchapp.com -->
+    <title>Gold</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-1">
+            <stop stop-color="#FBD249" offset="0%"></stop>
+            <stop stop-color="#F5A623" offset="100%"></stop>
+        </linearGradient>
+        <circle id="path-2" cx="32" cy="32" r="32"></circle>
+        <filter x="-31.2%" y="-25.0%" width="162.5%" height="162.5%" filterUnits="objectBoundingBox" id="filter-3">
+            <feOffset dx="0" dy="4" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="6" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0.960784314   0 0 0 0 0.650980392   0 0 0 0 0.137254902  0 0 0 0.24 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="Gold" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Oval" fill-rule="nonzero">
+            <use fill="black" fill-opacity="1" filter="url(#filter-3)" xlink:href="#path-2"></use>
+            <use fill="url(#linearGradient-1)" xlink:href="#path-2"></use>
+        </g>
+        <path d="M31.5653221,25.2710571 C24.3317279,36.3626278 19.8886213,51.7660804 18.1547261,57 C17.17941,47.1287733 22.3269115,33.677871 26.0927152,25.7320759 C24.35882,25.8134322 15.1204094,26.4642823 10,31.7524395 C10,31.7524395 12.7633955,23.2642693 28.7206502,20.6879876 L28.7748344,20.5795126 C41.2642986,2.32859073 50.6381698,13.2303301 50.6381698,13.2303301 C44.948826,12.2811737 39.9909693,15.1286429 35.7645996,19.7659499 C37.8236002,19.6845937 51.1529199,19.5218811 55,30.0710767 C55,30.0710767 47.2787477,24.5388507 31.5653221,25.2710571 Z M40.5,38 C37.4672897,38 35,40.6915888 35,44 C35,47.3084112 37.4672897,50 40.5,50 C43.5327103,50 46,47.3084112 46,44 L46,44 C46,40.6635514 43.5327103,38 40.5,38 Z" id="Shape" fill-opacity="0.2" fill="#FFFFFF" fill-rule="nonzero"></path>
+        <polygon id="1" fill="#FFFFFF" fill-rule="nonzero" points="35.796875 42 30.515625 42 30.515625 25.1875 25.328125 26.703125 25.328125 22.703125 35.3125 19.25 35.796875 19.25"></polygon>
+    </g>
+</svg>

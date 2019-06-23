@@ -9,14 +9,20 @@ import Header from "./Components/Header/Header.js";
 import BlockDisplayer from "./Components/BlockDisplayer";
 import 'font-awesome/css/font-awesome.min.css';
 import AppSelect from "./Components/Header/AppSelect.js";
-
+import Staking from "./Components/Staking.js";
 import { Route, Router } from "react-router-dom";
-
+import Leaderboard from "./Components/Leaderboard.js";
 
 class App extends Component {
   render() {
     if (false) {
       return <UnlockAccount />;
+    }
+    if (window.location.href.toLowerCase().indexOf( "staking") > 0  ) {
+      return <Staking></Staking>
+    }
+    if (window.location.href.toLowerCase().indexOf( "leaderboard") > 0  ) {
+      return <Leaderboard/>
     }
     return (
       <View>
@@ -28,6 +34,7 @@ class App extends Component {
               <Route path="/UnlockAccount" component={UnlockAccount} />
               <Route path="/PurchaseTicket" component={PurchaseTicket} />
               <Route path="/Block/:blockNumber" component={BlockDisplayer} />
+              <Route path="/Staking" component={Staking} />
             </div>
           </Router>
           <AppSelect/>

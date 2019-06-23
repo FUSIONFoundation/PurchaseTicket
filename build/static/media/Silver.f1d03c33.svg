@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="52px" height="52px" viewBox="0 0 52 52" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 53 (72520) - https://sketchapp.com -->
+    <title>Silver123</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-1">
+            <stop stop-color="#A3A8AE" offset="0%"></stop>
+            <stop stop-color="#6A6F75" offset="100%"></stop>
+        </linearGradient>
+        <circle id="path-2" cx="26" cy="26" r="26"></circle>
+        <filter x="-38.5%" y="-30.8%" width="176.9%" height="176.9%" filterUnits="objectBoundingBox" id="filter-3">
+            <feOffset dx="0" dy="4" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="6" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0.415686275   0 0 0 0 0.435294118   0 0 0 0 0.458823529  0 0 0 0.24 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="Silver123" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Silver" fill-rule="nonzero">
+            <g id="Oval">
+                <use fill="black" fill-opacity="1" filter="url(#filter-3)" xlink:href="#path-2"></use>
+                <use fill="url(#linearGradient-1)" xlink:href="#path-2"></use>
+            </g>
+            <path d="M34,37 L18.125,37 L18.125,33.5625 L25.4375,25.875 C27.2395923,23.8229064 28.140625,22.1927144 28.140625,20.984375 C28.140625,20.0052034 27.9270855,19.2604192 27.5,18.75 C27.0729145,18.2395808 26.4531291,17.984375 25.640625,17.984375 C24.8385377,17.984375 24.1875025,18.3255174 23.6875,19.0078125 C23.1874975,19.6901076 22.9375,20.5416616 22.9375,21.5625 L17.65625,21.5625 C17.65625,20.1666597 18.0052048,18.8776101 18.703125,17.6953125 C19.4010452,16.5130149 20.3697855,15.588545 21.609375,14.921875 C22.8489645,14.255205 24.2343673,13.921875 25.765625,13.921875 C28.2239706,13.921875 30.1171809,14.4895777 31.4453125,15.625 C32.7734441,16.7604223 33.4375,18.3906144 33.4375,20.515625 C33.4375,21.4114628 33.270835,22.2838499 32.9375,23.1328125 C32.604165,23.9817751 32.085941,24.8723912 31.3828125,25.8046875 C30.679684,26.7369838 29.5468828,27.9843672 27.984375,29.546875 L25.046875,32.9375 L34,32.9375 L34,37 Z" id="2" fill="#FFFFFF"></path>
+        </g>
+    </g>
+</svg>
