@@ -69,8 +69,9 @@ app.use(
 // serve static content
 app.use(express.static(path.join(__dirname, "build")));
 
+// support single page application
 app.get("*", function(req, res) {
-  res.redirect("https://" + req.get("Host"));
+  res.sendFile(path.resolve(__dirname, "./build/index.html"));
 });
 
 // setup server
