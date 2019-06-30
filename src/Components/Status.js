@@ -415,13 +415,13 @@ class Status extends Component {
                     <Text style={styles.simpleLineText}>
                       Ticket Yearly Reward Rate
                     </Text>
-                    <Text style={[styles.simpleLineText, { marginTop: 4 }]}>
+                    {/* <Text style={[styles.simpleLineText, { marginTop: 4 }]}>
                       <Text>ERC20FSN</Text>
                       {" " + this.tickRate(data, true) + " "}
-                    </Text>
+                    </Text> */}
 
                     <Text style={[styles.simpleLineText, { marginTop: 4 }]}>
-                      <Text>PFSN</Text>
+                      <Text>FSN</Text>
                       {" " + this.tickRate(data, false) + " "}
                     </Text>
                   </View>

@@ -4,7 +4,7 @@ self.__precacheManifest = [
     "url": "/static/media/check_off.f24d3320.svg"
   },
   {
-    "revision": "8b78d4dd5bff4051737e",
+    "revision": "72d46f2be29c2e0c6844",
     "url": "/static/css/main.d5e54140.chunk.css"
   },
   {
@@ -56,8 +56,8 @@ self.__precacheManifest = [
     "url": "/static/media/checkboxOn.70a8f228.svg"
   },
   {
-    "revision": "8b78d4dd5bff4051737e",
-    "url": "/static/js/main.8b78d4dd.chunk.js"
+    "revision": "72d46f2be29c2e0c6844",
+    "url": "/static/js/main.72d46f2b.chunk.js"
   },
   {
     "revision": "392623cef055289ed667635963cf557f",
@@ -108,7 +108,7 @@ self.__precacheManifest = [
     "url": "/static/css/1.c0693939.chunk.css"
   },
   {
-    "revision": "fec6aa7095d092e12efb44a152597018",
+    "revision": "278dd576f5cd0d2f5218ddce41fef9dd",
     "url": "/index.html"
   }
 ];
