@@ -4,7 +4,7 @@ self.__precacheManifest = [
     "url": "/static/media/check_off.f24d3320.svg"
   },
   {
-    "revision": "72d46f2be29c2e0c6844",
+    "revision": "bc0770cdaabaaaf250fc",
     "url": "/static/css/main.d5e54140.chunk.css"
   },
   {
@@ -28,12 +28,12 @@ self.__precacheManifest = [
     "url": "/static/media/fontawesome-webfont.fee66e71.woff"
   },
   {
-    "revision": "b06871f281fee6b241d60582ae9369b9",
-    "url": "/static/media/fontawesome-webfont.b06871f2.ttf"
-  },
-  {
     "revision": "674f50d287a8c48dc19ba404d20fe713",
     "url": "/static/media/fontawesome-webfont.674f50d2.eot"
+  },
+  {
+    "revision": "b06871f281fee6b241d60582ae9369b9",
+    "url": "/static/media/fontawesome-webfont.b06871f2.ttf"
   },
   {
     "revision": "912ec66d7572ff821749319396470bde",
@@ -56,8 +56,8 @@ self.__precacheManifest = [
     "url": "/static/media/checkboxOn.70a8f228.svg"
   },
   {
-    "revision": "72d46f2be29c2e0c6844",
-    "url": "/static/js/main.72d46f2b.chunk.js"
+    "revision": "bc0770cdaabaaaf250fc",
+    "url": "/static/js/main.bc0770cd.chunk.js"
   },
   {
     "revision": "392623cef055289ed667635963cf557f",
@@ -108,7 +108,7 @@ self.__precacheManifest = [
     "url": "/static/css/1.c0693939.chunk.css"
   },
   {
-    "revision": "278dd576f5cd0d2f5218ddce41fef9dd",
+    "revision": "d8e7b5412bdde5a36c78cc8890511f80",
     "url": "/index.html"
   }
 ];
