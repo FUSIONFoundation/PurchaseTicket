@@ -26,14 +26,15 @@ class App extends Component {
     }
     return (
       <View>
-        <Header title="Auto Buy Stake" titleWidth={150} version="2.00.00" nodeSelect={true}/>
+        {/* <Header title="Auto Buy Stake" titleWidth={150} version="2.00.00" nodeSelect={true}/> */}
         <Router history={history}>
             <div>
-              <Route exact path="/" component={UnlockAccount} />
-              <Route path="/Status" component={Status} />         
-              <Route path="/UnlockAccount" component={UnlockAccount} />
+              <Route exact path="/" component={Staking} />
+              {/* <Route exact path="/" component={UnlockAccount} /> */}
+              {/* <Route path="/Status" component={Status} />          */}
+              {/* <Route path="/UnlockAccount" component={UnlockAccount} />
               <Route path="/PurchaseTicket" component={PurchaseTicket} />
-              <Route path="/Block/:blockNumber" component={BlockDisplayer} />
+              <Route path="/Block/:blockNumber" component={BlockDisplayer} /> */}
               <Route path="/Staking" component={Staking} />
             </div>
           </Router>
